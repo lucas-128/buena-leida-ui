@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const NavContainer = styled.nav`
   display: flex;
@@ -8,6 +8,15 @@ export const NavContainer = styled.nav`
   padding: 10px 20px;
   background-color: #282c34;
   color: white;
+`;
+
+export const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    color: gray;
+  }
 `;
 
 export const LogoText = styled.h1`
@@ -22,7 +31,7 @@ export const NavTab = styled(Link)`
   margin: 0 20px;
 
   &:hover {
-    text-decoration: underline;
+    color: gray;
   }
 `;
 

@@ -1,48 +1,69 @@
-import React, { useState } from 'react';
-import { LoginContainer, LoginForm, Input, Button, ErrorMessage } from './styled';
+import { Button, CircularProgress } from "@mui/material";
+import { useAuth } from "../../context/AuthContext";
+import { SetStateAction, useState } from "react";
+import {
+  LoginHbox,
+  LoginVbox,
+  PasswordField,
+  StyledTextField,
+  Title,
+} from "./styled";
 
-interface LoginProps {
-  onLogin: () => void; 
-}
+export const Login = () => {
+  const { login } = useAuth();
+  const [mail, setMail] = useState("");
+  const [pass, setPass] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-const Login: React.FC<LoginProps> = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!email || !password) {
-      setError('Both fields are required');
+  const handleLogin = async () => {
+    if (mail === "" || pass === "") {
+      alert("Empty input fields");
       return;
     }
+    setIsLoading(true);
+    const result = await login(mail, pass);
 
-    setError('');
-    onLogin(); 
+    if (result && result.error) {
+      alert(result.message);
+      setIsLoading(false);
+      return;
+    } else {
+      setIsLoading(false);
+      return;
+    }
   };
 
   return (
-    <LoginContainer>
-      <LoginForm onSubmit={handleSubmit}>
-        <h2>Iniciar sesion</h2>
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setEmail(e.target.value)}
-        />
-        <Input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setPassword(e.target.value)}
-        />
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-        <Button type="submit">Login</Button>
-      </LoginForm>
-    </LoginContainer>
+    <LoginHbox>
+      {isLoading ? (
+        <CircularProgress color="primary" />
+      ) : (
+        <LoginVbox>
+          <Title variant="h2">Bunea Leida</Title>
+          <StyledTextField
+            id="outlined-basic"
+            label="Email"
+            variant="outlined"
+            required
+            onChange={(e: { target: { value: SetStateAction<string> } }) =>
+              setMail(e.target.value)
+            }
+          />
+          <PasswordField
+            id="outlined-basic2"
+            label="Password"
+            type="password"
+            variant="outlined"
+            required
+            onChange={(e: { target: { value: SetStateAction<string> } }) =>
+              setPass(e.target.value)
+            }
+          />
+          <Button variant="contained" onClick={handleLogin}>
+            Login
+          </Button>
+        </LoginVbox>
+      )}
+    </LoginHbox>
   );
 };
-
-export default Login;
