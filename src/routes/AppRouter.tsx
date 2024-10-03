@@ -10,10 +10,10 @@ export default function AppRouter() {
 
   const Layout = () => {
     return (
-      <div className="main">
+      <div>
         <NavBar />
-        <div className="container">
-          <div className="contentContainer">
+        <div>
+          <div>
             <Outlet />
           </div>
         </div>

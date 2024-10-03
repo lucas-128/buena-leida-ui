@@ -1,5 +1,9 @@
+import { Feed, HomeContainer } from "./styled";
+
 export const Home = () => {
-  return <h1>Home</h1>;
+  return <HomeContainer>
+    <Feed>Home</Feed>
+  </HomeContainer>;
 };
 
 export default Home;

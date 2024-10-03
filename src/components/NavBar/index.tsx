@@ -3,34 +3,68 @@ import {
   NavContainer,
   LogoText,
   NavTab,
-  SearchInput,
-  LogoutButton,
+  //LogoutButton,
   StyledLink,
+  IconContainer,
+  Icon,
+  LogoPart,
+  SearchWrapper,
+  StyledSearchInput,
+  SearchIcon,
 } from "./styled";
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import ForumIcon from "@mui/icons-material/Forum";
+import EmailIcon from "@mui/icons-material/Email";
+import PeopleIcon from "@mui/icons-material/People";
+import { FcReading } from "react-icons/fc";
 
 const NavBar: React.FC = () => {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
   return (
     <NavContainer>
       <StyledLink to="/">
-        <LogoText>Buena Leida</LogoText>
+        <LogoText>
+          <LogoPart>Buena </LogoPart>
+          <LogoPart bold>Leida</LogoPart>
+        </LogoText>
       </StyledLink>
 
       <NavTab to="/">Home</NavTab>
-      <NavTab to="/profile">Profile</NavTab>
+      <NavTab to="/">My Books</NavTab>
+      <NavTab to="/" style={{ display: "flex", alignItems: "center" }}>
+        Browse
+        <ArrowDropDownRoundedIcon />
+      </NavTab>
 
-      <SearchInput placeholder="Search..." />
+      <NavTab to="/" style={{ display: "flex", alignItems: "center" }}>
+        Community
+        <ArrowDropDownRoundedIcon />
+      </NavTab>
 
-      <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
+      <SearchWrapper>
+        <StyledSearchInput placeholder="Buscar libros" />
+        <SearchIcon />
+      </SearchWrapper>
+
+      <IconContainer>
+        <Icon title="Notifications">
+          <NotificationsIcon />
+        </Icon>
+        <Icon title="Group Discussions">
+          <ForumIcon />
+        </Icon>
+        <Icon title="Messages">
+          <EmailIcon />
+        </Icon>
+        <Icon title="Friends">
+          <PeopleIcon />
+        </Icon>
+        <StyledLink to="/profile" title="Profile">
+          <Icon className="profile">
+            <FcReading />
+          </Icon>
+        </StyledLink>
+      </IconContainer>
     </NavContainer>
   );
 };

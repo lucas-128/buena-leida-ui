@@ -1,11 +1,16 @@
+import React from 'react';
 import { AuthProvider } from "./context/AuthContext";
 import AppRouter from "./routes/AppRouter";
+import GlobalStyle from './GlobalStyles';
 
 const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <AppRouter />
-    </AuthProvider>
+    <>
+      <GlobalStyle /> 
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
+    </>
   );
 };
 
