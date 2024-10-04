@@ -1,35 +1,71 @@
 import styled from "styled-components";
 import { Button, TextField, Typography } from "@mui/material";
 
-export const LoginHbox = styled.div`
+export const Container = styled.div`
+  min-height: 100vh;
+  width: 100%;
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  background-color: white;
+`;
+
+export const LoginHbox = styled.div`
+  display: flex;
+  height: 75%;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  min-height: 20vh;
 `;
 
 export const LoginVbox = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 5%;
-  gap: 10px;
+  align-items: center;
+  padding: 40px;
+  background-color: white;
+  border-radius: 8px;
+  gap: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+`;
+
+export const Header = styled.div`
+  text-align: center;
+  margin-bottom: 5px;
 `;
 
 export const Title = styled(Typography)`
-  color: darkblue;
-  margin-bottom: 20px;
+  color: black;
+  margin-bottom: 10px;
+  font-weight: bold;
 `;
 
 export const StyledTextField = styled(TextField)`
-  margin-bottom: 15px;
-`;
-
-export const PasswordField = styled(TextField)`
-  margin-bottom: 25px;
+  width: 100%;
+  margin-bottom: 20px;
 `;
 
 export const StyledButton = styled(Button)`
-  margin-top: 10px;
+  width: 100%;
+  margin-top: 15px;
+`;
+
+export const NavContainer = styled.nav`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  color: #333;
+  height: 65px;
+  border-bottom: 1px solid lightgrey;
+  padding-left: 17.8%;
+`;
+
+export const LogoText = styled.h1`
+  font-size: 24px;
+  margin-right: 20px;
+  display: flex;
+`;
+
+export const LogoPart = styled.span<{ bold?: boolean }>`
+  font-weight: ${(props) => (props.bold ? "bold" : "normal")};
 `;

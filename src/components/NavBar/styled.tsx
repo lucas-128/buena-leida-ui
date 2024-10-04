@@ -1,14 +1,14 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch } from "react-icons/fa";
 
 export const NavContainer = styled.nav`
   display: flex;
   align-items: center;
-  justify-content: center; 
+  justify-content: center;
   background-color: rgb(244, 241, 234);
   color: #333;
-  height: 65px; 
+  height: 65px;
   flex-wrap: wrap;
 `;
 
@@ -20,26 +20,26 @@ export const StyledLink = styled(Link)`
 export const LogoText = styled.h1`
   font-size: 24px;
   margin-right: 20px;
-  display: flex; 
+  display: flex;
 `;
 
-export const LogoPart = styled.span<{ bold?: boolean }>` 
-  font-weight: ${(props) => (props.bold ? "bold" : "normal")}; 
+export const LogoPart = styled.span<{ bold?: boolean }>`
+  font-weight: ${(props) => (props.bold ? "bold" : "normal")};
 `;
 
 export const NavTab = styled(Link)`
   text-decoration: none;
   color: #333;
   font-size: 18px;
-  padding: 0 20px; 
+  padding: 0 20px;
   display: flex;
   align-items: center;
-  height: 100%; 
+  height: 100%;
   background-color: transparent;
 
   &:hover {
-    background-color: rgb(53,33,16); 
-    color: white; 
+    background-color: rgb(53, 33, 16);
+    color: white;
   }
 `;
 
@@ -54,34 +54,32 @@ export const SearchWrapper = styled.div`
 
 export const StyledSearchInput = styled.input`
   padding: 10px;
-  padding-right: 40px; 
+  padding-right: 40px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 100%; 
+  width: 100%;
 `;
 
 export const SearchIcon = styled(FaSearch)`
   position: absolute;
-  right: 10px; 
+  right: 10px;
   color: #aaa;
-  pointer-events: none; 
+  pointer-events: none;
 `;
-
 
 export const IconContainer = styled.div`
   display: flex;
-  align-items: center; 
+  align-items: center;
 `;
 
 export const IconBox = styled.div`
-  height: 65px; 
-  display: flex; 
-  align-items: center; 
+  height: 65px;
+  display: flex;
+  align-items: center;
 
   &:hover {
-    background-color: rgb(53,33,16); 
+    background-color: rgb(53, 33, 16);
   }
-  
 `;
 
 export const Icon = styled.div`
@@ -98,8 +96,7 @@ export const Icon = styled.div`
   color: white;
 
   &.profile {
-    background-color: rgb(239, 238, 224); 
-    border: 1px solid lightgray; 
+    background-color: rgb(239, 238, 224);
+    border: 1px solid lightgray;
   }
 `;
-
