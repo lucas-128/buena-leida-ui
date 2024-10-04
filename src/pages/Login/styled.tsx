@@ -25,6 +25,7 @@ export const LoginVbox = styled.div`
   padding: 40px;
   background-color: white;
   border-radius: 8px;
+  min-height: 50%;
   gap: 20px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 `;

@@ -79,7 +79,17 @@ export const Login = () => {
           </Tabs>
 
           {isLoading ? (
-            <CircularProgress color="primary" />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                marginTop: "70px",
+              }}
+            >
+              <CircularProgress color="primary" />
+            </div>
           ) : (
             <>
               <StyledTextField
