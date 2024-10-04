@@ -8,7 +8,7 @@ export const NavContainer = styled.nav`
   justify-content: center; 
   background-color: rgb(244, 241, 234);
   color: #333;
-  height: 70px; 
+  height: 65px; 
   flex-wrap: wrap;
 `;
 
@@ -71,6 +71,17 @@ export const SearchIcon = styled(FaSearch)`
 export const IconContainer = styled.div`
   display: flex;
   align-items: center; 
+`;
+
+export const IconBox = styled.div`
+  height: 65px; 
+  display: flex; 
+  align-items: center; 
+
+  &:hover {
+    background-color: rgb(53,33,16); 
+  }
+  
 `;
 
 export const Icon = styled.div`

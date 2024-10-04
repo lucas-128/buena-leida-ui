@@ -4,6 +4,7 @@ import {
   LogoText,
   NavTab,
   //LogoutButton,
+  IconBox,
   StyledLink,
   IconContainer,
   Icon,
@@ -47,22 +48,32 @@ const NavBar: React.FC = () => {
       </SearchWrapper>
 
       <IconContainer>
+      <IconBox>
         <Icon title="Notifications">
           <NotificationsIcon />
         </Icon>
+        </IconBox>
+        <IconBox>
         <Icon title="Group Discussions">
           <ForumIcon />
         </Icon>
+        </IconBox>
+        <IconBox>
         <Icon title="Messages">
           <EmailIcon />
         </Icon>
+        </IconBox>
+        <IconBox>
         <Icon title="Friends">
           <PeopleIcon />
         </Icon>
+        </IconBox>
         <StyledLink to="/profile" title="Profile">
+        <IconBox>
           <Icon className="profile">
             <FcReading />
           </Icon>
+          </IconBox>
         </StyledLink>
       </IconContainer>
     </NavContainer>
