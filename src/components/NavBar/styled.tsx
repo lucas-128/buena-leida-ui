@@ -7,8 +7,9 @@ export const NavContainer = styled.nav`
   align-items: center;
   justify-content: center; 
   background-color: rgb(244, 241, 234);
-  color: #333; 
-  flex-wrap: wrap; 
+  color: #333;
+  height: 70px; 
+  flex-wrap: wrap;
 `;
 
 export const StyledLink = styled(Link)`
@@ -30,10 +31,15 @@ export const NavTab = styled(Link)`
   text-decoration: none;
   color: #333;
   font-size: 18px;
-  margin: 0 20px;
+  padding: 0 20px; 
+  display: flex;
+  align-items: center;
+  height: 100%; 
+  background-color: transparent;
 
   &:hover {
-    color: gray;
+    background-color: rgb(53,33,16); 
+    color: white; 
   }
 `;
 
@@ -41,9 +47,9 @@ export const SearchWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  margin-left: 10px;
-  margin-right: 10px;
-  width: 13%;
+  margin-left: 15px;
+  margin-right: 15px;
+  width: 14%;
 `;
 
 export const StyledSearchInput = styled.input`
@@ -71,7 +77,6 @@ export const Icon = styled.div`
   font-size: 24px;
   cursor: pointer;
   margin: 0 10px;
-
   width: 40px;
   height: 40px;
   border-radius: 50%;
