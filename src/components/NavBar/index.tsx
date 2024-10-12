@@ -20,8 +20,11 @@ import EmailIcon from "@mui/icons-material/Email";
 import PeopleIcon from "@mui/icons-material/People";
 import { FcReading } from "react-icons/fc";
 import { Menu, MenuItem } from "@mui/material";
+import { To, useNavigate } from "react-router-dom";
 
 const NavBar: React.FC = () => {
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuIndex, setMenuIndex] = useState<number | null>(null);
 
@@ -30,9 +33,10 @@ const NavBar: React.FC = () => {
     setMenuIndex(index);
   };
 
-  const handleClose = () => {
+  const handleClose = (path: To) => {
     setAnchorEl(null);
     setMenuIndex(null);
+    navigate(path);
   };
 
   return (
@@ -45,11 +49,11 @@ const NavBar: React.FC = () => {
       </StyledLink>
 
       <NavTab to="/">Inicio</NavTab>
-      <NavTab to="/">Mis Libros</NavTab>
+      <NavTab to="/mybooks">Mis Libros</NavTab>
 
       {/*Menu Buscar*/}
       <NavTab
-        to="/"
+        to="#"
         style={{ display: "flex", alignItems: "center" }}
         onClick={(e) => handleClick(e, 0)}
       >
@@ -57,13 +61,15 @@ const NavBar: React.FC = () => {
         <ArrowDropDownRoundedIcon />
       </NavTab>
       <Menu anchorEl={anchorEl} open={menuIndex === 0} onClose={handleClose}>
-        <MenuItem onClick={handleClose}>Recomendaciones</MenuItem>
-        <MenuItem onClick={handleClose}>Listas</MenuItem>
+        <MenuItem onClick={() => handleClose("/recommendations")}>
+          Recomendaciones
+        </MenuItem>
+        <MenuItem onClick={() => handleClose("/lists")}>Listas</MenuItem>
       </Menu>
 
       {/* Menu Comunidad*/}
       <NavTab
-        to="/"
+        to="#"
         style={{ display: "flex", alignItems: "center" }}
         onClick={(e) => handleClick(e, 1)}
       >
@@ -71,8 +77,8 @@ const NavBar: React.FC = () => {
         <ArrowDropDownRoundedIcon />
       </NavTab>
       <Menu anchorEl={anchorEl} open={menuIndex === 1} onClose={handleClose}>
-        <MenuItem onClick={handleClose}>Grupos</MenuItem>
-        <MenuItem onClick={handleClose}>Citas</MenuItem>
+        <MenuItem onClick={() => handleClose("/groups")}>Grupos</MenuItem>
+        <MenuItem onClick={() => handleClose("/quotes")}>Citas</MenuItem>
       </Menu>
 
       <SearchWrapper>

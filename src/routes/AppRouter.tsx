@@ -4,6 +4,11 @@ import { Login } from "../pages/Login";
 import NavBar from "../components/NavBar";
 import Home from "../pages/Home";
 import { Profile } from "../pages/Profile";
+import MyBooks from "../pages/MyBooks";
+import Recommendations from "../pages/Search/Recommendations";
+import Lists from "../pages/Search/Lists";
+import Groups from "../pages/Community/Groups";
+import Quotes from "../pages/Community/Quotes";
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -17,7 +22,6 @@ export default function AppRouter() {
             <Outlet />
           </div>
         </div>
-        
       </div>
     );
   };
@@ -32,11 +36,29 @@ export default function AppRouter() {
           element: <Home />,
         },
         {
+          path: "/mybooks",
+          element: <MyBooks />,
+        },
+        {
+          path: "/recommendations",
+          element: <Recommendations />,
+        },
+        {
+          path: "/lists",
+          element: <Lists />,
+        },
+        {
+          path: "/groups",
+          element: <Groups />,
+        },
+        {
+          path: "/quotes",
+          element: <Quotes />,
+        },
+        {
           path: "/profile",
           element: <Profile />,
         },
-       
-
       ],
     },
   ]);
