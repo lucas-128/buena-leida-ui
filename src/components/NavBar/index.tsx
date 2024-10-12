@@ -30,15 +30,15 @@ const NavBar: React.FC = () => {
         </LogoText>
       </StyledLink>
 
-      <NavTab to="/">Home</NavTab>
-      <NavTab to="/">My Books</NavTab>
+      <NavTab to="/">Inicio</NavTab>
+      <NavTab to="/">Mis Libros</NavTab>
       <NavTab to="/" style={{ display: "flex", alignItems: "center" }}>
-        Browse
+        Buscar
         <ArrowDropDownRoundedIcon />
       </NavTab>
 
       <NavTab to="/" style={{ display: "flex", alignItems: "center" }}>
-        Community
+        Comunidad
         <ArrowDropDownRoundedIcon />
       </NavTab>
 
@@ -48,31 +48,31 @@ const NavBar: React.FC = () => {
       </SearchWrapper>
 
       <IconContainer>
-      <IconBox>
-        <Icon title="Notifications">
-          <NotificationsIcon />
-        </Icon>
-        </IconBox>
         <IconBox>
-        <Icon title="Group Discussions">
-          <ForumIcon />
-        </Icon>
-        </IconBox>
-        <IconBox>
-        <Icon title="Messages">
-          <EmailIcon />
-        </Icon>
-        </IconBox>
-        <IconBox>
-        <Icon title="Friends">
-          <PeopleIcon />
-        </Icon>
-        </IconBox>
-        <StyledLink to="/profile" title="Profile">
-        <IconBox>
-          <Icon className="profile">
-            <FcReading />
+          <Icon title="Notificaciones">
+            <NotificationsIcon />
           </Icon>
+        </IconBox>
+        <IconBox>
+          <Icon title="Discusiones de grupo">
+            <ForumIcon />
+          </Icon>
+        </IconBox>
+        <IconBox>
+          <Icon title="Mensajes">
+            <EmailIcon />
+          </Icon>
+        </IconBox>
+        <IconBox>
+          <Icon title="Amigos">
+            <PeopleIcon />
+          </Icon>
+        </IconBox>
+        <StyledLink to="/profile" title="Perfil">
+          <IconBox>
+            <Icon className="profile">
+              <FcReading />
+            </Icon>
           </IconBox>
         </StyledLink>
       </IconContainer>
