@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   NavContainer,
   LogoText,
@@ -19,8 +19,22 @@ import ForumIcon from "@mui/icons-material/Forum";
 import EmailIcon from "@mui/icons-material/Email";
 import PeopleIcon from "@mui/icons-material/People";
 import { FcReading } from "react-icons/fc";
+import { Menu, MenuItem } from "@mui/material";
 
 const NavBar: React.FC = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [menuIndex, setMenuIndex] = useState<number | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
+    setAnchorEl(event.currentTarget);
+    setMenuIndex(index);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setMenuIndex(null);
+  };
+
   return (
     <NavContainer>
       <StyledLink to="/">
@@ -32,15 +46,34 @@ const NavBar: React.FC = () => {
 
       <NavTab to="/">Inicio</NavTab>
       <NavTab to="/">Mis Libros</NavTab>
-      <NavTab to="/" style={{ display: "flex", alignItems: "center" }}>
+
+      {/*Menu Buscar*/}
+      <NavTab
+        to="/"
+        style={{ display: "flex", alignItems: "center" }}
+        onClick={(e) => handleClick(e, 0)}
+      >
         Buscar
         <ArrowDropDownRoundedIcon />
       </NavTab>
+      <Menu anchorEl={anchorEl} open={menuIndex === 0} onClose={handleClose}>
+        <MenuItem onClick={handleClose}>Recomendaciones</MenuItem>
+        <MenuItem onClick={handleClose}>Listas</MenuItem>
+      </Menu>
 
-      <NavTab to="/" style={{ display: "flex", alignItems: "center" }}>
+      {/* Menu Comunidad*/}
+      <NavTab
+        to="/"
+        style={{ display: "flex", alignItems: "center" }}
+        onClick={(e) => handleClick(e, 1)}
+      >
         Comunidad
         <ArrowDropDownRoundedIcon />
       </NavTab>
+      <Menu anchorEl={anchorEl} open={menuIndex === 1} onClose={handleClose}>
+        <MenuItem onClick={handleClose}>Grupos</MenuItem>
+        <MenuItem onClick={handleClose}>Citas</MenuItem>
+      </Menu>
 
       <SearchWrapper>
         <StyledSearchInput placeholder="Buscar libros" />
