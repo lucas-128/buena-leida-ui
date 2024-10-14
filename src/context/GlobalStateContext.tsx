@@ -8,7 +8,7 @@ type GlobalState = {
 type Action = { type: "SET_USER"; payload: string };
 
 const initialState: GlobalState = {
-  user: null,
+  user: "username",
 };
 
 // Reducer function to manage state updates

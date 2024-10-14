@@ -3,7 +3,6 @@ import {
   NavContainer,
   LogoText,
   NavTab,
-  //LogoutButton,
   IconBox,
   StyledLink,
   IconContainer,
@@ -19,11 +18,22 @@ import ForumIcon from "@mui/icons-material/Forum";
 import EmailIcon from "@mui/icons-material/Email";
 import PeopleIcon from "@mui/icons-material/People";
 import { FcReading } from "react-icons/fc";
-import { Menu, MenuItem } from "@mui/material";
+import { Divider, Menu, MenuItem, Typography } from "@mui/material";
 import { To, useNavigate } from "react-router-dom";
+import { useGlobalState } from "../../context/GlobalStateContext";
+import { useAuth } from "../../context/AuthContext";
 
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
+  const { state } = useGlobalState();
+
+  const { logout } = useAuth();
+  const handleLogout = () => {
+    setAnchorEl(null);
+    setMenuIndex(null);
+    logout();
+    navigate("/");
+  };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuIndex, setMenuIndex] = useState<number | null>(null);
@@ -33,10 +43,10 @@ const NavBar: React.FC = () => {
     setMenuIndex(index);
   };
 
-  const handleClose = (path: To) => {
+  const handleClose = (path?: To) => {
     setAnchorEl(null);
     setMenuIndex(null);
-    navigate(path);
+    if (path) navigate(path);
   };
 
   return (
@@ -60,7 +70,11 @@ const NavBar: React.FC = () => {
         Buscar
         <ArrowDropDownRoundedIcon />
       </NavTab>
-      <Menu anchorEl={anchorEl} open={menuIndex === 0} onClose={handleClose}>
+      <Menu
+        anchorEl={anchorEl}
+        open={menuIndex === 0}
+        onClose={() => handleClose()}
+      >
         <MenuItem onClick={() => handleClose("/recommendations")}>
           Recomendaciones
         </MenuItem>
@@ -76,7 +90,11 @@ const NavBar: React.FC = () => {
         Comunidad
         <ArrowDropDownRoundedIcon />
       </NavTab>
-      <Menu anchorEl={anchorEl} open={menuIndex === 1} onClose={handleClose}>
+      <Menu
+        anchorEl={anchorEl}
+        open={menuIndex === 1}
+        onClose={() => handleClose()}
+      >
         <MenuItem onClick={() => handleClose("/groups")}>Grupos</MenuItem>
         <MenuItem onClick={() => handleClose("/quotes")}>Citas</MenuItem>
       </Menu>
@@ -107,13 +125,26 @@ const NavBar: React.FC = () => {
             <PeopleIcon />
           </Icon>
         </IconBox>
-        <StyledLink to="/profile" title="Perfil">
-          <IconBox>
-            <Icon className="profile">
-              <FcReading />
-            </Icon>
-          </IconBox>
-        </StyledLink>
+
+        {/* Profile Menu */}
+        <IconBox>
+          <Icon title="Perfil" onClick={(e) => handleClick(e, 2)}>
+            <FcReading />
+          </Icon>
+        </IconBox>
+        <Menu
+          anchorEl={anchorEl}
+          open={menuIndex === 2}
+          onClose={() => handleClose()}
+        >
+          <Typography sx={{ padding: "8px 16px", fontWeight: "bold" }}>
+            {state.user}
+          </Typography>
+          <MenuItem onClick={() => handleClose("/profile")}>Perfil</MenuItem>
+
+          <Divider />
+          <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
+        </Menu>
       </IconContainer>
     </NavContainer>
   );
