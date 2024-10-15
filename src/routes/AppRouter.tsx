@@ -9,6 +9,7 @@ import Recommendations from "../pages/Search/Recommendations";
 import Lists from "../pages/Search/Lists";
 import Groups from "../pages/Community/Groups";
 import Quotes from "../pages/Community/Quotes";
+import { CreateAccount } from "../pages/CreateAccount";
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -67,6 +68,10 @@ export default function AppRouter() {
     {
       path: "/",
       element: <Login />,
+    },
+    {
+      path: "/create-account",
+      element: <CreateAccount />,
     },
   ]);
 
