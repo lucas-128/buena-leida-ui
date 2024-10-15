@@ -64,7 +64,7 @@ export const CreateAccount = () => {
 
     if (success) {
       console.log("crear cuenta con datos y generros: ", selectedGenres);
-      await register(mail, pass, name, selectedGenres);
+      await register(mail, name, pass, selectedGenres);
       await setIsAuthenticated(true);
     } else {
       alert("Error al crear cuenta. Intente de nuevo");

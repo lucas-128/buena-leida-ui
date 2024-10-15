@@ -70,6 +70,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     _password: string,
     genres: string[]
   ) => {
+    console.log(name);
     dispatch({ type: "SET_EMAIL", payload: mail });
     dispatch({ type: "SET_NAME", payload: name });
     dispatch({ type: "SET_FAVORITE_GENRES", payload: genres });
