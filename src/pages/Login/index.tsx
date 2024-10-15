@@ -24,39 +24,76 @@ export const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async () => {
-    if (mail === "" || pass === "") {
-      alert("Please fill in all fields.");
+    if (mode === "login" && (mail === "" || pass === "")) {
+      alert("Error: complete todos los campos");
+      return;
+    }
+
+    if (mode === "signup" && (name.length < 1 || name.length > 30)) {
+      alert("Error: El nombre debe tener entre 1 y 30 caracteres");
+      return;
+    }
+
+    if (!validateEmail(mail)) {
+      alert("Error: Dirección de correo inválida");
+      return;
+    }
+
+    if (mode === "signup" && (pass.length < 6 || pass.length > 13)) {
+      alert("Error: La contraseña debe tener entre 6 y 13 caracteres");
       return;
     }
 
     if (mode === "signup" && pass !== confirmPass) {
-      alert("Passwords do not match.");
+      alert("Error: Las contraseñas no coinciden");
       return;
     }
 
     setIsLoading(true);
     let result;
 
-    // TODO: en ambos, validar el input. Si no es valido, mostrar mensaje de error.
     if (mode === "login") {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Sleep for 1 second
-      result = await login(mail, pass);
+
       // pegada api login. Si no existe el mail, cambiar a modo signup con mensaje de error.
+      const isNotRegistered = true; // testing
+
+      if (isNotRegistered) {
+        alert(`Error: El correo ${mail} no está registrado. Crea una cuenta`);
+        setMode("signup");
+        setPass("");
+        setName("");
+        setConfirmPass("");
+      } else {
+        navigate("/create-account", { state: { mail, pass, name } });
+        result = await login(mail, pass);
+        console.log(result);
+      }
     } else {
       // mode === Signup
 
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Sleep for 1 second
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       // pegada api para ver que mail no este registado. Si no esta en uso -> pasar a siguiente pagina.
       // Si esta en uso, cambiar a modo login con mensaje de error.
 
-      //result = await signUp(mail, pass);
-      navigate("/create-account", { state: { mail, pass, name } });
-    }
+      const isRegistered = false; // testing
 
-    // if (result && result.error) {
-    //   alert(result.message);
-    // }
+      if (isRegistered) {
+        alert(`Error: El correo ${mail} ya está registrado. Inicia sesion`);
+        setMode("login");
+        setPass("");
+        setName("");
+        setConfirmPass("");
+      } else {
+        navigate("/create-account", { state: { mail, pass, name } });
+      }
+    }
 
     setIsLoading(false);
   };
