@@ -27,12 +27,13 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 1%;
 `;
 
 export const GenreGrid = styled.div`
   margin-top: 20px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 20px;
   margin-bottom: 20px;
 `;

@@ -8,11 +8,11 @@ const App: React.FC = () => {
   return (
     <>
       <GlobalStyle />
-      <AuthProvider>
-        <GlobalStateProvider>
+      <GlobalStateProvider>
+        <AuthProvider>
           <AppRouter />
-        </GlobalStateProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </GlobalStateProvider>
     </>
   );
 };

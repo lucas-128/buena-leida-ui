@@ -9,6 +9,9 @@ import {
   NavContainer,
 } from "./styled";
 import { Button, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { useLocation } from "react-router-dom";
 
 const genres = [
   "Ficción",
@@ -27,14 +30,47 @@ const genres = [
   "Juvenil",
   "Autobiografía",
   "Poesía",
+  "Drama",
+  "Ensayo",
+  "Cuento",
+  "Novela Gráfica",
+  "Crónica",
+  "Humor",
+  "Realismo Mágico",
+  "Distopía",
+  "Western",
+  "Policíaco",
+  "Mitología",
+  "Fábula",
+  "Deportes",
+  "Literatura Infantil",
+  "Paranormal",
+  "Viajes",
+  "Epistolar",
+  "Teatro",
+  "Satira",
+  "Utopía",
 ];
 
 export const CreateAccount = () => {
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const navigate = useNavigate();
+  const { register, setIsAuthenticated } = useAuth();
+  const location = useLocation();
+  const { mail, pass, name } = location.state || {};
 
-  const handleSubmit = () => {
-    console.log("crear cuenta con datos y generros: ", selectedGenres);
-    // create account, set logged in, update globalState, navigate home
+  const handleSubmit = async () => {
+    const success = true; // test
+
+    if (success) {
+      console.log("crear cuenta con datos y generros: ", selectedGenres);
+      await register(mail, pass, name, selectedGenres);
+      await setIsAuthenticated(true);
+    } else {
+      alert("Error al crear cuenta. Intente de nuevo");
+    }
+
+    navigate("/");
   };
 
   const isButtonDisabled = selectedGenres.length === 0;
@@ -106,7 +142,7 @@ export const CreateAccount = () => {
           variant="contained"
           onClick={handleSubmit}
           disabled={isButtonDisabled}
-          style={{ marginTop: "20px", minHeight: "40px" }}
+          style={{ marginTop: "25px", minHeight: "40px" }}
         >
           {isButtonDisabled
             ? "Selecciona al menos un género para continuar"

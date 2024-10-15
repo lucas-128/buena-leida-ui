@@ -37,6 +37,10 @@ export default function AppRouter() {
           element: <Home />,
         },
         {
+          path: "/create-account",
+          element: <Home />,
+        },
+        {
           path: "/mybooks",
           element: <MyBooks />,
         },

@@ -1,14 +1,20 @@
 import React, { createContext, useContext, useReducer, ReactNode } from "react";
 
 type GlobalState = {
-  user: string | null;
-  // TODO
+  name: string | null;
+  email: string | null;
+  favoriteGenres: string[];
 };
 
-type Action = { type: "SET_USER"; payload: string };
+type Action =
+  | { type: "SET_NAME"; payload: string }
+  | { type: "SET_EMAIL"; payload: string }
+  | { type: "SET_FAVORITE_GENRES"; payload: string[] };
 
 const initialState: GlobalState = {
-  user: "username",
+  name: "username",
+  email: "",
+  favoriteGenres: [],
 };
 
 // Reducer function to manage state updates
@@ -17,8 +23,12 @@ const globalStateReducer = (
   action: Action
 ): GlobalState => {
   switch (action.type) {
-    case "SET_USER":
-      return { ...state, user: action.payload };
+    case "SET_NAME":
+      return { ...state, name: action.payload };
+    case "SET_EMAIL":
+      return { ...state, email: action.payload };
+    case "SET_FAVORITE_GENRES":
+      return { ...state, favoriteGenres: action.payload };
     default:
       return state;
   }
@@ -44,5 +54,4 @@ export const GlobalStateProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
-// Custom hook to use the global state
 export const useGlobalState = () => useContext(GlobalStateContext);

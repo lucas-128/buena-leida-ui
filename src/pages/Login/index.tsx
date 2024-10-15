@@ -29,6 +29,11 @@ export const Login = () => {
     return emailRegex.test(email);
   };
 
+  const validateName = (name: string) => {
+    const nameRegex = /^[A-Za-z\s]+$/;
+    return nameRegex.test(name);
+  };
+
   const handleSubmit = async () => {
     if (mode === "login" && (mail === "" || pass === "")) {
       alert("Error: complete todos los campos");
@@ -55,14 +60,21 @@ export const Login = () => {
       return;
     }
 
+    if (mode === "signup" && !validateName(name)) {
+      alert(
+        "Error: El nombre no puede contener números o caracteres especiales"
+      );
+      return;
+    }
+
     setIsLoading(true);
     let result;
 
     if (mode === "login") {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Sleep for 1 second
 
-      // pegada api login. Si no existe el mail, cambiar a modo signup con mensaje de error.
-      const isNotRegistered = true; // testing
+      // Pegada api login. Si no existe el mail, cambiar a modo signup con mensaje de error.
+      const isNotRegistered = false; // testing
 
       if (isNotRegistered) {
         alert(`Error: El correo ${mail} no está registrado. Crea una cuenta`);
@@ -71,15 +83,14 @@ export const Login = () => {
         setName("");
         setConfirmPass("");
       } else {
-        navigate("/create-account", { state: { mail, pass, name } });
         result = await login(mail, pass);
         console.log(result);
       }
     } else {
-      // mode === Signup
+      // Modo === Signup
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      // pegada api para ver que mail no este registado. Si no esta en uso -> pasar a siguiente pagina.
+      // Pegada api para ver que mail no este registado. Si no esta en uso -> pasar a siguiente pagina.
       // Si esta en uso, cambiar a modo login con mensaje de error.
 
       const isRegistered = false; // testing
