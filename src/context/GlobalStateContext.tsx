@@ -2,17 +2,20 @@ import React, { createContext, useContext, useReducer, ReactNode } from "react";
 
 type GlobalState = {
   name: string | null;
+  username: string | null;
   email: string | null;
   favoriteGenres: string[];
 };
 
 type Action =
   | { type: "SET_NAME"; payload: string }
+  | { type: "SET_USERNAME"; payload: string }
   | { type: "SET_EMAIL"; payload: string }
   | { type: "SET_FAVORITE_GENRES"; payload: string[] };
 
 const initialState: GlobalState = {
-  name: "username",
+  name: "",
+  username: "username",
   email: "",
   favoriteGenres: [],
 };
@@ -25,6 +28,8 @@ const globalStateReducer = (
   switch (action.type) {
     case "SET_NAME":
       return { ...state, name: action.payload };
+    case "SET_USERNAME":
+      return { ...state, username: action.payload };
     case "SET_EMAIL":
       return { ...state, email: action.payload };
     case "SET_FAVORITE_GENRES":

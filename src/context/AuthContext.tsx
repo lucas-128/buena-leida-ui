@@ -15,6 +15,7 @@ interface AuthContextType {
   register: (
     mail: string,
     name: string,
+    username: string,
     pass: string,
     genres: string[]
   ) => Promise<any>;
@@ -67,12 +68,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const register = async (
     mail: string,
     name: string,
+    username: string,
     _password: string,
     genres: string[]
   ) => {
     console.log(name);
     dispatch({ type: "SET_EMAIL", payload: mail });
     dispatch({ type: "SET_NAME", payload: name });
+    dispatch({ type: "SET_USERNAME", payload: username });
     dispatch({ type: "SET_FAVORITE_GENRES", payload: genres });
     setUser({ mail: mail });
   };

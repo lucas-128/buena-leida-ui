@@ -18,6 +18,7 @@ export const Login = () => {
   const { login } = useAuth();
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [mail, setMail] = useState("");
+  const [username, setUsername] = useState("");
   const [pass, setPass] = useState("");
   const [name, setName] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
@@ -42,6 +43,11 @@ export const Login = () => {
 
     if (mode === "signup" && (name.length < 1 || name.length > 30)) {
       alert("Error: El nombre debe tener entre 1 y 30 caracteres");
+      return;
+    }
+
+    if (mode === "signup" && (username.length < 1 || username.length > 30)) {
+      alert("Error: El nombre de usuario debe tener entre 1 y 30 caracteres");
       return;
     }
 
@@ -102,7 +108,7 @@ export const Login = () => {
         setName("");
         setConfirmPass("");
       } else {
-        navigate("/create-account", { state: { mail, pass, name } });
+        navigate("/create-account", { state: { mail, pass, name, username } });
       }
     }
 
@@ -205,6 +211,15 @@ export const Login = () => {
                     onChange={(e: {
                       target: { value: SetStateAction<string> };
                     }) => setName(e.target.value)}
+                  />
+                  <StyledTextField
+                    label="Nombre de usuario"
+                    variant="outlined"
+                    value={username}
+                    required
+                    onChange={(e: {
+                      target: { value: SetStateAction<string> };
+                    }) => setUsername(e.target.value)}
                   />
                 </>
               )}

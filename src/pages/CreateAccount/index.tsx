@@ -57,14 +57,14 @@ export const CreateAccount = () => {
   const navigate = useNavigate();
   const { register, setIsAuthenticated } = useAuth();
   const location = useLocation();
-  const { mail, pass, name } = location.state || {};
+  const { mail, pass, name, username } = location.state || {};
 
   const handleSubmit = async () => {
     const success = true; // test
 
     if (success) {
       console.log("crear cuenta con datos y generros: ", selectedGenres);
-      await register(mail, name, pass, selectedGenres);
+      await register(mail, name, username, pass, selectedGenres);
       await setIsAuthenticated(true);
     } else {
       alert("Error al crear cuenta. Intente de nuevo");

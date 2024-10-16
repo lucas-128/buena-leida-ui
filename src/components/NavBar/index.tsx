@@ -138,7 +138,7 @@ const NavBar: React.FC = () => {
           onClose={() => handleClose()}
         >
           <Typography sx={{ padding: "8px 16px", fontWeight: "bold" }}>
-            {state.name}
+            {state.username}
           </Typography>
           <MenuItem onClick={() => handleClose("/profile")}>Perfil</MenuItem>
 
