@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ProfileContainer } from "./styled";
-import { storage } from "../../../firebaseConfig"; // Adjusted Firebase import
+import { storage } from "../../../firebaseConfig";
 import {
   ref,
   getDownloadURL,
