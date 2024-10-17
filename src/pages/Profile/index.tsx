@@ -1,106 +1,196 @@
-import React, { useEffect, useState } from "react";
-import { ProfileContainer } from "./styled";
-import { storage } from "../../../firebaseConfig";
+import React, { useState } from "react";
 import {
-  ref,
-  getDownloadURL,
-  uploadBytes,
-  deleteObject,
-} from "firebase/storage";
-import ReactCrop, { Crop, PixelCrop } from "react-image-crop";
-import "react-image-crop/dist/ReactCrop.css";
+  ProfileContainer,
+  ProfileBox,
+  ProfilePhoto,
+  Username,
+  Bio,
+  RealName,
+  EditButton,
+} from "./styled";
+import { StyledTextField } from "../Login/styled";
+import { Button } from "@mui/material";
 
 export const Profile = () => {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [crop, setCrop] = useState<Crop>({
-    unit: "px",
-    width: 50,
-    x: 0,
-    y: 0,
-    height: 50,
-  });
-  const [croppedImage, setCroppedImage] = useState<string | null>(null);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [isEditingBio, setIsEditingBio] = useState<boolean>(false);
+  const [isEditingRealName, setIsEditingRealName] = useState<boolean>(false);
+  const [bioText, setBioText] = useState<string>(
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
+  );
+  const [realNameText, setRealNameText] = useState<string>("Nombre Real");
+  const [error, setError] = useState<string>("");
 
-  const username = "test";
+  const [originalBioText, setOriginalBioText] = useState<string>(bioText);
+  const [originalRealNameText, setOriginalRealNameText] =
+    useState<string>(realNameText);
 
-  useEffect(() => {
-    const fetchImage = () => {
-      const imageRef = ref(storage, `profiles/${username}/photo.jpg`);
-      getDownloadURL(imageRef)
-        .then((url) => setImageUrl(url))
-        .catch(() => setImageUrl(""));
-    };
+  const MAX_REALNAME_LENGTH = 30;
+  const MAX_BIO_LENGTH = 300;
 
-    fetchImage();
-  }, [username]);
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setSelectedImage(file);
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => setCroppedImage(reader.result as string);
+  const handleBioEdit = () => {
+    setIsEditingBio(!isEditingBio);
+    setError("");
+    if (!isEditingBio) {
+      setOriginalBioText(bioText);
     }
   };
 
-  const handleUpload = async () => {
-    if (selectedImage && croppedImage) {
-      const imageRef = ref(storage, `profiles/${username}/photo.jpg`);
-      setUploading(true);
-
-      const response = await fetch(croppedImage);
-      const blob = await response.blob();
-
-      uploadBytes(imageRef, blob).then(() => {
-        setUploading(false);
-        setImageUrl(croppedImage);
-      });
+  const handleRealNameEdit = () => {
+    setIsEditingRealName(!isEditingRealName);
+    setError("");
+    if (!isEditingRealName) {
+      setOriginalRealNameText(realNameText);
     }
   };
 
-  const handleDelete = () => {
-    setImageUrl(null);
+  const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const inputText = e.target.value;
+    if (inputText.length <= MAX_BIO_LENGTH) {
+      setBioText(inputText);
+      setError("");
+    } else {
+      setError(`La biografía no puede exceder ${MAX_BIO_LENGTH} caracteres.`);
+    }
   };
 
-  const saveChanges = async () => {
-    if (imageUrl === null) {
-      const imageRef = ref(storage, `profiles/${username}/photo.jpg`);
-      await deleteObject(imageRef).catch((error) =>
-        console.error("Error deleting file:", error)
-      );
+  const handleRealNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputText = e.target.value;
 
-      const defaultImageRef = ref(storage, `profiles/default.jpg`);
-      const url = await getDownloadURL(defaultImageRef);
-      setImageUrl(url);
+    const regex = /^[a-zA-Z\s]*$/;
+
+    if (inputText.length === 0) {
+      setError("El nombre no puede estar vacío.");
+    } else if (
+      regex.test(inputText) &&
+      inputText.length <= MAX_REALNAME_LENGTH
+    ) {
+      setRealNameText(inputText);
+      setError("");
+    } else if (inputText.length > MAX_REALNAME_LENGTH) {
+      setError(`El nombre no puede exceder ${MAX_REALNAME_LENGTH} caracteres.`);
+    } else {
+      setError("Solo se permiten letras y espacios.");
     }
+  };
+
+  const saveChanges = () => {
+    setIsEditingBio(false);
+    setIsEditingRealName(false);
+    setError("");
+  };
+
+  const cancelChanges = () => {
+    setBioText(originalBioText);
+    setRealNameText(originalRealNameText);
+    setIsEditingBio(false);
+    setIsEditingRealName(false);
+    setError("");
   };
 
   return (
     <ProfileContainer>
-      <p>Perfil</p>
-      {imageUrl ? <img src={imageUrl} alt="Profile" /> : <p>Loading...</p>}
+      <ProfileBox>
+        <ProfilePhoto
+          src="https://via.placeholder.com/150"
+          alt="Profile Photo"
+        />
+        <Username>@username</Username>
 
-      <input type="file" accept="image/*" onChange={handleImageChange} />
-      {croppedImage && (
-        <div>
-          <ReactCrop
-            crop={crop}
-            onChange={(newCrop: PixelCrop) => setCrop(newCrop)}
-            aspect={1}
+        {isEditingRealName ? (
+          <div
+            style={{
+              marginTop: "1rem",
+              marginBottom: "1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              padding: "0.5rem",
+            }}
           >
-            <img src={croppedImage} alt="Crop preview" />
-          </ReactCrop>
-        </div>
-      )}
+            <StyledTextField
+              type="text"
+              value={realNameText}
+              onChange={handleRealNameChange}
+              style={{ marginRight: "1rem", minWidth: "400px" }}
+            />
+            <Button
+              size="medium"
+              variant="contained"
+              onClick={saveChanges}
+              disabled={!realNameText} // Disable if empty
+            >
+              Guardar
+            </Button>
+            <Button size="medium" variant="contained" onClick={cancelChanges}>
+              Cancelar
+            </Button>
+          </div>
+        ) : (
+          <RealName
+            onClick={handleRealNameEdit}
+            style={{
+              width: "100%",
+              border: "1px solid lightgray",
+              padding: "1rem",
+            }}
+          >
+            <span style={{ fontWeight: "bold" }}>Nombre:</span> {realNameText}{" "}
+            <EditButton>✏️</EditButton>
+          </RealName>
+        )}
 
-      <button onClick={handleUpload} disabled={uploading}>
-        Upload Image
-      </button>
-      <button onClick={handleDelete}>Delete Image</button>
-      <button onClick={saveChanges}>Save Changes</button>
+        {isEditingBio ? (
+          <div
+            style={{
+              marginTop: "1rem",
+              marginBottom: "1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              padding: "0.5rem",
+            }}
+          >
+            <StyledTextField
+              value={bioText}
+              onChange={handleBioChange}
+              style={{ marginRight: "1rem", minWidth: "800px" }}
+            />
+            <Button size="medium" variant="contained" onClick={saveChanges}>
+              Guardar
+            </Button>
+            <Button size="medium" variant="contained" onClick={cancelChanges}>
+              Cancelar
+            </Button>
+          </div>
+        ) : (
+          <Bio
+            onClick={handleBioEdit}
+            style={{
+              width: "100%",
+              border: "1px solid lightgray",
+              padding: "1rem",
+            }}
+          >
+            <span style={{ fontWeight: "bold" }}>Bio:</span> {bioText}{" "}
+            <EditButton>✏️</EditButton>
+          </Bio>
+        )}
+
+        {error && (
+          <div
+            style={{
+              color: "red",
+              marginTop: "2rem",
+              fontSize: "1.75rem",
+              fontWeight: "bold",
+            }}
+          >
+            {error}
+          </div>
+        )}
+      </ProfileBox>
     </ProfileContainer>
   );
 };
+
+export default Profile;
