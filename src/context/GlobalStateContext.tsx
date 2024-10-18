@@ -15,12 +15,11 @@ type Action =
 
 const initialState: GlobalState = {
   name: "",
-  username: "username",
+  username: "test",
   email: "",
   favoriteGenres: [],
 };
 
-// Reducer function to manage state updates
 const globalStateReducer = (
   state: GlobalState,
   action: Action

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import {
   ProfileContainer,
   ProfileBox,
@@ -10,8 +10,20 @@ import {
 } from "./styled";
 import { StyledTextField } from "../Login/styled";
 import { Button } from "@mui/material";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  deleteObject,
+  getMetadata,
+} from "firebase/storage";
+import { storage } from "../../../firebaseConfig";
+import { useGlobalState } from "../../context/GlobalStateContext";
+import "react-image-crop/dist/ReactCrop.css";
 
 export const Profile = () => {
+  const { state } = useGlobalState();
+
   const [isEditingBio, setIsEditingBio] = useState<boolean>(false);
   const [isEditingRealName, setIsEditingRealName] = useState<boolean>(false);
   const [bioText, setBioText] = useState<string>(
@@ -26,6 +38,8 @@ export const Profile = () => {
 
   const MAX_REALNAME_LENGTH = 30;
   const MAX_BIO_LENGTH = 300;
+
+  const [photoUrl, setPhotoUrl] = useState<string>("");
 
   const handleBioEdit = () => {
     setIsEditingBio(!isEditingBio);
@@ -53,6 +67,50 @@ export const Profile = () => {
     }
   };
 
+  const handleImageUpload = async (
+    event: ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      console.log("No file selected");
+      return;
+    }
+
+    try {
+      const image = await readImageFile(file);
+      const croppedImageBlob = await cropImage(image);
+      const storageRef = ref(storage, `profiles/${state.username}/photo.jpg`);
+      await uploadBytes(storageRef, croppedImageBlob);
+      // pegada axios para actualizar bdd
+      console.log("Image uploaded successfully!");
+      const imageUrl = await getDownloadURL(storageRef);
+      setPhotoUrl(imageUrl);
+      console.log(`Simulate updating the database with image URL: ${imageUrl}`);
+    } catch (error) {
+      console.error("Error uploading image: ", error);
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    if (!state.username) return;
+    const storageRef = ref(storage, `profiles/${state.username}/photo.jpg`);
+    try {
+      await getMetadata(storageRef);
+      await deleteObject(storageRef);
+      // pegada axios para actualizar bdd
+      // actualizar la imagen aca que muestro en el perfil
+      console.log("Image deleted successfully!");
+      console.log("Axios log: Image deleted for", state.username);
+    } catch (error) {
+      // La imagen ya esta borrada
+    }
+
+    const default_pp = await getDownloadURL(
+      ref(storage, "profiles/default.jpg")
+    );
+    setPhotoUrl(default_pp);
+  };
+
   const handleRealNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.value;
 
@@ -67,7 +125,7 @@ export const Profile = () => {
       setRealNameText(inputText);
       setError("");
     } else if (inputText.length > MAX_REALNAME_LENGTH) {
-      setError(`El nombre no puede exceder ${MAX_REALNAME_LENGTH} caracteres.`);
+      setError("El nombre no puede exceder ${MAX_REALNAME_LENGTH} caracteres.");
     } else {
       setError("Solo se permiten letras y espacios.");
     }
@@ -90,10 +148,42 @@ export const Profile = () => {
   return (
     <ProfileContainer>
       <ProfileBox>
-        <ProfilePhoto
-          src="https://via.placeholder.com/150"
-          alt="Profile Photo"
-        />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginLeft: "9.2rem",
+          }}
+        >
+          <ProfilePhoto src={photoUrl} />
+          <div
+            style={{
+              marginLeft: "1rem",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              size="small"
+              variant="contained"
+              component="label"
+              style={{ marginBottom: "0.5rem" }}
+            >
+              Upload Image
+              <input type="file" hidden onChange={handleImageUpload} />
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              onClick={handleDeleteImage}
+            >
+              Delete Image
+            </Button>
+          </div>
+        </div>
+
         <Username>@username</Username>
 
         {isEditingRealName ? (
@@ -194,3 +284,54 @@ export const Profile = () => {
 };
 
 export default Profile;
+
+// Helper function to read the image file
+const readImageFile = (file: File): Promise<HTMLImageElement> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const img = new Image();
+      img.src = e.target?.result as string;
+      img.onload = () => resolve(img);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
+// Helper function to crop the image
+const cropImage = (image: HTMLImageElement): Promise<Blob> => {
+  return new Promise((resolve) => {
+    const canvas = document.createElement("canvas");
+    const size = Math.min(image.width, image.height);
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+      throw new Error("Failed to get canvas context");
+    }
+
+    ctx.drawImage(
+      image,
+      (image.width - size) / 2,
+      (image.height - size) / 2,
+      size,
+      size,
+      0,
+      0,
+      size,
+      size
+    );
+
+    canvas.toBlob(
+      (blob: Blob | null) => {
+        if (blob) {
+          resolve(blob);
+        }
+      },
+      "image/jpeg",
+      1
+    );
+  });
+};
