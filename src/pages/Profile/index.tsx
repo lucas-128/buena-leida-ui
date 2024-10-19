@@ -21,6 +21,9 @@ import { storage } from "../../../firebaseConfig";
 import { useGlobalState } from "../../context/GlobalStateContext";
 import "react-image-crop/dist/ReactCrop.css";
 
+const defaultPhotoUrl =
+  "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
+
 export const Profile = () => {
   const { state } = useGlobalState();
 
@@ -39,7 +42,8 @@ export const Profile = () => {
   const MAX_REALNAME_LENGTH = 30;
   const MAX_BIO_LENGTH = 300;
 
-  const [photoUrl, setPhotoUrl] = useState<string>("");
+  // fetch with profile data
+  const [photoUrl, setPhotoUrl] = useState<string>(defaultPhotoUrl);
 
   const handleBioEdit = () => {
     setIsEditingBio(!isEditingBio);
@@ -105,10 +109,7 @@ export const Profile = () => {
       // La imagen ya esta borrada
     }
 
-    const default_pp = await getDownloadURL(
-      ref(storage, "profiles/default.jpg")
-    );
-    setPhotoUrl(default_pp);
+    setPhotoUrl(defaultPhotoUrl);
   };
 
   const handleRealNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
