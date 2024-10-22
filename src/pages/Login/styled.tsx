@@ -68,6 +68,8 @@ export const LogoText = styled.h1`
   display: flex;
 `;
 
-export const LogoPart = styled.span<{ bold?: boolean }>`
-  font-weight: ${(props) => (props.bold ? "bold" : "normal")};
+export const LogoPart = styled.span.withConfig({
+  shouldForwardProp: (prop) => prop !== "bold",
+})<{ bold?: boolean }>`
+  font-weight: ${({ bold }) => (bold ? "bold" : "normal")};
 `;

@@ -145,7 +145,7 @@ export const Login = () => {
       }
     } else {
       const resultCode = await checkExistance(mail, username);
-      console.log(resultCode);
+      //console.log(resultCode);
 
       if (resultCode === USERNAME_TAKEN) {
         setIsLoading(false);

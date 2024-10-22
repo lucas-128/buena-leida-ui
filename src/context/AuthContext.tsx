@@ -103,7 +103,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
       const user = result.data;
 
-      console.log(user);
+      //console.log(user);
 
       dispatch({ type: "SET_ID", payload: user.id });
       dispatch({ type: "SET_NAME", payload: user.name });
