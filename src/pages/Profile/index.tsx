@@ -21,7 +21,7 @@ import { storage } from "../../../firebaseConfig";
 import { useGlobalState } from "../../context/GlobalStateContext";
 import "react-image-crop/dist/ReactCrop.css";
 
-const defaultPhotoUrl =
+export const defaultPhotoUrl =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
 
 export const Profile = () => {
@@ -29,10 +29,8 @@ export const Profile = () => {
 
   const [isEditingBio, setIsEditingBio] = useState<boolean>(false);
   const [isEditingRealName, setIsEditingRealName] = useState<boolean>(false);
-  const [bioText, setBioText] = useState<string>(
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
-  );
-  const [realNameText, setRealNameText] = useState<string>("Nombre Real");
+  const [bioText, setBioText] = useState<string>(state.bio);
+  const [realNameText, setRealNameText] = useState<string>(state.name);
   const [error, setError] = useState<string>("");
 
   const [originalBioText, setOriginalBioText] = useState<string>(bioText);
@@ -43,7 +41,7 @@ export const Profile = () => {
   const MAX_BIO_LENGTH = 300;
 
   // fetch with profile data
-  const [photoUrl, setPhotoUrl] = useState<string>(defaultPhotoUrl);
+  const [photoUrl, setPhotoUrl] = useState<string>(state.profilePhoto);
 
   const handleBioEdit = () => {
     setIsEditingBio(!isEditingBio);
@@ -185,7 +183,7 @@ export const Profile = () => {
           </div>
         </div>
 
-        <Username>@username</Username>
+        <Username>@{state.username}</Username>
 
         {isEditingRealName ? (
           <div

@@ -1,15 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { useGlobalState } from "./GlobalStateContext";
-//import axios from "axios";
+import axios from "axios";
 
-interface User {
-  mail: string;
-}
+const API_URL = "http://localhost:3000";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-  user?: User;
   login: (mail: string, pass: string) => Promise<any>;
   logout: () => void;
   register: (
@@ -27,38 +24,41 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<User | undefined>();
   const { dispatch } = useGlobalState();
 
-  const login = async (mail: string, _password: string) => {
-    let email = mail;
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<number | string | void> => {
+    try {
+      const result = await axios.post(`${API_URL}/users/login`, {
+        email,
+        password,
+      });
 
-    // Tiene que devolver con el success, el Nombre del usuario para actualizar el estado global
-    // y tambien tiene que devolver los generos favoritos.
+      setIsAuthenticated(true);
 
-    // try {
-    //   const result = await axios.post(
-    //     ``,
-    //     {
-    //       email,
-    //       password,
-    //     }
-    //   );
+      const user = result.data.user;
 
-    //   setIsAuthenticated(true);
-    //   setUser({ mail: email });
+      dispatch({ type: "SET_ID", payload: user.id });
+      dispatch({ type: "SET_NAME", payload: user.name });
+      dispatch({ type: "SET_USERNAME", payload: user.username });
+      dispatch({ type: "SET_EMAIL", payload: user.email });
+      dispatch({ type: "SET_PROFILE_PHOTO", payload: user.profilePhoto });
+      dispatch({ type: "SET_BIO", payload: user.bio });
+      dispatch({ type: "SET_FAVORITE_GENRES", payload: user.favouritegenders });
 
-    //   return result;
-    // } catch (e) {
-    //   return { error: true, message: (e as any).response.data.message };
-    // }
-
-    setIsAuthenticated(true);
-    setUser({ mail: email });
+      return result.status;
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e) && e.response) {
+        return e.response.status;
+      } else {
+        alert(e);
+      }
+    }
   };
 
   const logout = () => {
-    setUser(undefined);
     dispatch({ type: "SET_EMAIL", payload: "" });
     dispatch({ type: "SET_NAME", payload: "" });
     dispatch({ type: "SET_FAVORITE_GENRES", payload: [] });
@@ -77,7 +77,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     dispatch({ type: "SET_NAME", payload: name });
     dispatch({ type: "SET_USERNAME", payload: username });
     dispatch({ type: "SET_FAVORITE_GENRES", payload: genres });
-    setUser({ mail: mail });
   };
 
   return (
@@ -85,7 +84,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       value={{
         isAuthenticated,
         setIsAuthenticated,
-        user,
         login,
         logout,
         register,

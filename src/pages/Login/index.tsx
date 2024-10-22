@@ -14,6 +14,9 @@ import {
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 
+const NOT_FOUND = 404;
+const INVALID_PASSWORD = 401;
+
 export const Login = () => {
   const { login } = useAuth();
   const [mode, setMode] = useState<"login" | "signup">("login");
@@ -36,6 +39,8 @@ export const Login = () => {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
+
     if (mode === "login" && (mail === "" || pass === "")) {
       alert("Error: complete todos los campos");
       return;
@@ -73,24 +78,25 @@ export const Login = () => {
       return;
     }
 
-    setIsLoading(true);
-    let result;
-
     if (mode === "login") {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Sleep for 1 second
+      const resultCode = await login(mail, pass);
 
-      // Pegada api login. Si no existe el mail, cambiar a modo signup con mensaje de error.
-      const isNotRegistered = false; // testing
+      if (resultCode === INVALID_PASSWORD) {
+        setIsLoading(false);
 
-      if (isNotRegistered) {
+        alert("Error: Contraseña incorrecta");
+        setPass("");
+        return;
+      } else if (resultCode === NOT_FOUND) {
+        setIsLoading(false);
         alert(`Error: El correo ${mail} no está registrado. Crea una cuenta`);
         setMode("signup");
         setPass("");
         setName("");
         setConfirmPass("");
+        return;
       } else {
-        result = await login(mail, pass);
-        console.log(result);
+        return;
       }
     } else {
       // Modo === Signup
