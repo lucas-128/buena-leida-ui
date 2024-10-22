@@ -70,7 +70,9 @@ export const Login = () => {
     }
 
     if (mode === "signup" && (name.length < 1 || name.length > 30)) {
-      alert("Error: El nombre debe tener entre 1 y 30 caracteres");
+      alert(
+        "Error: El campo nombre y apellido debe tener entre 1 y 30 caracteres"
+      );
       setIsLoading(false);
 
       return;
