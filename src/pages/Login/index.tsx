@@ -40,43 +40,84 @@ export const Login = () => {
     return nameRegex.test(name);
   };
 
+  const validateUsername = (username: string) => {
+    const usernameRegex = /^[A-Za-z0-9_]+$/;
+    return usernameRegex.test(username);
+  };
+
   const handleSubmit = async () => {
     setIsLoading(true);
 
+    if (
+      mode === "signup" &&
+      (mail === "" ||
+        pass === "" ||
+        username === "" ||
+        confirmPass === "" ||
+        name === "" ||
+        username === "")
+    ) {
+      alert("Error: complete todos los campos");
+      setIsLoading(false);
+      return;
+    }
+
     if (mode === "login" && (mail === "" || pass === "")) {
       alert("Error: complete todos los campos");
+      setIsLoading(false);
+
       return;
     }
 
     if (mode === "signup" && (name.length < 1 || name.length > 30)) {
       alert("Error: El nombre debe tener entre 1 y 30 caracteres");
+      setIsLoading(false);
+
       return;
     }
 
     if (mode === "signup" && (username.length < 1 || username.length > 30)) {
       alert("Error: El nombre de usuario debe tener entre 1 y 30 caracteres");
+      setIsLoading(false);
+
       return;
     }
 
     if (!validateEmail(mail)) {
       alert("Error: Dirección de correo inválida");
+      setIsLoading(false);
+
       return;
     }
 
-    if (mode === "signup" && (pass.length < 6 || pass.length > 13)) {
-      alert("Error: La contraseña debe tener entre 6 y 13 caracteres");
+    if (mode === "signup" && (pass.length < 6 || pass.length > 20)) {
+      alert("Error: La contraseña debe tener entre 6 y 20 caracteres");
+      setIsLoading(false);
+
       return;
     }
 
     if (mode === "signup" && pass !== confirmPass) {
       alert("Error: Las contraseñas no coinciden");
+      setIsLoading(false);
+
+      return;
+    }
+
+    if (mode === "signup" && !validateUsername(username)) {
+      alert(
+        "Error: El nombre de usuario no puede contener espacios o caracteres especiales"
+      );
+      setIsLoading(false);
       return;
     }
 
     if (mode === "signup" && !validateName(name)) {
       alert(
-        "Error: El nombre no puede contener números o caracteres especiales"
+        "Error: El nombre y apellido no puede contener números o caracteres especiales"
       );
+      setIsLoading(false);
+
       return;
     }
 
@@ -207,7 +248,7 @@ export const Login = () => {
                     variant="caption"
                     style={{ color: "#888", marginTop: "4px" }}
                   >
-                    (i) La contraseña debe contener entre 6 y 13 caracteres.
+                    (i) La contraseña debe contener entre 6 y 20 caracteres.
                   </Typography>
 
                   <StyledTextField
