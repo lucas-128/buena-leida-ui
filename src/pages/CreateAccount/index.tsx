@@ -52,25 +52,30 @@ const genres = [
   "Utopía",
 ];
 
+const INVALID_DATA = 400;
+
 export const CreateAccount = () => {
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const navigate = useNavigate();
-  const { register, setIsAuthenticated } = useAuth();
+  const { register } = useAuth();
   const location = useLocation();
   const { mail, pass, name, username } = location.state || {};
 
   const handleSubmit = async () => {
-    const success = true; // test
+    const resultCode = await register(
+      mail,
+      name,
+      username,
+      pass,
+      selectedGenres
+    );
 
-    if (success) {
-      console.log("crear cuenta con datos y generros: ", selectedGenres);
-      await register(mail, name, username, pass, selectedGenres);
-      await setIsAuthenticated(true);
+    if (resultCode === INVALID_DATA) {
+      alert("Error registrando, por favor reintente.");
+      navigate("/");
     } else {
-      alert("Error al crear cuenta. Intente de nuevo");
+      navigate("/");
     }
-
-    navigate("/");
   };
 
   const isButtonDisabled = selectedGenres.length === 0;

@@ -8,6 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   login: (mail: string, pass: string) => Promise<any>;
+  checkExistance: (email: string, username: string) => Promise<any>;
   logout: () => void;
   register: (
     mail: string,
@@ -58,6 +59,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const checkExistance = async (
+    email: string,
+    username: string
+  ): Promise<number | string | void> => {
+    try {
+      const result = await axios.post(`${API_URL}/users/check-user-exists`, {
+        email,
+        username,
+      });
+      return result.status;
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e) && e.response) {
+        return e.response.status;
+      } else {
+        //alert(e);
+      }
+    }
+  };
+
   const logout = () => {
     dispatch({ type: "SET_EMAIL", payload: "" });
     dispatch({ type: "SET_NAME", payload: "" });
@@ -66,17 +86,42 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const register = async (
-    mail: string,
+    email: string,
     name: string,
     username: string,
-    _password: string,
-    genres: string[]
+    password: string,
+    favouritegenders: string[]
   ) => {
-    console.log(name);
-    dispatch({ type: "SET_EMAIL", payload: mail });
-    dispatch({ type: "SET_NAME", payload: name });
-    dispatch({ type: "SET_USERNAME", payload: username });
-    dispatch({ type: "SET_FAVORITE_GENRES", payload: genres });
+    try {
+      const result = await axios.post(`${API_URL}/users`, {
+        name,
+        email,
+        password,
+        username,
+        favouritegenders,
+      });
+
+      const user = result.data;
+
+      console.log(user);
+
+      dispatch({ type: "SET_ID", payload: user.id });
+      dispatch({ type: "SET_NAME", payload: user.name });
+      dispatch({ type: "SET_USERNAME", payload: user.username });
+      dispatch({ type: "SET_EMAIL", payload: user.email });
+      dispatch({ type: "SET_PROFILE_PHOTO", payload: user.fotoPerfil });
+      dispatch({ type: "SET_BIO", payload: user.biografia });
+      dispatch({ type: "SET_FAVORITE_GENRES", payload: user.favouritegenders });
+
+      await setIsAuthenticated(true);
+      return result.status;
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e) && e.response) {
+        return e.response.status;
+      } else {
+        //alert(e);
+      }
+    }
   };
 
   return (
@@ -87,6 +132,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         login,
         logout,
         register,
+        checkExistance,
       }}
     >
       {children}

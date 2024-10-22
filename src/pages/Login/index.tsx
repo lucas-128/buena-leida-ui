@@ -16,9 +16,11 @@ import { useNavigate } from "react-router-dom";
 
 const NOT_FOUND = 404;
 const INVALID_PASSWORD = 401;
+const USERNAME_TAKEN = 409;
+const EMAIL_TAKEN = 400;
 
 export const Login = () => {
-  const { login } = useAuth();
+  const { login, checkExistance } = useAuth();
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [mail, setMail] = useState("");
   const [username, setUsername] = useState("");
@@ -99,26 +101,25 @@ export const Login = () => {
         return;
       }
     } else {
-      // Modo === Signup
+      const resultCode = await checkExistance(mail, username);
+      console.log(resultCode);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // Pegada api para ver que mail no este registado. Si no esta en uso -> pasar a siguiente pagina.
-      // Si esta en uso, cambiar a modo login con mensaje de error.
-
-      const isRegistered = false; // testing
-
-      if (isRegistered) {
+      if (resultCode === USERNAME_TAKEN) {
+        setIsLoading(false);
+        alert(`Error: El nombre de usuario ${username} ya está tomado`);
+        setUsername("");
+      } else if (resultCode === EMAIL_TAKEN) {
+        setIsLoading(false);
         alert(`Error: El correo ${mail} ya está registrado. Inicia sesion`);
         setMode("login");
         setPass("");
         setName("");
         setConfirmPass("");
       } else {
+        setIsLoading(false);
         navigate("/create-account", { state: { mail, pass, name, username } });
       }
     }
-
-    setIsLoading(false);
   };
 
   const divStyle: React.CSSProperties = {
