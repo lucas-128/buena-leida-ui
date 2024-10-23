@@ -20,12 +20,16 @@ import {
 import { storage } from "../../../firebaseConfig";
 import { useGlobalState } from "../../context/GlobalStateContext";
 import "react-image-crop/dist/ReactCrop.css";
+import axios from "axios";
+
+const API_URL = "http://localhost:3000";
 
 export const defaultPhotoUrl =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
 
 export const Profile = () => {
   const { state } = useGlobalState();
+  const { dispatch } = useGlobalState();
 
   const [isEditingBio, setIsEditingBio] = useState<boolean>(false);
   const [isEditingRealName, setIsEditingRealName] = useState<boolean>(false);
@@ -61,6 +65,7 @@ export const Profile = () => {
 
   const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputText = e.target.value;
+
     if (inputText.length <= MAX_BIO_LENGTH) {
       setBioText(inputText);
       setError("");
@@ -83,13 +88,24 @@ export const Profile = () => {
       const croppedImageBlob = await cropImage(image);
       const storageRef = ref(storage, `profiles/${state.username}/photo.jpg`);
       await uploadBytes(storageRef, croppedImageBlob);
-      // pegada axios para actualizar bdd
-      console.log("Image uploaded successfully!");
+      // Subir imagen a firebase
       const imageUrl = await getDownloadURL(storageRef);
       setPhotoUrl(imageUrl);
-      console.log(`Simulate updating the database with image URL: ${imageUrl}`);
+
+      // pegada axios para actualizar bdd
+      try {
+        await axios.patch(`${API_URL}/users/${state.id}/profile-photo`, {
+          profilePhoto: imageUrl,
+        });
+
+        dispatch({ type: "SET_PROFILE_PHOTO", payload: imageUrl });
+      } catch (e) {
+        console.log("Error updating profile pic: ", e);
+        alert("Error actualizando imagen de perfil.");
+      }
     } catch (error) {
       console.error("Error uploading image: ", error);
+      alert("Error actualizando imagen de perfil");
     }
   };
 
@@ -99,10 +115,18 @@ export const Profile = () => {
     try {
       await getMetadata(storageRef);
       await deleteObject(storageRef);
+
       // pegada axios para actualizar bdd
-      // actualizar la imagen aca que muestro en el perfil
-      console.log("Image deleted successfully!");
-      console.log("Axios log: Image deleted for", state.username);
+      try {
+        await axios.patch(`${API_URL}/users/${state.id}/profile-photo`, {
+          profilePhoto: defaultPhotoUrl,
+        });
+
+        dispatch({ type: "SET_PROFILE_PHOTO", payload: defaultPhotoUrl });
+      } catch (e) {
+        console.log("Error updating profile pic: ", e);
+        alert("Error actualizando imagen de perfil.");
+      }
     } catch (error) {
       // La imagen ya esta borrada
     }
@@ -130,10 +154,34 @@ export const Profile = () => {
     }
   };
 
-  const saveChanges = () => {
+  const saveBioChanges = async () => {
     setIsEditingBio(false);
+    setError("");
+    try {
+      await axios.patch(`${API_URL}/users/${state.id}/bio`, {
+        bio: bioText,
+      });
+
+      dispatch({ type: "SET_BIO", payload: bioText });
+    } catch (e) {
+      console.log("Error updating bio: ", e);
+      alert("Error actualizando biografia.");
+    }
+  };
+
+  const saveNameChanges = async () => {
     setIsEditingRealName(false);
     setError("");
+    try {
+      await axios.patch(`${API_URL}/users/${state.id}/name`, {
+        name: realNameText,
+      });
+
+      dispatch({ type: "SET_NAME", payload: realNameText });
+    } catch (e) {
+      console.log("Error updating real name: ", e);
+      alert("Error actualizando nombre.");
+    }
   };
 
   const cancelChanges = () => {
@@ -205,7 +253,7 @@ export const Profile = () => {
             <Button
               size="medium"
               variant="contained"
-              onClick={saveChanges}
+              onClick={saveNameChanges}
               disabled={!realNameText} // Disable if empty
             >
               Guardar
@@ -244,7 +292,7 @@ export const Profile = () => {
               onChange={handleBioChange}
               style={{ marginRight: "1rem", minWidth: "800px" }}
             />
-            <Button size="medium" variant="contained" onClick={saveChanges}>
+            <Button size="medium" variant="contained" onClick={saveBioChanges}>
               Guardar
             </Button>
             <Button size="medium" variant="contained" onClick={cancelChanges}>
