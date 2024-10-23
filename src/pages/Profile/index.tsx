@@ -148,7 +148,7 @@ export const Profile = () => {
       setRealNameText(inputText);
       setError("");
     } else if (inputText.length > MAX_REALNAME_LENGTH) {
-      setError("El nombre no puede exceder ${MAX_REALNAME_LENGTH} caracteres.");
+      setError(`El nombre no puede exceder ${MAX_REALNAME_LENGTH} caracteres.`);
     } else {
       setError("Solo se permiten letras y espacios.");
     }
@@ -217,7 +217,7 @@ export const Profile = () => {
               component="label"
               style={{ marginBottom: "0.5rem" }}
             >
-              Upload Image
+              Subir Imagen
               <input type="file" hidden onChange={handleImageUpload} />
             </Button>
             <Button
@@ -226,7 +226,7 @@ export const Profile = () => {
               color="error"
               onClick={handleDeleteImage}
             >
-              Delete Image
+              Eliminar Imagen
             </Button>
           </div>
         </div>
