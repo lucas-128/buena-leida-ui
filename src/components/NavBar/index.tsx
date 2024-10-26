@@ -113,13 +113,12 @@ const NavBar: React.FC = () => {
           placeholder="Buscar libros"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={(e) => {
+          onKeyDown={(e) => {
             if (e.key === "Enter") handleSearchSubmit(e);
           }}
         />
-        <SearchIcon onClick={handleSearchSubmit} />
+        <SearchIcon />
       </SearchWrapper>
-
       <IconContainer>
         <IconBox>
           <Icon title="Notificaciones">
