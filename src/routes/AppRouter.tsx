@@ -18,11 +18,13 @@ export default function AppRouter() {
   const Layout = () => {
     return (
       <div>
-        <NavBar />
-        <div>
-          <div>
-            <Outlet />
-          </div>
+        <div style={{ position: "fixed", width: "100%", top: 0, zIndex: 1000 }}>
+          <NavBar />
+        </div>
+
+        <div style={{ paddingTop: "60px" }}>
+          {" "}
+          <Outlet />
         </div>
       </div>
     );
