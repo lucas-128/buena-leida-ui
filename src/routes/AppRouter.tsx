@@ -10,6 +10,7 @@ import Lists from "../pages/Search/Lists";
 import Groups from "../pages/Community/Groups";
 import Quotes from "../pages/Community/Quotes";
 import { CreateAccount } from "../pages/CreateAccount";
+import SearchBar from "../pages/SearchBar";
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -63,6 +64,10 @@ export default function AppRouter() {
         {
           path: "/profile",
           element: <Profile />,
+        },
+        {
+          path: "/search",
+          element: <SearchBar />,
         },
       ],
     },

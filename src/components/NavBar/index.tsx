@@ -26,17 +26,18 @@ import { useAuth } from "../../context/AuthContext";
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
   const { state } = useGlobalState();
-
   const { logout } = useAuth();
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [menuIndex, setMenuIndex] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState(""); // state to hold search input
+
   const handleLogout = () => {
     setAnchorEl(null);
     setMenuIndex(null);
     logout();
     navigate("/");
   };
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [menuIndex, setMenuIndex] = useState<number | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
     setAnchorEl(event.currentTarget);
@@ -47,6 +48,13 @@ const NavBar: React.FC = () => {
     setAnchorEl(null);
     setMenuIndex(null);
     if (path) navigate(path);
+  };
+
+  const handleSearchSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (searchQuery.trim()) {
+      navigate("/search", { state: { query: searchQuery } });
+    }
   };
 
   return (
@@ -99,9 +107,17 @@ const NavBar: React.FC = () => {
         <MenuItem onClick={() => handleClose("/quotes")}>Citas</MenuItem>
       </Menu>
 
-      <SearchWrapper>
-        <StyledSearchInput placeholder="Buscar libros" />
-        <SearchIcon />
+      {/* Search Bar */}
+      <SearchWrapper onSubmit={handleSearchSubmit}>
+        <StyledSearchInput
+          placeholder="Buscar libros"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") handleSearchSubmit(e);
+          }}
+        />
+        <SearchIcon onClick={handleSearchSubmit} />
       </SearchWrapper>
 
       <IconContainer>
@@ -141,7 +157,6 @@ const NavBar: React.FC = () => {
             {state.username}
           </Typography>
           <MenuItem onClick={() => handleClose("/profile")}>Perfil</MenuItem>
-
           <Divider />
           <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
         </Menu>
