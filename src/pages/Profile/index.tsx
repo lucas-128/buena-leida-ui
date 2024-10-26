@@ -99,6 +99,12 @@ export const Profile = () => {
         });
 
         dispatch({ type: "SET_PROFILE_PHOTO", payload: imageUrl });
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+          const updatedUser = JSON.parse(storedUser);
+          updatedUser.profilePhoto = imageUrl;
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+        }
       } catch (e) {
         console.log("Error updating profile pic: ", e);
         alert("Error actualizando imagen de perfil.");
@@ -123,6 +129,12 @@ export const Profile = () => {
         });
 
         dispatch({ type: "SET_PROFILE_PHOTO", payload: defaultPhotoUrl });
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+          const updatedUser = JSON.parse(storedUser);
+          updatedUser.profilePhoto = defaultPhotoUrl;
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+        }
       } catch (e) {
         console.log("Error updating profile pic: ", e);
         alert("Error actualizando imagen de perfil.");
@@ -163,6 +175,13 @@ export const Profile = () => {
       });
 
       dispatch({ type: "SET_BIO", payload: bioText });
+
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const updatedUser = JSON.parse(storedUser);
+        updatedUser.bio = bioText;
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+      }
     } catch (e) {
       console.log("Error updating bio: ", e);
       alert("Error actualizando biografia.");
@@ -178,6 +197,12 @@ export const Profile = () => {
       });
 
       dispatch({ type: "SET_NAME", payload: realNameText });
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const updatedUser = JSON.parse(storedUser);
+        updatedUser.name = realNameText;
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+      }
     } catch (e) {
       console.log("Error updating real name: ", e);
       alert("Error actualizando nombre.");

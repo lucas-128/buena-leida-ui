@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import { useGlobalState } from "./GlobalStateContext";
 import axios from "axios";
 
@@ -24,7 +30,25 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("isAuthenticated") === "true"
+  );
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+
+      dispatch({ type: "SET_ID", payload: user.id });
+      dispatch({ type: "SET_NAME", payload: user.name });
+      dispatch({ type: "SET_USERNAME", payload: user.username });
+      dispatch({ type: "SET_EMAIL", payload: user.email });
+      dispatch({ type: "SET_PROFILE_PHOTO", payload: user.profilePhoto });
+      dispatch({ type: "SET_BIO", payload: user.bio });
+      dispatch({ type: "SET_FAVORITE_GENRES", payload: user.favouritegenders });
+    }
+  }, []);
+
   const { dispatch } = useGlobalState();
 
   const login = async (
@@ -38,6 +62,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       });
 
       setIsAuthenticated(true);
+      localStorage.setItem("isAuthenticated", "true");
 
       const user = result.data.user;
 
@@ -48,6 +73,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       dispatch({ type: "SET_PROFILE_PHOTO", payload: user.profilePhoto });
       dispatch({ type: "SET_BIO", payload: user.bio });
       dispatch({ type: "SET_FAVORITE_GENRES", payload: user.favouritegenders });
+
+      localStorage.setItem("user", JSON.stringify(user));
 
       return result.status;
     } catch (e: unknown) {
@@ -83,6 +110,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     dispatch({ type: "SET_NAME", payload: "" });
     dispatch({ type: "SET_FAVORITE_GENRES", payload: [] });
     setIsAuthenticated(false);
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("user");
   };
 
   const register = async (
@@ -114,6 +143,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       dispatch({ type: "SET_FAVORITE_GENRES", payload: user.favouritegenders });
 
       await setIsAuthenticated(true);
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("user", JSON.stringify(user));
       return result.status;
     } catch (e: unknown) {
       if (axios.isAxiosError(e) && e.response) {
