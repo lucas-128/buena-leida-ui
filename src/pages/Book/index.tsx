@@ -87,6 +87,42 @@ const mockReviews: Review[] = [
     likes: 18,
     userLiked: true,
   },
+  {
+    id: "2",
+    username: "LiteraryExplorer",
+    profilePicture: defaultPhotoUrl,
+    rating: 4,
+    text: "Beautifully written, but I found the characters hard to relate to.",
+    likes: 18,
+    userLiked: true,
+  },
+  {
+    id: "4",
+    username: "LiteraryExplorer",
+    profilePicture: defaultPhotoUrl,
+    rating: 4,
+    text: "Beautifully written, but I found the characters hard to relate to.",
+    likes: 18,
+    userLiked: true,
+  },
+  {
+    id: "5",
+    username: "LiteraryExplorer",
+    profilePicture: defaultPhotoUrl,
+    rating: 4,
+    text: "Beautifully written, but I found the characters hard to relate to.",
+    likes: 18,
+    userLiked: true,
+  },
+  {
+    id: "6",
+    username: "LiteraryExplorer",
+    profilePicture: defaultPhotoUrl,
+    rating: 4,
+    text: "Beautifully written, but I found the characters hard to relate to.",
+    likes: 18,
+    userLiked: true,
+  },
 ];
 
 export const Book: React.FC = () => {

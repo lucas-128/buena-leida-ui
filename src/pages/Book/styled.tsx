@@ -6,6 +6,8 @@ export const Container = styled.div`
   margin: 0 auto;
   padding: 20px;
   gap: 30px;
+  height: calc(100vh - 120px);
+  overflow: hidden;
 `;
 
 export const LeftColumn = styled.div`
@@ -13,10 +15,14 @@ export const LeftColumn = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: sticky;
+  top: 20px;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
 `;
-
 export const BookImage = styled.img`
   width: 100%;
+  max-height: 450px;
   aspect-ratio: 2/3;
   object-fit: cover;
   margin-bottom: 20px;
@@ -44,7 +50,7 @@ export const StarContainer = styled.div`
 `;
 
 export const RatingBar = styled.div<{ percentage: number }>`
-  width: 95%;
+  width: 100%;
   height: 8px;
   background-color: #e0e0e0;
   border-radius: 4px;
@@ -61,7 +67,9 @@ export const RatingBar = styled.div<{ percentage: number }>`
 
 export const MainContent = styled.div`
   flex: 1;
-  margin-left: 30px;
+  overflow-y: auto;
+  height: 100%;
+  padding-right: 20px;
 `;
 
 export const BookCard = styled.div`
@@ -147,6 +155,7 @@ export const RatingBreakdown = styled.div`
   background-color: #f8f8f8;
   padding: 15px;
   border-radius: 8px;
+  padding-right: 25px;
 `;
 
 export const RatingRow = styled.div`
@@ -208,4 +217,5 @@ export const LikeButton = styled.button<{ liked: boolean }>`
 export const RatingCount = styled.span`
   text-align: right;
   white-space: nowrap;
+  margin-right: 20px;
 `;
