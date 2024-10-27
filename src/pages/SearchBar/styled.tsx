@@ -65,6 +65,24 @@ export const ResultCard = styled.div`
   gap: 20px;
 `;
 
+export const Spinner = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-top: 5px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
 export const BookImage = styled.img`
   width: 100px;
   height: 150px;

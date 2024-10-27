@@ -51,6 +51,7 @@ const NavBar: React.FC = () => {
   };
 
   const handleSearchSubmit = (event: React.FormEvent) => {
+    setSearchQuery("");
     event.preventDefault();
     if (searchQuery.trim()) {
       navigate("/search", { state: { query: searchQuery } });

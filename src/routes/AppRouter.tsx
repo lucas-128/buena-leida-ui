@@ -11,6 +11,7 @@ import Groups from "../pages/Community/Groups";
 import Quotes from "../pages/Community/Quotes";
 import { CreateAccount } from "../pages/CreateAccount";
 import SearchBar from "../pages/SearchBar";
+import Book from "../pages/Book";
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -70,6 +71,10 @@ export default function AppRouter() {
         {
           path: "/search",
           element: <SearchBar />,
+        },
+        {
+          path: "/book",
+          element: <Book />,
         },
       ],
     },

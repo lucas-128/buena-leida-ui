@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Star } from "lucide-react";
 import {
   Container,
@@ -20,6 +20,7 @@ import {
   Synopsis,
   GenreList,
   PublicationDate,
+  Spinner,
 } from "./styled";
 import { defaultPhotoUrl } from "../Profile";
 
@@ -43,7 +44,7 @@ const mockBooks: Book[] = [
     id: 1,
     title: "The Great Gatsby",
     authors: ["F. Scott Fitzgerald"],
-    rating: 4.3,
+    rating: 3.9,
     reviewCount: 3872,
     synopsis: "A story of decadence and excess in Jazz Age America .",
     genres: ["Classic", "Fiction"],
@@ -65,10 +66,30 @@ const mockBooks: Book[] = [
 ];
 
 export const SearchBar: React.FC = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const initialQuery = location.state?.query || "";
   const [query, setQuery] = useState(initialQuery);
   const [searchType, setSearchType] = useState("todo");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (initialQuery) {
+        setIsLoading(true);
+        console.log("busqueda nueva.");
+        setSearchType("todo");
+        setQuery(initialQuery);
+
+        // sleep to mock api call
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [initialQuery]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +99,7 @@ export const SearchBar: React.FC = () => {
   };
 
   const handleBookClick = (bookId: number) => {
-    console.log(`Navegar a pagina: ${bookId}`);
+    navigate("/book", { state: { query: bookId } });
   };
 
   const renderStars = (rating: number) => {
@@ -136,38 +157,42 @@ export const SearchBar: React.FC = () => {
         </RadioLabel>
       </RadioGroup>
       <ResultsContainer>
-        {mockBooks.map((book) => (
-          <ResultCard key={book.id}>
-            <BookImage
-              src={book.imageUrl}
-              alt={book.title}
-              onClick={() => handleBookClick(book.id)}
-            />
-            <BookInfo>
-              <BookTitle onClick={() => handleBookClick(book.id)}>
-                {book.title}
-              </BookTitle>
-              <BookAuthor>
-                {book.authors.join(book.authors.length > 1 ? ", " : "")}
-              </BookAuthor>
+        {isLoading ? (
+          <Spinner />
+        ) : (
+          mockBooks.map((book) => (
+            <ResultCard key={book.id}>
+              <BookImage
+                src={book.imageUrl}
+                alt={book.title}
+                onClick={() => handleBookClick(book.id)}
+              />
+              <BookInfo>
+                <BookTitle onClick={() => handleBookClick(book.id)}>
+                  {book.title}
+                </BookTitle>
+                <BookAuthor>
+                  {book.authors.join(book.authors.length > 1 ? ", " : "")}
+                </BookAuthor>
 
-              <RatingContainer>
-                <StarRating>{renderStars(book.rating)}</StarRating>
-                <span>{book.rating.toFixed(1)}</span>
-                <span>({book.reviewCount} reseñas)</span>
-              </RatingContainer>
-              <Synopsis>
-                {book.synopsis.length > SYNOPSIS_MAX_LENGTH
-                  ? `${book.synopsis.slice(0, SYNOPSIS_MAX_LENGTH - 3)}...`
-                  : book.synopsis}
-              </Synopsis>
-              <GenreList>Generos: {book.genres.join(", ")}</GenreList>
-              <PublicationDate>
-                Publicado en: {book.publicationDate}
-              </PublicationDate>
-            </BookInfo>
-          </ResultCard>
-        ))}
+                <RatingContainer>
+                  <StarRating>{renderStars(book.rating)}</StarRating>
+                  <span>{book.rating.toFixed(1)}</span>
+                  <span>({book.reviewCount} reseñas)</span>
+                </RatingContainer>
+                <Synopsis>
+                  {book.synopsis.length > SYNOPSIS_MAX_LENGTH
+                    ? `${book.synopsis.slice(0, SYNOPSIS_MAX_LENGTH - 3)}...`
+                    : book.synopsis}
+                </Synopsis>
+                <GenreList>Generos: {book.genres.join(", ")}</GenreList>
+                <PublicationDate>
+                  Publicado en: {book.publicationDate}
+                </PublicationDate>
+              </BookInfo>
+            </ResultCard>
+          ))
+        )}
       </ResultsContainer>
     </Container>
   );
