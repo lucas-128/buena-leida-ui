@@ -12,6 +12,7 @@ import Quotes from "../pages/Community/Quotes";
 import { CreateAccount } from "../pages/CreateAccount";
 import SearchBar from "../pages/SearchBar";
 import Book from "../pages/Book";
+import MyReviews from "../pages/MyReviews";
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -75,6 +76,10 @@ export default function AppRouter() {
         {
           path: "/book",
           element: <Book />,
+        },
+        {
+          path: "/myreviews",
+          element: <MyReviews />,
         },
       ],
     },

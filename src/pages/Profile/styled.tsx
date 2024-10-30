@@ -57,3 +57,12 @@ export const EditButton = styled.span`
     color: #333;
   }
 `;
+
+export const ReviewCard = styled.div`
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+`;
