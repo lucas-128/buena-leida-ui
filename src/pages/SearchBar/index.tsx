@@ -63,6 +63,11 @@ export const SearchBar: React.FC = () => {
           );
           setData(response.data);
         } catch (err) {
+          if ((err as any).response && (err as any).response.status === 404) {
+            setData([]);
+          } else {
+            //console.error(err);
+          }
         } finally {
           setIsLoading(false);
         }
@@ -90,7 +95,8 @@ export const SearchBar: React.FC = () => {
       const response = await axios.get(endpoint);
       setData(response.data);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      //console.error("Error fetching data:", error);
+      setData([]);
     } finally {
       setIsLoading(false);
     }
@@ -158,6 +164,8 @@ export const SearchBar: React.FC = () => {
       <ResultsContainer>
         {isLoading ? (
           <Spinner />
+        ) : data.length === 0 ? (
+          <p>No se encontraron libros para los parámetros especificados</p>
         ) : (
           data.map((book) => (
             <ResultCard key={book.id}>
