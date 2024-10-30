@@ -22,52 +22,29 @@ import {
   PublicationDate,
   Spinner,
 } from "./styled";
-import { defaultPhotoUrl } from "../Profile";
+import axios from "axios";
 
 interface Book {
   id: number;
   title: string;
-  authors: string[];
-  rating: number;
-  reviewCount: number;
-  synopsis: string;
-  genres: string[];
-  publicationDate: string;
-  imageUrl: string;
+  author: string;
+  averagerating: number;
+  numberreviews: number;
+  summary: string;
+  genre: string;
+  publication_date: string;
+  coverimage: string;
 }
 
 const SYNOPSIS_MAX_LENGTH = 80;
 
-// libros de test
-const mockBooks: Book[] = [
-  {
-    id: 1,
-    title: "The Great Gatsby",
-    authors: ["F. Scott Fitzgerald"],
-    rating: 3.9,
-    reviewCount: 3872,
-    synopsis: "A story of decadence and excess in Jazz Age America .",
-    genres: ["Classic", "Fiction"],
-    publicationDate: "April 10, 1925",
-    imageUrl: defaultPhotoUrl,
-  },
-  {
-    id: 2,
-    title: "To Kill a Mockingbird",
-    authors: ["Harper Lee"],
-    rating: 4.7,
-    reviewCount: 5291,
-    synopsis:
-      "A novel of warmth and humor despite dealing with serious issues of rape and racial inequality.",
-    genres: ["Classic", "Fiction"],
-    publicationDate: "July 11, 1960",
-    imageUrl: defaultPhotoUrl,
-  },
-];
+const API_URL = "http://localhost:3000";
 
 export const SearchBar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [data, setData] = useState<Book[]>([]);
+
   const initialQuery = location.state?.query || "";
   const [query, setQuery] = useState(initialQuery);
   const [searchType, setSearchType] = useState("todo");
@@ -77,28 +54,50 @@ export const SearchBar: React.FC = () => {
     const fetchData = async () => {
       if (initialQuery) {
         setIsLoading(true);
-        console.log("busqueda nueva.");
         setSearchType("todo");
         setQuery(initialQuery);
 
-        // sleep to mock api call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        setIsLoading(false);
+        try {
+          const response = await axios.get(
+            `${API_URL}/books/${initialQuery}/${initialQuery}`
+          );
+          setData(response.data);
+        } catch (err) {
+        } finally {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchData();
   }, [initialQuery]);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Search query:", query);
     console.log("Search type:", searchType);
-    // Here you would typically call your search API
+
+    setIsLoading(true);
+
+    try {
+      const endpoint =
+        searchType === "todo"
+          ? `${API_URL}/books/${query}/${query}`
+          : searchType === "author"
+          ? `${API_URL}/books/author/${query}`
+          : `${API_URL}/books/title/${query}`;
+
+      const response = await axios.get(endpoint);
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBookClick = (bookId: number) => {
+    console.log("Book clicked:", bookId);
     navigate("/book", { state: { query: bookId } });
   };
 
@@ -140,18 +139,18 @@ export const SearchBar: React.FC = () => {
         <RadioLabel>
           <input
             type="radio"
-            value="titulo"
-            checked={searchType === "titulo"}
-            onChange={() => setSearchType("titulo")}
+            value="title"
+            checked={searchType === "title"}
+            onChange={() => setSearchType("title")}
           />
           Título
         </RadioLabel>
         <RadioLabel>
           <input
             type="radio"
-            value="autor"
-            checked={searchType === "autor"}
-            onChange={() => setSearchType("autor")}
+            value="author"
+            checked={searchType === "author"}
+            onChange={() => setSearchType("author")}
           />
           Autor
         </RadioLabel>
@@ -160,10 +159,10 @@ export const SearchBar: React.FC = () => {
         {isLoading ? (
           <Spinner />
         ) : (
-          mockBooks.map((book) => (
+          data.map((book) => (
             <ResultCard key={book.id}>
               <BookImage
-                src={book.imageUrl}
+                src={book.coverimage}
                 alt={book.title}
                 onClick={() => handleBookClick(book.id)}
               />
@@ -171,23 +170,29 @@ export const SearchBar: React.FC = () => {
                 <BookTitle onClick={() => handleBookClick(book.id)}>
                   {book.title}
                 </BookTitle>
-                <BookAuthor>
-                  {book.authors.join(book.authors.length > 1 ? ", " : "")}
-                </BookAuthor>
+                <BookAuthor>{book.author}</BookAuthor>
 
                 <RatingContainer>
-                  <StarRating>{renderStars(book.rating)}</StarRating>
-                  <span>{book.rating.toFixed(1)}</span>
-                  <span>({book.reviewCount} reseñas)</span>
+                  <StarRating>{renderStars(book.averagerating)}</StarRating>
+                  <span>{book.averagerating.toFixed(1)}</span>
+                  <span>
+                    ({book.numberreviews}{" "}
+                    {book.numberreviews === 1 ? "reseña" : "reseñas"})
+                  </span>
                 </RatingContainer>
                 <Synopsis>
-                  {book.synopsis.length > SYNOPSIS_MAX_LENGTH
-                    ? `${book.synopsis.slice(0, SYNOPSIS_MAX_LENGTH - 3)}...`
-                    : book.synopsis}
+                  {book.summary.length > SYNOPSIS_MAX_LENGTH
+                    ? `${book.summary.slice(0, SYNOPSIS_MAX_LENGTH - 3)}...`
+                    : book.summary}
                 </Synopsis>
-                <GenreList>Generos: {book.genres.join(", ")}</GenreList>
+                <GenreList>Genero: {book.genre}</GenreList>
                 <PublicationDate>
-                  Publicado en: {book.publicationDate}
+                  Publicado:{" "}
+                  {new Date(book.publication_date).toLocaleDateString("es-ES", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
                 </PublicationDate>
               </BookInfo>
             </ResultCard>
