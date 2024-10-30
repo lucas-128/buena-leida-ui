@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Star, ThumbsUp } from "lucide-react";
 import {
@@ -29,115 +29,152 @@ import {
   RatingCount,
 } from "./styled";
 import { defaultPhotoUrl } from "../Profile";
+import axios from "axios";
+import { useGlobalState } from "../../context/GlobalStateContext";
+
+const DEFAULT_COVER_IMAGE =
+  "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/books%2Fportada_default.png?alt=media&token=cbf8f597-a3bd-469d-b390-7719ec843a8d";
+
+const initialBook: BookDetails = {
+  id: "1",
+  title: "",
+  author: "",
+  coverimage: DEFAULT_COVER_IMAGE,
+  averagerating: 0,
+  numberreviews: 0,
+  summary: "",
+  genre: "",
+  publication_date: "",
+  oneStarCount: 0,
+  twoStarCount: 0,
+  threeStarCount: 0,
+  fourStarCount: 0,
+  fiveStarCount: 0,
+};
+
+const API_URL = "http://localhost:3000";
+
+interface UserData {
+  username: string;
+  profilePhoto: string;
+}
+
+interface MyReview {
+  id: string; // review id
+  iduser: string; // user id
+  isbn: string; // book id
+  texto: string; // review text
+  likes: number; // number of likes in my review
+  calification: number; // star rating of my review
+}
 
 interface BookDetails {
   id: string;
   title: string;
   author: string;
-  imageUrl: string;
-  rating: number;
-  reviewCount: number;
-  synopsis: string;
-  genres: string[];
-  publicationDate: string;
-  userRating: number | null;
-  userReview: string | null;
+  coverimage: string;
+  averagerating: number;
+  numberreviews: number;
+  genre: string;
+  summary: string;
+  publication_date: string;
+  oneStarCount: number;
+  twoStarCount: number;
+  threeStarCount: number;
+  fourStarCount: number;
+  fiveStarCount: number;
 }
-
 interface Review {
   id: string;
-  username: string;
-  profilePicture: string;
-  rating: number;
-  text: string;
+  iduser: number;
+  user: UserData; // user data
+  calification: number;
+  texto: string;
   likes: number;
-  userLiked: boolean;
+  liked: boolean;
 }
 
-const mockBookDetails: BookDetails = {
-  id: "1",
-  title: "The Great Gatsby",
-  author: "F. Scott Fitzgerald",
-  imageUrl: defaultPhotoUrl,
-  rating: 4.3,
-  reviewCount: 3872,
-  synopsis: "A story of decadence and excess in Jazz Age America.",
-  genres: ["Classic", "Fiction"],
-  publicationDate: "April 10, 1925",
-  userRating: null,
-  userReview: null,
-};
-
-const mockReviews: Review[] = [
-  {
-    id: "1",
-    username: "BookLover123",
-    profilePicture: defaultPhotoUrl,
-    rating: 5,
-    text: "A timeless classic that never fails to captivate.",
-    likes: 42,
-    userLiked: false,
-  },
-  {
-    id: "2",
-    username: "LiteraryExplorer",
-    profilePicture: defaultPhotoUrl,
-    rating: 4,
-    text: "Beautifully written, but I found the characters hard to relate to.",
-    likes: 18,
-    userLiked: true,
-  },
-  {
-    id: "2",
-    username: "LiteraryExplorer",
-    profilePicture: defaultPhotoUrl,
-    rating: 4,
-    text: "Beautifully written, but I found the characters hard to relate to.",
-    likes: 18,
-    userLiked: true,
-  },
-  {
-    id: "4",
-    username: "LiteraryExplorer",
-    profilePicture: defaultPhotoUrl,
-    rating: 4,
-    text: "Beautifully written, but I found the characters hard to relate to.",
-    likes: 18,
-    userLiked: true,
-  },
-  {
-    id: "5",
-    username: "LiteraryExplorer",
-    profilePicture: defaultPhotoUrl,
-    rating: 4,
-    text: "Beautifully written, but I found the characters hard to relate to.",
-    likes: 18,
-    userLiked: true,
-  },
-  {
-    id: "6",
-    username: "LiteraryExplorer",
-    profilePicture: defaultPhotoUrl,
-    rating: 4,
-    text: "Beautifully written, but I found the characters hard to relate to.",
-    likes: 18,
-    userLiked: true,
-  },
-];
-
 export const Book: React.FC = () => {
+  // bookID for details
   const location = useLocation();
   const bookId = location.state?.query || "";
-  const [book, setBook] = useState<BookDetails>(mockBookDetails);
-  const [reviews, setReviews] = useState<Review[]>(mockReviews);
-  const [userRating, setUserRating] = useState<number | null>(book.userRating);
-  const [userReview, setUserReview] = useState<string | null>(book.userReview);
+
+  const [book, setBook] = useState<BookDetails>(initialBook);
+  const [myReview, setMyReview] = useState<MyReview | null>(null);
+
+  const { state } = useGlobalState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (bookId) {
+        try {
+          const response = await axios.get(
+            `${API_URL}/reviews/${bookId}/myreview?iduser=${state.id}`
+          );
+
+          setMyReview(response.data[0]);
+          setUserRating(response.data[0].calification);
+          setUserReview(response.data[0].texto);
+        } catch (err) {
+        } finally {
+        }
+      }
+    };
+
+    fetchData();
+  }, [bookId]);
+
+  // My rating
+  const [userRating, setUserRating] = useState<number | null>(
+    myReview && myReview.calification ? myReview.calification : null
+  );
+
+  // My review
+  const [userReview, setUserReview] = useState<string | null>(
+    myReview && myReview.texto ? myReview.texto : null
+  );
+
+  // Reviews
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (bookId) {
+        // Todas las reviews del libro
+        try {
+          const response = await axios.get(
+            `${API_URL}/reviews/${bookId}?iduser=${state.id}`
+          );
+          setReviews(response.data);
+          console.log("Reviews:", response.data);
+        } catch (err) {
+        } finally {
+        }
+      }
+    };
+
+    fetchData();
+  }, [bookId]);
+
   const [isWritingReview, setIsWritingReview] = useState(false);
   const [newReviewText, setNewReviewText] = useState("");
 
-  const handleRating = (rating: number) => {
+  const handleRating = async (rating: number) => {
     setUserRating(rating);
     console.log(`User rated the book: ${rating} stars`);
+
+    const requestBody = {
+      isbn: bookId,
+      calification: rating,
+      iduser: state.id,
+    };
+
+    try {
+      const response = await axios.post(`${API_URL}/reviews/rate`, requestBody);
+      console.log("Rating submitted successfully:", response.data);
+    } catch (error) {
+      console.error("Error submitting rating:", error);
+    }
   };
 
   const handleWriteReview = () => {
@@ -149,35 +186,92 @@ export const Book: React.FC = () => {
     setNewReviewText("");
   };
 
-  const handleSubmitReview = () => {
-    setUserReview(newReviewText);
-    setIsWritingReview(false);
-    console.log(`User submitted review: ${newReviewText}`);
+  const handleSubmitReview = async () => {
+    // Check if userRating is null
+    if (userRating === null) {
+      alert("Tienes que calificar el libro primero.");
+      return;
+    }
+
+    // Check the length of the review text
+    if (newReviewText.length === 0) {
+      alert("El texto de la reseña no puede estar vacío.");
+      return;
+    }
+    if (newReviewText.length > 400) {
+      alert("El texto de la reseña no puede exceder los 400 caracteres.");
+      return;
+    }
+
+    const reviewData = {
+      isbn: bookId,
+      texto: newReviewText,
+      iduser: state.id,
+      calification: userRating,
+    };
+
+    console.log(reviewData);
+
+    try {
+      await axios.post(`${API_URL}/reviews/review`, reviewData);
+
+      setUserReview(newReviewText);
+      setIsWritingReview(false);
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    }
   };
 
-  const handleDeleteReview = () => {
-    setUserReview(null);
-    setUserRating(null);
-    console.log("User deleted their review and rating");
+  const handleDeleteReview = async () => {
+    const iduser = state.id;
+    console.log(`${API_URL}/reviews/${bookId}/${iduser}`);
+
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/reviews/${bookId}/${iduser}`
+      );
+
+      if (response.status === 204) {
+        setUserReview(null);
+        setUserRating(null);
+        console.log("User deleted their review and rating");
+      } else {
+        alert("There was an error deleting your review. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting review:", error);
+      alert("There was an error deleting your review. Please try again.");
+    }
   };
 
-  const handleLikeReview = (reviewId: string) => {
-    setReviews(
-      reviews.map((review) => {
-        if (review.id === reviewId) {
-          const newLikedState = !review.userLiked;
-          console.log(
-            `User ${newLikedState ? "liked" : "unliked"} review ${reviewId}`
-          );
-          return {
-            ...review,
-            likes: newLikedState ? review.likes + 1 : review.likes - 1,
-            userLiked: newLikedState,
-          };
-        }
-        return review;
-      })
-    );
+  const handleLikeReview = async (reviewId: string) => {
+    try {
+      const userId = state.id;
+      const response = await axios.post(
+        `${API_URL}/reviews/${reviewId}/${userId}/like`
+      );
+
+      if (response.status === 200) {
+        setReviews((prevReviews) =>
+          prevReviews.map((review) => {
+            if (review.id === reviewId) {
+              const newLikedState = !review.liked;
+              console.log(
+                `User ${newLikedState ? "liked" : "unliked"} review ${reviewId}`
+              );
+              return {
+                ...review,
+                likes: newLikedState ? review.likes + 1 : review.likes - 1,
+                userLiked: newLikedState,
+              };
+            }
+            return review;
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Error liking the review:", error);
+    }
   };
 
   const renderStars = (rating: number, interactive: boolean = false) => {
@@ -195,11 +289,20 @@ export const Book: React.FC = () => {
       ));
   };
 
-  const renderRatingBreakdown = () => {
-    const totalReviews = book.reviewCount;
-    return [5, 4, 3, 2, 1].map((stars) => {
-      const count = Math.floor(Math.random() * totalReviews);
-      const percentage = (count / totalReviews) * 100;
+  const renderRatingBreakdown = (book: BookDetails) => {
+    const totalReviews = book.numberreviews;
+
+    // Calculate counts from the book details
+    const counts = [
+      { stars: 5, count: book.fiveStarCount },
+      { stars: 4, count: book.fourStarCount },
+      { stars: 3, count: book.threeStarCount },
+      { stars: 2, count: book.twoStarCount },
+      { stars: 1, count: book.oneStarCount },
+    ];
+
+    return counts.map(({ stars, count }) => {
+      const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
       return (
         <RatingRow key={stars}>
           <span>{stars} estrellas:</span>
@@ -212,10 +315,25 @@ export const Book: React.FC = () => {
     });
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (bookId) {
+        try {
+          const response = await axios.get(`${API_URL}/books/${bookId}`);
+          setBook(response.data);
+        } catch (err) {
+        } finally {
+        }
+      }
+    };
+
+    fetchData();
+  }, [bookId]);
+
   return (
     <Container>
       <LeftColumn>
-        <BookImage src={book.imageUrl} alt={book.title} />
+        <BookImage src={book.coverimage} alt={book.title} />
         <RatingContainer>
           <StarContainer>{renderStars(userRating || 0, true)}</StarContainer>
           <span>{userRating ? "Tu calificación" : "Califica este libro"}</span>
@@ -226,15 +344,21 @@ export const Book: React.FC = () => {
           <Title>{book.title}</Title>
           <Author>{book.author}</Author>
           <StarContainer>
-            {renderStars(book.rating)}
+            {renderStars(book.averagerating)}
             <span>
-              {book.rating.toFixed(1)} ({book.reviewCount} reseñas)
+              {book.averagerating.toFixed(1)} ({book.numberreviews}{" "}
+              calificaciones)
             </span>
           </StarContainer>
-          <Synopsis>{book.synopsis}</Synopsis>
-          <GenreList>Géneros: {book.genres.join(", ")}</GenreList>
+          <Synopsis>{book.summary}</Synopsis>
+          <GenreList>Género: {book.genre}</GenreList>
           <PublicationDate>
-            Publicado en: {book.publicationDate}
+            Publicado:{" "}
+            {new Date(book.publication_date).toLocaleDateString("es-ES", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
           </PublicationDate>
         </BookCard>
 
@@ -245,7 +369,7 @@ export const Book: React.FC = () => {
               <ReviewContent>
                 <StarContainer>{renderStars(userRating || 0)}</StarContainer>
                 <p>{userReview}</p>
-                <Button onClick={handleDeleteReview}>Delete Review</Button>
+                <Button onClick={handleDeleteReview}>Eliminar reseña</Button>
               </ReviewContent>
             </ReviewCard>
           ) : isWritingReview ? (
@@ -268,32 +392,47 @@ export const Book: React.FC = () => {
         <Section>
           <SectionTitle>Reseñas de la comunidad</SectionTitle>
           <StarContainer>
-            {renderStars(book.rating)}
-            <span>{book.rating.toFixed(1)} promedio</span>
+            {renderStars(book.averagerating)}
+            <span>{book.averagerating.toFixed(1)} promedio</span>
           </StarContainer>
-          <RatingBreakdown>{renderRatingBreakdown()}</RatingBreakdown>
-          {reviews.map((review) => (
-            <ReviewCard key={review.id}>
-              <ReviewerInfo>
-                <ProfilePicture
-                  src={review.profilePicture}
-                  alt={review.username}
-                />
-                <span>{review.username}</span>
-              </ReviewerInfo>
-              <ReviewContent>
-                <StarContainer>{renderStars(review.rating)}</StarContainer>
-                <p>{review.text}</p>
-                <LikeButton
-                  onClick={() => handleLikeReview(review.id)}
-                  liked={review.userLiked}
-                >
-                  <ThumbsUp size={16} />
-                  {review.userLiked ? "Te gustó" : "Me gusta"} • {review.likes}
-                </LikeButton>
-              </ReviewContent>
-            </ReviewCard>
-          ))}
+          <RatingBreakdown>{renderRatingBreakdown(book)}</RatingBreakdown>
+          {reviews.length === 0 ||
+          reviews.every(
+            (review) => review.iduser === state.id || !review.texto
+          ) ? (
+            <p>Aún no hay reseñas de la comunidad para esta publicación</p>
+          ) : (
+            reviews.map((review) => {
+              if (review.iduser === state.id || !review.texto) {
+                return null;
+              }
+
+              return (
+                <ReviewCard key={review.id}>
+                  <ReviewerInfo>
+                    <ProfilePicture
+                      src={review.user.profilePhoto}
+                      alt={defaultPhotoUrl}
+                    />
+                    <span>{review.user.username}</span>
+                  </ReviewerInfo>
+                  <ReviewContent>
+                    <StarContainer>
+                      {renderStars(review.calification)}
+                    </StarContainer>
+                    <p>{review.texto}</p>
+                    <LikeButton
+                      onClick={() => handleLikeReview(review.id)}
+                      liked={review.liked}
+                    >
+                      <ThumbsUp size={16} />
+                      {review.liked ? "Te gustó" : "Me gusta"} • {review.likes}
+                    </LikeButton>
+                  </ReviewContent>
+                </ReviewCard>
+              );
+            })
+          )}
         </Section>
       </MainContent>
     </Container>

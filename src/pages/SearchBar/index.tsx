@@ -177,7 +177,10 @@ export const SearchBar: React.FC = () => {
                   <span>{book.averagerating.toFixed(1)}</span>
                   <span>
                     ({book.numberreviews}{" "}
-                    {book.numberreviews === 1 ? "reseña" : "reseñas"})
+                    {book.numberreviews === 1
+                      ? "calificación"
+                      : "calificaciones"}
+                    )
                   </span>
                 </RatingContainer>
                 <Synopsis>
