@@ -244,36 +244,6 @@ export const Book: React.FC = () => {
     }
   };
 
-  const handleLikeReview = async (reviewId: string) => {
-    try {
-      const userId = state.id;
-      const response = await axios.post(
-        `${API_URL}/reviews/${reviewId}/${userId}/like`
-      );
-
-      if (response.status === 200) {
-        setReviews((prevReviews) =>
-          prevReviews.map((review) => {
-            if (review.id === reviewId) {
-              const newLikedState = !review.liked;
-              console.log(
-                `User ${newLikedState ? "liked" : "unliked"} review ${reviewId}`
-              );
-              return {
-                ...review,
-                likes: newLikedState ? review.likes + 1 : review.likes - 1,
-                userLiked: newLikedState,
-              };
-            }
-            return review;
-          })
-        );
-      }
-    } catch (error) {
-      console.error("Error liking the review:", error);
-    }
-  };
-
   const renderStars = (rating: number, interactive: boolean = false) => {
     return Array(5)
       .fill(0)
@@ -329,6 +299,41 @@ export const Book: React.FC = () => {
 
     fetchData();
   }, [bookId]);
+
+  const handleLikeReview = async (reviewId: string) => {
+    try {
+      const userId = state.id;
+      const reviewToUpdate = reviews.find((review) => review.id === reviewId);
+      if (!reviewToUpdate) return;
+
+      // Determine the new liked state before making the API call
+      const newLikedState = !reviewToUpdate.liked;
+
+      const response = await axios.post(
+        `${API_URL}/reviews/${reviewId}/${userId}/like`
+      );
+
+      if (response.status === 200) {
+        setReviews((prevReviews) =>
+          prevReviews.map((review) => {
+            if (review.id === reviewId) {
+              console.log(
+                `User ${newLikedState ? "liked" : "unliked"} review ${reviewId}`
+              );
+              return {
+                ...review,
+                likes: newLikedState ? review.likes + 1 : review.likes - 1,
+                liked: newLikedState, // Update the liked state
+              };
+            }
+            return review;
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Error liking the review:", error);
+    }
+  };
 
   return (
     <Container>
