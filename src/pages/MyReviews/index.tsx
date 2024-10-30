@@ -18,6 +18,7 @@ interface Review {
   book: Book;
 }
 
+// TODO: Mover a styled.tsx
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
