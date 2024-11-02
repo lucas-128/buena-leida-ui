@@ -13,6 +13,7 @@ import { CreateAccount } from "../pages/CreateAccount";
 import SearchBar from "../pages/SearchBar";
 import Book from "../pages/Book";
 import MyReviews from "../pages/MyReviews";
+import Bookshelves from "../pages/Bookshelves";
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -80,6 +81,10 @@ export default function AppRouter() {
         {
           path: "/myreviews",
           element: <MyReviews />,
+        },
+        {
+          path: "/bookshelves",
+          element: <Bookshelves />,
         },
       ],
     },

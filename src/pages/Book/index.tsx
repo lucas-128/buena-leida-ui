@@ -32,7 +32,7 @@ import { defaultPhotoUrl } from "../Profile";
 import axios from "axios";
 import { useGlobalState } from "../../context/GlobalStateContext";
 
-const DEFAULT_COVER_IMAGE =
+export const DEFAULT_COVER_IMAGE =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/books%2Fportada_default.png?alt=media&token=cbf8f597-a3bd-469d-b390-7719ec843a8d";
 
 const initialBook: BookDetails = {

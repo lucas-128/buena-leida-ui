@@ -157,8 +157,9 @@ const NavBar: React.FC = () => {
             {state.username}
           </Typography>
           <MenuItem onClick={() => handleClose("/profile")}>Perfil</MenuItem>
-          <MenuItem onClick={() => handleClose("/myreviews")}>
-            Mis Reseñas
+          <MenuItem onClick={() => handleClose("/myreviews")}>Reseñas</MenuItem>
+          <MenuItem onClick={() => handleClose("/bookshelves")}>
+            Bibliotecas
           </MenuItem>
           <Divider />
           <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
