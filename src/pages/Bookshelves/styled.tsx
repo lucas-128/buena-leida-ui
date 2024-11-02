@@ -12,7 +12,6 @@ export const LeftColumn = styled.div`
   width: 200px;
   padding-right: 20px;
   border-right: 1px solid #e0e0e0;
-  display: flex;
   flex-direction: column;
 `;
 
@@ -20,14 +19,14 @@ export const MainContent = styled.div`
   flex: 1;
   padding-left: 20px;
   overflow-y: auto;
-  margin-top: 30px;
+  margin-top: 40px;
 `;
 
 export const Title = styled.h1`
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
-  margin-top: 30px;
+  margin-top: 25px;
 `;
 
 export const Subtitle = styled.h2`
@@ -39,6 +38,7 @@ export const Subtitle = styled.h2`
 export const MenuItem = styled.div`
   cursor: pointer;
   padding: 5px 0;
+  margin-bottom: 4px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -85,7 +85,7 @@ export const Button = styled.button`
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: auto;
+  margin-top: 5px;
 
   &:hover {
     background-color: #357ae8;

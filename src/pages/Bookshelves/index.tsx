@@ -20,6 +20,7 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  TextField,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -39,7 +40,9 @@ export default function Bookshelves() {
     { id: 8, title: "Book 8", cover: DEFAULT_COVER_IMAGE },
   ];
 
-  const [open, setOpen] = useState(false);
+  const [shelfName, setShelfName] = useState<string>("");
+  const [open, setOpen] = useState(false); // delete dialog
+  const [openAddShelf, setOpenAddShelf] = useState(false);
   const [selectedShelf, setSelectedShelf] = useState("");
 
   const handleShelfClick = (shelf: string) => {
@@ -48,10 +51,6 @@ export default function Bookshelves() {
 
   const handleBookClick = (bookId: number) => {
     console.log(`Clicked on book with id: ${bookId}`);
-  };
-
-  const handleAddShelf = () => {
-    console.log("Add shelf clicked");
   };
 
   const handleDeleteClick = (shelf: string) => {
@@ -65,8 +64,20 @@ export default function Bookshelves() {
     setSelectedShelf("");
   };
 
+  const handleAddShelfButton = () => {
+    setOpenAddShelf(true);
+  };
+
+  const handleAddShelf = () => {
+    console.log(`Adding shelf: ${selectedShelf}`);
+    setOpen(false);
+    setOpenAddShelf(false);
+    setSelectedShelf("");
+  };
+
   const handleClose = () => {
     setOpen(false);
+    setOpenAddShelf(false);
     setSelectedShelf("");
   };
 
@@ -84,19 +95,9 @@ export default function Bookshelves() {
         {myShelves.map((shelf) => (
           <MenuItem key={shelf}>
             <span onClick={() => handleShelfClick(shelf)}>{shelf}</span>
-            <IconButton
-              aria-label={`Delete ${shelf}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDeleteClick(shelf);
-              }}
-              style={{ marginLeft: "auto" }}
-            >
-              <DeleteIcon />
-            </IconButton>
           </MenuItem>
         ))}
-        <Button onClick={handleAddShelf}>Add shelf</Button>
+        <Button onClick={handleAddShelfButton}>Add shelf</Button>
       </LeftColumn>
       <MainContent>
         <BookList>
@@ -123,6 +124,28 @@ export default function Bookshelves() {
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleDeleteConfirm} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openAddShelf} onClose={handleClose}>
+        <DialogTitle>Añadir Biblioteca</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Nombre de la Biblioteca"
+            type="text"
+            fullWidth
+            value={shelfName}
+            onChange={(e) => setShelfName(e.target.value)}
+            InputProps={{ inputProps: { maxLength: 20 } }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleAddShelf} color="primary">
             OK
           </Button>
         </DialogActions>
