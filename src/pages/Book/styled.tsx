@@ -139,6 +139,23 @@ export const Button = styled.button`
   }
 `;
 
+export const ColumnButton = styled.button`
+  margin-bottom: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
 export const ReviewInput = styled.textarea`
   width: 100%;
   height: 100px;

@@ -27,6 +27,7 @@ import {
   LikeButton,
   RatingBar,
   RatingCount,
+  ColumnButton,
 } from "./styled";
 import { defaultPhotoUrl } from "../Profile";
 import axios from "axios";
@@ -339,6 +340,16 @@ export const Book: React.FC = () => {
     <Container>
       <LeftColumn>
         <BookImage src={book.coverimage} alt={book.title} />
+        {/*Muestra el estado actual de lectura (fetch de api) 
+        Si no hay estado actual --> muestra algo que indica "Estado lectura" y un lapiz
+        On click -> spawn modal donde puede borrar estado o cambiar o elegir*/}
+        <ColumnButton>Estado de Lectura</ColumnButton>
+
+        {/*Muestra "Agregar a bibloteca" y un lapiz
+        Si se cliquea, se abre el modal que muestra la checkbox (las bibliotecas actuales ya marcadas)
+        Si el usuario no tiene bibliotecas, se muestra mensaje "Crea tus bibliotecas aqui" y lleva a pagina*/}
+        <ColumnButton>Agregar a Biblioteca</ColumnButton>
+
         <RatingContainer>
           <StarContainer>{renderStars(userRating || 0, true)}</StarContainer>
           <span>{userRating ? "Tu calificación" : "Califica este libro"}</span>

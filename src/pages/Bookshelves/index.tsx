@@ -19,15 +19,13 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  IconButton,
   TextField,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 const DEFAULT_COVER_IMAGE = "https://picsum.photos/seed/book/200/300";
 
 export default function Bookshelves() {
-  const shelves = ["Todos", "Leídos", "Leyendo", "Quiero leer"];
+  const shelves = ["Leídos", "Leyendo", "Quiero leer"];
   const myShelves = ["test shelf", "shelf 1", "shelf 2"];
   const books = [
     { id: 1, title: "Book 1", cover: DEFAULT_COVER_IMAGE },
@@ -51,11 +49,6 @@ export default function Bookshelves() {
 
   const handleBookClick = (bookId: number) => {
     console.log(`Clicked on book with id: ${bookId}`);
-  };
-
-  const handleDeleteClick = (shelf: string) => {
-    setSelectedShelf(shelf);
-    setOpen(true);
   };
 
   const handleDeleteConfirm = () => {
