@@ -221,6 +221,8 @@ export const Login = () => {
   return (
     <div style={divStyle}>
       <NavContainer>
+        <img src="public/logo.png" alt="Logo" style={{ width: "65px" }} />
+
         <LogoText>
           <LogoPart>Buena </LogoPart>
           <LogoPart bold>Leida</LogoPart>
