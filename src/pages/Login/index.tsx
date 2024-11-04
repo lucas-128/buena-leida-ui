@@ -13,6 +13,7 @@ import {
 } from "./styled";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 
 const NOT_FOUND = 404;
 const INVALID_PASSWORD = 401;
@@ -29,6 +30,8 @@ export const Login = () => {
   const [confirmPass, setConfirmPass] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -57,21 +60,30 @@ export const Login = () => {
         name === "" ||
         username === "")
     ) {
-      alert("Error: complete todos los campos");
+      enqueueSnackbar("Completa todos los campos!", {
+        variant: "error",
+      });
+
       setIsLoading(false);
       return;
     }
 
     if (mode === "login" && (mail === "" || pass === "")) {
-      alert("Error: complete todos los campos");
+      enqueueSnackbar("Completa todos los campos!", {
+        variant: "error",
+      });
+
       setIsLoading(false);
 
       return;
     }
 
     if (mode === "signup" && (name.length < 1 || name.length > 30)) {
-      alert(
-        "Error: El campo nombre y apellido debe tener entre 1 y 30 caracteres"
+      enqueueSnackbar(
+        "El campo nombre y apellido debe tener entre 1 y 30 caracteres",
+        {
+          variant: "error",
+        }
       );
       setIsLoading(false);
 
@@ -79,44 +91,63 @@ export const Login = () => {
     }
 
     if (mode === "signup" && (username.length < 1 || username.length > 30)) {
-      alert("Error: El nombre de usuario debe tener entre 1 y 30 caracteres");
+      enqueueSnackbar(
+        "El nombre de usuario debe tener entre 1 y 30 caracteres",
+        {
+          variant: "error",
+        }
+      );
       setIsLoading(false);
 
       return;
     }
 
     if (!validateEmail(mail)) {
-      alert("Error: Dirección de correo inválida");
+      enqueueSnackbar("Dirección de correo inválida", {
+        variant: "error",
+      });
+
       setIsLoading(false);
 
       return;
     }
 
     if (mode === "signup" && (pass.length < 6 || pass.length > 20)) {
-      alert("Error: La contraseña debe tener entre 6 y 20 caracteres");
+      enqueueSnackbar("La contraseña debe tener entre 6 y 20 caracteres", {
+        variant: "error",
+      });
+
       setIsLoading(false);
 
       return;
     }
 
     if (mode === "signup" && pass !== confirmPass) {
-      alert("Error: Las contraseñas no coinciden");
+      enqueueSnackbar("Las contraseñas no coinciden", {
+        variant: "error",
+      });
       setIsLoading(false);
 
       return;
     }
 
     if (mode === "signup" && !validateUsername(username)) {
-      alert(
-        "Error: El nombre de usuario no puede contener espacios o caracteres especiales"
+      enqueueSnackbar(
+        "El nombre de usuario no puede contener espacios o caracteres especiales",
+        {
+          variant: "error",
+        }
       );
       setIsLoading(false);
       return;
     }
 
     if (mode === "signup" && !validateName(name)) {
-      alert(
-        "Error: El nombre y apellido no puede contener números o caracteres especiales"
+      enqueueSnackbar(
+        "El nombre y apellido no puede contener números o caracteres especiales",
+        {
+          variant: "error",
+        }
       );
       setIsLoading(false);
 
@@ -129,12 +160,20 @@ export const Login = () => {
       if (resultCode === INVALID_PASSWORD) {
         setIsLoading(false);
 
-        alert("Error: Contraseña incorrecta");
+        enqueueSnackbar("Contraseña incorrecta", {
+          variant: "error",
+        });
         setPass("");
         return;
       } else if (resultCode === NOT_FOUND) {
         setIsLoading(false);
-        alert(`Error: El correo ${mail} no está registrado. Crea una cuenta`);
+
+        enqueueSnackbar(
+          `El correo ${mail} no está registrado. Crea una cuenta`,
+          {
+            variant: "error",
+          }
+        );
         setMode("signup");
         setPass("");
         setName("");
@@ -149,11 +188,19 @@ export const Login = () => {
 
       if (resultCode === USERNAME_TAKEN) {
         setIsLoading(false);
-        alert(`Error: El nombre de usuario ${username} ya está tomado`);
+
+        enqueueSnackbar(`El nombre de usuario ${username} ya está tomado`, {
+          variant: "error",
+        });
+
         setUsername("");
       } else if (resultCode === EMAIL_TAKEN) {
         setIsLoading(false);
-        alert(`Error: El correo ${mail} ya está registrado. Inicia sesion`);
+
+        enqueueSnackbar(`El correo ${mail} ya está registrado. Inicia sesion`, {
+          variant: "error",
+        });
+
         setMode("login");
         setPass("");
         setName("");

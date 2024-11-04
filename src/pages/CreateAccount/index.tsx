@@ -12,6 +12,7 @@ import { Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useLocation } from "react-router-dom";
+import { useSnackbar } from "notistack";
 
 const genres = [
   "Ficción",
@@ -61,6 +62,8 @@ export const CreateAccount = () => {
   const location = useLocation();
   const { mail, pass, name, username } = location.state || {};
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleSubmit = async () => {
     const resultCode = await register(
       mail,
@@ -71,7 +74,9 @@ export const CreateAccount = () => {
     );
 
     if (resultCode === INVALID_DATA) {
-      alert("Error registrando, por favor reintente.");
+      enqueueSnackbar("Error registrando usuario, por favor intenta de nuevo", {
+        variant: "error",
+      });
       navigate("/");
     } else {
       navigate("/");

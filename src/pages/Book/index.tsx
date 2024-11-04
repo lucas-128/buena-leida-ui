@@ -32,6 +32,7 @@ import {
 import { defaultPhotoUrl } from "../Profile";
 import axios from "axios";
 import { useGlobalState } from "../../context/GlobalStateContext";
+import { useSnackbar } from "notistack";
 
 export const DEFAULT_COVER_IMAGE =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/books%2Fportada_default.png?alt=media&token=cbf8f597-a3bd-469d-b390-7719ec843a8d";
@@ -99,6 +100,8 @@ export const Book: React.FC = () => {
   // bookID for details
   const location = useLocation();
   const bookId = location.state?.query || "";
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [book, setBook] = useState<BookDetails>(initialBook);
   const [myReview, setMyReview] = useState<MyReview | null>(null);
@@ -174,7 +177,12 @@ export const Book: React.FC = () => {
       const response = await axios.post(`${API_URL}/reviews/rate`, requestBody);
       console.log("Rating submitted successfully:", response.data);
     } catch (error) {
-      console.error("Error submitting rating:", error);
+      enqueueSnackbar(
+        "Error calificando el libro. Por favor, intenta de nuevo.",
+        {
+          variant: "error",
+        }
+      );
     }
   };
 
@@ -190,17 +198,27 @@ export const Book: React.FC = () => {
   const handleSubmitReview = async () => {
     // Check if userRating is null
     if (userRating === null) {
-      alert("Tienes que calificar el libro primero.");
+      enqueueSnackbar("Tienes que calificar el libro primero.", {
+        variant: "error",
+      });
+
       return;
     }
 
     // Check the length of the review text
     if (newReviewText.length === 0) {
-      alert("El texto de la reseña no puede estar vacío.");
+      enqueueSnackbar("El texto de la reseña no puede estar vacío.", {
+        variant: "error",
+      });
       return;
     }
     if (newReviewText.length > 400) {
-      alert("El texto de la reseña no puede exceder los 400 caracteres.");
+      enqueueSnackbar(
+        "El texto de la reseña no puede exceder los 400 caracteres.",
+        {
+          variant: "error",
+        }
+      );
       return;
     }
 
@@ -236,12 +254,23 @@ export const Book: React.FC = () => {
         setUserReview(null);
         setUserRating(null);
         console.log("User deleted their review and rating");
+        setNewReviewText("");
       } else {
-        alert("There was an error deleting your review. Please try again.");
+        enqueueSnackbar(
+          "Error actualizando la reseña. Por favor, intenta de nuevo.",
+          {
+            variant: "error",
+          }
+        );
       }
     } catch (error) {
       console.error("Error deleting review:", error);
-      alert("There was an error deleting your review. Please try again.");
+      enqueueSnackbar(
+        "Error eliminando la reseña. Por favor, intenta de nuevo.",
+        {
+          variant: "error",
+        }
+      );
     }
   };
 

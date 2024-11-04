@@ -21,6 +21,7 @@ import { storage } from "../../../firebaseConfig";
 import { useGlobalState } from "../../context/GlobalStateContext";
 import "react-image-crop/dist/ReactCrop.css";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 
 const API_URL = "http://localhost:3000";
 
@@ -54,6 +55,8 @@ export const Profile = () => {
       setOriginalBioText(bioText);
     }
   };
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleRealNameEdit = () => {
     setIsEditingRealName(!isEditingRealName);
@@ -107,11 +110,16 @@ export const Profile = () => {
         }
       } catch (e) {
         console.log("Error updating profile pic: ", e);
-        alert("Error actualizando imagen de perfil.");
+
+        enqueueSnackbar("Error actualizando imagen de perfil.", {
+          variant: "error",
+        });
       }
     } catch (error) {
       console.error("Error uploading image: ", error);
-      alert("Error actualizando imagen de perfil");
+      enqueueSnackbar("Error actualizando imagen de perfil.", {
+        variant: "error",
+      });
     }
   };
 
@@ -137,7 +145,9 @@ export const Profile = () => {
         }
       } catch (e) {
         console.log("Error updating profile pic: ", e);
-        alert("Error actualizando imagen de perfil.");
+        enqueueSnackbar("Error actualizando imagen de perfil.", {
+          variant: "error",
+        });
       }
     } catch (error) {
       // La imagen ya esta borrada
@@ -184,7 +194,10 @@ export const Profile = () => {
       }
     } catch (e) {
       console.log("Error updating bio: ", e);
-      alert("Error actualizando biografia.");
+
+      enqueueSnackbar("Error actualizando biografia.", {
+        variant: "error",
+      });
     }
   };
 
@@ -205,7 +218,9 @@ export const Profile = () => {
       }
     } catch (e) {
       console.log("Error updating real name: ", e);
-      alert("Error actualizando nombre.");
+      enqueueSnackbar("Error actualizando nombre.", {
+        variant: "error",
+      });
     }
   };
 
