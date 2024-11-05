@@ -96,3 +96,46 @@ export const Button = styled.button`
     box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.5);
   }
 `;
+
+export const DialogOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+export const DialogContent = styled.div`
+  background-color: white;
+  padding: 24px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+export const DialogTitle = styled.h2`
+  margin: 0 0 16px;
+  font-size: 1.5rem;
+  font-weight: 600;
+`;
+
+export const Input = styled.input`
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 8px;
+
+  &:focus {
+    outline: none;
+    border-color: #0070f3;
+    box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+  }
+`;

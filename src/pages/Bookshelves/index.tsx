@@ -17,14 +17,16 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   TextField,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 const DEFAULT_COVER_IMAGE = "https://picsum.photos/seed/book/200/300";
 
 export default function Bookshelves() {
+  const { enqueueSnackbar } = useSnackbar();
+
   const shelves = ["Leídos", "Leyendo", "Quiero leer"];
   const myShelves = ["test shelf", "shelf 1", "shelf 2"];
   const books = [
@@ -39,9 +41,7 @@ export default function Bookshelves() {
   ];
 
   const [shelfName, setShelfName] = useState<string>("");
-  const [open, setOpen] = useState(false); // delete dialog
   const [openAddShelf, setOpenAddShelf] = useState(false);
-  const [selectedShelf, setSelectedShelf] = useState("");
 
   const handleShelfClick = (shelf: string) => {
     console.log(`Clicked on shelf: ${shelf}`);
@@ -51,27 +51,25 @@ export default function Bookshelves() {
     console.log(`Clicked on book with id: ${bookId}`);
   };
 
-  const handleDeleteConfirm = () => {
-    console.log(`Deleting shelf: ${selectedShelf}`);
-    setOpen(false);
-    setSelectedShelf("");
-  };
-
   const handleAddShelfButton = () => {
     setOpenAddShelf(true);
   };
 
   const handleAddShelf = () => {
-    console.log(`Adding shelf: ${selectedShelf}`);
-    setOpen(false);
+    console.log(`Adding shelf: ${shelfName}`);
+
+    if (shelfName.length == 0) {
+      enqueueSnackbar("Nombre no puede estar vacío", {
+        variant: "error",
+      });
+      return;
+    }
     setOpenAddShelf(false);
-    setSelectedShelf("");
+    setShelfName("");
   };
 
   const handleClose = () => {
-    setOpen(false);
     setOpenAddShelf(false);
-    setSelectedShelf("");
   };
 
   return (
@@ -90,7 +88,7 @@ export default function Bookshelves() {
             <span onClick={() => handleShelfClick(shelf)}>{shelf}</span>
           </MenuItem>
         ))}
-        <Button onClick={handleAddShelfButton}>Add shelf</Button>
+        <Button onClick={handleAddShelfButton}>Crear</Button>
       </LeftColumn>
       <MainContent>
         <BookList>
@@ -107,20 +105,6 @@ export default function Bookshelves() {
           ))}
         </BookList>
       </MainContent>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete Shelf</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Do you want to delete "{selectedShelf}"?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleDeleteConfirm} color="primary">
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       <Dialog open={openAddShelf} onClose={handleClose}>
         <DialogTitle>Añadir Biblioteca</DialogTitle>
@@ -131,14 +115,15 @@ export default function Bookshelves() {
             label="Nombre de la Biblioteca"
             type="text"
             fullWidth
+            variant="standard"
             value={shelfName}
             onChange={(e) => setShelfName(e.target.value)}
-            InputProps={{ inputProps: { maxLength: 20 } }}
+            inputProps={{ maxLength: 15 }}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleAddShelf} color="primary">
+          <Button type="submit" onClick={handleAddShelf} color="primary">
             OK
           </Button>
         </DialogActions>
