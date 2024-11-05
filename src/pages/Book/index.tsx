@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Star, ThumbsUp } from "lucide-react";
 import {
   Container,
@@ -33,6 +33,18 @@ import { defaultPhotoUrl } from "../Profile";
 import axios from "axios";
 import { useGlobalState } from "../../context/GlobalStateContext";
 import { useSnackbar } from "notistack";
+import {
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Typography,
+} from "@mui/material";
 
 export const DEFAULT_COVER_IMAGE =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/books%2Fportada_default.png?alt=media&token=cbf8f597-a3bd-469d-b390-7719ec843a8d";
@@ -97,11 +109,85 @@ interface Review {
 }
 
 export const Book: React.FC = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+
+  // Dialog estado lectura
+  const [openReadingStatusDialog, setOpenReadingStatusDialog] = useState(false);
+  const handleClose = () => {
+    setOpenReadingStatusDialog(false);
+    setopenAddToShelfDialog(false);
+  };
+
+  const handleUpdateStatusButton = () => {
+    setOpenReadingStatusDialog(true);
+  };
+
+  const handleDeleteStatus = () => {
+    console.log("Estado de lectura eliminado.");
+    handleClose();
+  };
+  const fetchPreSelectedStatus = (): string => {
+    // reemplazar con API
+    return "Leyendo";
+  };
+  const [readingStatus, setReadingStatus] = useState(fetchPreSelectedStatus());
+
+  useEffect(() => {
+    // Update the reading status when the dialog opens
+    const preSelectedStatus = fetchPreSelectedStatus();
+    setReadingStatus(preSelectedStatus);
+  }, [openReadingStatusDialog]);
+
+  const handleChange = (event: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    setReadingStatus(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    console.log("Estado de lectura actualizado a:", readingStatus);
+    handleClose();
+    enqueueSnackbar("Estado de lectura actualizado correctamente.", {
+      variant: "success",
+    });
+  };
+
+  // Dialog biblioteca checkbox
+  const [openAddToShelfDialog, setopenAddToShelfDialog] = useState(false);
+
+  const bookshelves: string[] = [];
+  const [selectedShelves, setSelectedShelves] = useState<string[]>(["A"]);
+
+  const handleAddShelfButton = () => {
+    setopenAddToShelfDialog(true);
+  };
+
+  const handleToggle = (value: string) => {
+    setSelectedShelves((prev: string[]) => {
+      const currentIndex = prev.indexOf(value);
+      const newSelected = [...prev];
+
+      if (currentIndex === -1) {
+        newSelected.push(value);
+      } else {
+        newSelected.splice(currentIndex, 1);
+      }
+
+      return newSelected;
+    });
+  };
+
+  const handleSubmitBookshelf = () => {
+    enqueueSnackbar("Bibliotecas actualizadas correctamente.", {
+      variant: "success",
+    });
+    handleClose();
+  };
+
   // bookID for details
   const location = useLocation();
   const bookId = location.state?.query || "";
-
-  const { enqueueSnackbar } = useSnackbar();
 
   const [book, setBook] = useState<BookDetails>(initialBook);
   const [myReview, setMyReview] = useState<MyReview | null>(null);
@@ -372,12 +458,16 @@ export const Book: React.FC = () => {
         {/*Muestra el estado actual de lectura (fetch de api) 
         Si no hay estado actual --> muestra algo que indica "Estado lectura" y un lapiz
         On click -> spawn modal donde puede borrar estado o cambiar o elegir*/}
-        <ColumnButton>Estado de Lectura</ColumnButton>
+        <ColumnButton onClick={handleUpdateStatusButton}>
+          Estado de Lectura ✏️
+        </ColumnButton>
 
         {/*Muestra "Agregar a bibloteca" y un lapiz
         Si se cliquea, se abre el modal que muestra la checkbox (las bibliotecas actuales ya marcadas)
         Si el usuario no tiene bibliotecas, se muestra mensaje "Crea tus bibliotecas aqui" y lleva a pagina*/}
-        <ColumnButton>Agregar a Biblioteca</ColumnButton>
+        <ColumnButton onClick={handleAddShelfButton}>
+          Agregar a Biblioteca 📚
+        </ColumnButton>
 
         <RatingContainer>
           <StarContainer>{renderStars(userRating || 0, true)}</StarContainer>
@@ -479,6 +569,85 @@ export const Book: React.FC = () => {
             })
           )}
         </Section>
+
+        <Dialog open={openReadingStatusDialog} onClose={handleClose}>
+          <DialogTitle>Actualizar estado de lectura</DialogTitle>
+          <DialogContent>
+            <FormControl component="fieldset">
+              <RadioGroup value={readingStatus} onChange={handleChange}>
+                <FormControlLabel
+                  value="Leyendo"
+                  control={<Radio />}
+                  label="Leyendo"
+                />
+                <FormControlLabel
+                  value="Quiero leer"
+                  control={<Radio />}
+                  label="Quiero leer"
+                />
+                <FormControlLabel
+                  value="Leido"
+                  control={<Radio />}
+                  label="Leido"
+                />
+              </RadioGroup>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteStatus}>Eliminar</Button>
+
+            <Button onClick={handleClose}>Cancelar</Button>
+            <Button type="submit" onClick={handleSubmit} color="primary">
+              Guardar
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={openAddToShelfDialog} onClose={handleClose}>
+          <DialogTitle>Añadir a la/s biblioteca/s</DialogTitle>
+          <DialogContent>
+            <FormControl component="fieldset">
+              {bookshelves.length === 0 ? (
+                <Typography>
+                  Actualmente no tienes ninguna biblioteca,{" "}
+                  <span
+                    style={{
+                      color: "blue",
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => navigate("/bookshelves")}
+                  >
+                    créalas aquí
+                  </span>
+                  .
+                </Typography>
+              ) : (
+                bookshelves.map((shelf) => (
+                  <FormControlLabel
+                    key={shelf}
+                    control={
+                      <Checkbox
+                        checked={selectedShelves.indexOf(shelf) !== -1}
+                        onChange={() => handleToggle(shelf)}
+                        color="primary"
+                      />
+                    }
+                    label={shelf}
+                  />
+                ))
+              )}
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancelar</Button>
+            {bookshelves.length > 0 && (
+              <Button onClick={handleSubmitBookshelf} color="primary">
+                Guardar
+              </Button>
+            )}
+          </DialogActions>
+        </Dialog>
       </MainContent>
     </Container>
   );

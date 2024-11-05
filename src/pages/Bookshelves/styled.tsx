@@ -25,7 +25,7 @@ export const MainContent = styled.div`
 export const Title = styled.h1`
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 25px;
   margin-top: 25px;
 `;
 

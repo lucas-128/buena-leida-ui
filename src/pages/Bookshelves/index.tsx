@@ -59,7 +59,7 @@ export default function Bookshelves() {
     console.log(`Adding shelf: ${shelfName}`);
 
     if (shelfName.length == 0) {
-      enqueueSnackbar("Nombre no puede estar vacío", {
+      enqueueSnackbar("El nombre de la biblioteca no puede estar vacío.", {
         variant: "error",
       });
       return;
@@ -76,13 +76,14 @@ export default function Bookshelves() {
     <Container>
       <LeftColumn>
         <Title>Mis Libros</Title>
-        <Subtitle>Bibliotecas</Subtitle>
         {shelves.map((shelf) => (
           <MenuItem key={shelf} onClick={() => handleShelfClick(shelf)}>
             {shelf}
           </MenuItem>
         ))}
         <Separator />
+        <Subtitle>Bibliotecas</Subtitle>
+
         {myShelves.map((shelf) => (
           <MenuItem key={shelf}>
             <span onClick={() => handleShelfClick(shelf)}>{shelf}</span>
@@ -122,9 +123,9 @@ export default function Bookshelves() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>Cancelar</Button>
           <Button type="submit" onClick={handleAddShelf} color="primary">
-            OK
+            Crear
           </Button>
         </DialogActions>
       </Dialog>

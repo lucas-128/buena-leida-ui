@@ -141,7 +141,7 @@ export const Button = styled.button`
 
 export const ColumnButton = styled.button`
   margin-bottom: 10px;
-  background-color: red;
+  background-color: darkblue;
   color: white;
   border: none;
   width: 100%;
