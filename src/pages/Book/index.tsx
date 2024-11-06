@@ -101,7 +101,7 @@ interface BookDetails {
 interface Review {
   id: string;
   iduser: number;
-  user: UserData; // user data
+  user: UserData;
   calification: number;
   texto: string;
   likes: number;
@@ -128,7 +128,6 @@ export const Book: React.FC = () => {
     handleClose();
   };
   const fetchPreSelectedStatus = (): string => {
-    // reemplazar con API
     return "Leyendo";
   };
   const [readingStatus, setReadingStatus] = useState(fetchPreSelectedStatus());
@@ -153,18 +152,19 @@ export const Book: React.FC = () => {
     });
   };
 
-  // Dialog biblioteca checkbox
+  //////// Dialog biblioteca checkbox /////////////////////////////////////////////////////////
   const [openAddToShelfDialog, setopenAddToShelfDialog] = useState(false);
-
-  const bookshelves: string[] = [];
-  const [selectedShelves, setSelectedShelves] = useState<string[]>(["A"]);
+  const [selectedShelves, setSelectedShelves] = useState<number[]>([]);
+  const [bookshelves, setBookshelves] = useState<
+    { id: number; title: string }[]
+  >([]);
 
   const handleAddShelfButton = () => {
     setopenAddToShelfDialog(true);
   };
 
-  const handleToggle = (value: string) => {
-    setSelectedShelves((prev: string[]) => {
+  const handleToggle = (value: number) => {
+    setSelectedShelves((prev: number[]) => {
       const currentIndex = prev.indexOf(value);
       const newSelected = [...prev];
 
@@ -178,11 +178,53 @@ export const Book: React.FC = () => {
     });
   };
 
-  const handleSubmitBookshelf = () => {
-    enqueueSnackbar("Bibliotecas actualizadas correctamente.", {
-      variant: "success",
-    });
-    handleClose();
+  useEffect(() => {
+    const fetchBookShelves = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/bookshelf/${state.id}/saw_bookshelves`,
+          { params: { bookId } }
+        );
+
+        const currentBookshelves = response.data.map(
+          (shelf: { id: number }) => shelf.id
+        );
+
+        setSelectedShelves(currentBookshelves);
+        console.log("Current bookshelves:", currentBookshelves);
+      } catch (error) {
+        console.error("Error fetching book shelves for the book", error);
+      }
+    };
+
+    fetchBookShelves();
+  }, []); // Make sure to re-run effect if bookId or state.id changes
+
+  const handleSubmitBookshelf = async () => {
+    try {
+      // Send the PATCH request to update the bookshelves
+      await axios.patch(
+        `http://localhost:3000/bookshelf/update_bookshelf/${bookId}`,
+        {
+          bookshelfIds: selectedShelves,
+          userId: state.id,
+        }
+      );
+
+      // Show success message
+      enqueueSnackbar("Bibliotecas actualizadas correctamente.", {
+        variant: "success",
+      });
+
+      // Close the dialog
+      handleClose();
+    } catch (error) {
+      // Handle error case
+      console.error("Error updating bookshelf", error);
+      enqueueSnackbar("Error al actualizar bibliotecas.", {
+        variant: "error",
+      });
+    }
   };
 
   // bookID for details
@@ -230,13 +272,11 @@ export const Book: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (bookId) {
-        // Todas las reviews del libro
         try {
           const response = await axios.get(
             `${API_URL}/reviews/${bookId}?iduser=${state.id}`
           );
           setReviews(response.data);
-          console.log("Reviews:", response.data);
         } catch (err) {
         } finally {
         }
@@ -326,6 +366,27 @@ export const Book: React.FC = () => {
       console.error("Error submitting review:", error);
     }
   };
+
+  useEffect(() => {
+    const fetchBookshelves = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/bookshelf/${state.id}`
+        );
+        const bookshelfData = response.data.map(
+          (shelf: { id: number; title: string }) => ({
+            id: shelf.id,
+            title: shelf.title,
+          })
+        );
+        setBookshelves(bookshelfData);
+      } catch (error) {
+        console.error("Error fetching bookshelves", error);
+      }
+    };
+
+    fetchBookshelves();
+  }, [state.id]);
 
   const handleDeleteReview = async () => {
     const iduser = state.id;
@@ -625,15 +686,15 @@ export const Book: React.FC = () => {
               ) : (
                 bookshelves.map((shelf) => (
                   <FormControlLabel
-                    key={shelf}
+                    key={shelf.id}
                     control={
                       <Checkbox
-                        checked={selectedShelves.indexOf(shelf) !== -1}
-                        onChange={() => handleToggle(shelf)}
+                        checked={selectedShelves.indexOf(shelf.id) !== -1}
+                        onChange={() => handleToggle(shelf.id)}
                         color="primary"
                       />
                     }
-                    label={shelf}
+                    label={shelf.title}
                   />
                 ))
               )}
