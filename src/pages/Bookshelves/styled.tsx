@@ -29,6 +29,13 @@ export const Title = styled.h1`
   margin-top: 25px;
 `;
 
+export const MainContentTitle = styled.h1`
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+  margin-bottom: 20px;
+`;
+
 export const Subtitle = styled.h2`
   font-size: 18px;
   font-weight: bold;

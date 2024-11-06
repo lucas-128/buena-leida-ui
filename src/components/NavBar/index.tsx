@@ -60,7 +60,7 @@ const NavBar: React.FC = () => {
 
   return (
     <NavContainer>
-      <img src="public/logo.png" alt="Logo" style={{ width: "65px" }} />
+      <img src="/logo.png" alt="Logo" style={{ width: "65px" }} />
       <StyledLink to="/">
         <LogoText>
           <LogoPart>Buena </LogoPart>
