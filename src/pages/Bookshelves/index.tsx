@@ -24,6 +24,7 @@ import {
 import { useSnackbar } from "notistack";
 import axios from "axios";
 import { useGlobalState } from "../../context/GlobalStateContext";
+import { useNavigate } from "react-router-dom";
 
 interface Book {
   id: number;
@@ -43,6 +44,7 @@ const API_URL = "http://localhost:3000";
 export default function Bookshelves() {
   const { enqueueSnackbar } = useSnackbar();
   const { state } = useGlobalState();
+  const navigate = useNavigate();
 
   const shelves = ["Leídos", "Leyendo", "Quiero leer"];
 
@@ -96,7 +98,7 @@ export default function Bookshelves() {
   };
 
   const handleBookClick = (bookId: number) => {
-    console.log(`Clicked on book with id: ${bookId}`);
+    navigate("/book", { state: { query: bookId } });
   };
 
   const handleAddShelfButton = () => {
@@ -104,8 +106,6 @@ export default function Bookshelves() {
   };
 
   const handleAddShelf = async () => {
-    console.log(`Adding shelf: ${shelfName}`);
-
     if (shelfName.length === 0) {
       enqueueSnackbar("El nombre de la biblioteca no puede estar vacío.", {
         variant: "error",
