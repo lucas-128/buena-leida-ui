@@ -62,7 +62,7 @@ export default function Bookshelves() {
   const [bookshelves, setBookshelves] = useState<Bookshelf[]>([]);
   const [selectedBooks, setSelectedBooks] = useState<
     { id: number; title: string; coverImage: string }[]
-  >([]); // To hold books for the selected shelf
+  >([]);
   const [title, setTitle] = useState("Leídos");
 
   useEffect(() => {
@@ -120,7 +120,6 @@ export default function Bookshelves() {
       });
 
       if (response.status >= 200 && response.status < 300) {
-        console.log("falpinha");
         const newShelf = transformBookshelfData([response.data])[0];
         setBookshelves((prevShelves) => [...prevShelves, newShelf]);
 
