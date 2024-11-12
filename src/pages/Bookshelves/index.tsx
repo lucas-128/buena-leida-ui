@@ -38,6 +38,8 @@ interface Bookshelf {
   books: Book[];
 }
 
+type NewStatus = "leido" | "leyendo" | "quiero_leer";
+
 const DEFAULT_COVER_IMAGE = "https://picsum.photos/seed/book/200/300";
 const API_URL = "http://localhost:3000";
 
@@ -45,6 +47,20 @@ export default function Bookshelves() {
   const { enqueueSnackbar } = useSnackbar();
   const { state } = useGlobalState();
   const navigate = useNavigate();
+  const [showSelectedBooks, setShowSelectedBooks] = useState(true); // true para customs
+
+  const getNewStatus = (status: string): NewStatus => {
+    switch (status) {
+      case "Leídos":
+        return "leido";
+      case "Leyendo":
+        return "leyendo";
+      case "Quiero leer":
+        return "quiero_leer";
+      default:
+        throw new Error("Unknown status");
+    }
+  };
 
   const shelves = ["Leídos", "Leyendo", "Quiero leer"];
 
@@ -59,10 +75,24 @@ export default function Bookshelves() {
       })),
     }));
   };
+
+  const transformBookStateData = (books: any[]) => {
+    return books.map((book) => ({
+      id: book.id,
+      coverImage: book.coverimage,
+      title: book.title,
+    }));
+  };
+
   const [bookshelves, setBookshelves] = useState<Bookshelf[]>([]);
   const [selectedBooks, setSelectedBooks] = useState<
     { id: number; title: string; coverImage: string }[]
   >([]);
+
+  const [selectedBooksStates, setSelectedBooksStates] = useState<
+    { id: number; title: string; coverImage: string }[]
+  >([]);
+
   const [title, setTitle] = useState("Leídos");
 
   useEffect(() => {
@@ -82,13 +112,28 @@ export default function Bookshelves() {
   const [shelfName, setShelfName] = useState<string>("");
   const [openAddShelf, setOpenAddShelf] = useState(false);
 
-  const handleStatusClick = (status: string) => {
-    console.log(`Clicked on shelf: ${status}`);
+  const handleStatusClick = async (status: string) => {
+    console.log(`Clicked on status: ${status}`);
+    setShowSelectedBooks(false);
     setTitle(status);
+    const newStatus = getNewStatus(status);
+    console.log(newStatus);
+    console.log(`${API_URL}/readingstate/${state.id}/state/${newStatus}`);
+
+    try {
+      const response = await axios.get(
+        `${API_URL}/readingstate/${state.id}/state/${newStatus}`
+      );
+      setSelectedBooksStates(transformBookStateData(response.data));
+    } catch (error) {
+      console.error("No books found for reading status");
+      setSelectedBooksStates([]);
+    }
   };
 
   const handleShelfClick = (shelfId: number) => {
     console.log(`Clicked on shelf with ID: ${shelfId}`);
+    setShowSelectedBooks(true);
 
     const selectedShelf = bookshelves.find((shelf) => shelf.id === shelfId);
     if (selectedShelf) {
@@ -148,6 +193,10 @@ export default function Bookshelves() {
     setOpenAddShelf(false);
   };
 
+  const booksToDisplay = showSelectedBooks
+    ? selectedBooks
+    : selectedBooksStates;
+
   return (
     <Container>
       <LeftColumn>
@@ -172,8 +221,8 @@ export default function Bookshelves() {
       <MainContent>
         <MainContentTitle>{title}</MainContentTitle>
         <BookList>
-          {selectedBooks.length > 0 ? (
-            selectedBooks.map((book) => (
+          {booksToDisplay.length > 0 ? (
+            booksToDisplay.map((book) => (
               <BookItem key={book.id} onClick={() => handleBookClick(book.id)}>
                 <BookImage
                   src={book.coverImage || DEFAULT_COVER_IMAGE}
