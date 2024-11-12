@@ -123,6 +123,8 @@ export const SearchBar: React.FC = () => {
       ));
   };
 
+  const [showSortMenu, setShowSortMenu] = useState(true);
+
   return (
     <Container>
       <Title>Buscar</Title>
@@ -135,13 +137,16 @@ export const SearchBar: React.FC = () => {
         />
         <SearchButton type="submit">Buscar</SearchButton>
       </SearchForm>
-      <RadioGroup style={{ display: "flex" }}>
+      <RadioGroup style={{ marginTop: "40px", gap: "30px" }}>
         <RadioLabel>
           <input
             type="radio"
             value="todo"
             checked={searchType === "todo"}
-            onChange={() => setSearchType("todo")}
+            onChange={() => {
+              setSearchType("todo");
+              setShowSortMenu(true);
+            }}
           />
           Todo
         </RadioLabel>
@@ -150,7 +155,10 @@ export const SearchBar: React.FC = () => {
             type="radio"
             value="title"
             checked={searchType === "title"}
-            onChange={() => setSearchType("title")}
+            onChange={() => {
+              setSearchType("title");
+              setShowSortMenu(true);
+            }}
           />
           Título
         </RadioLabel>
@@ -159,7 +167,10 @@ export const SearchBar: React.FC = () => {
             type="radio"
             value="author"
             checked={searchType === "author"}
-            onChange={() => setSearchType("author")}
+            onChange={() => {
+              setSearchType("author");
+              setShowSortMenu(true);
+            }}
           />
           Autor
         </RadioLabel>
@@ -168,13 +179,18 @@ export const SearchBar: React.FC = () => {
             type="radio"
             value="user"
             checked={searchType === "user"}
-            onChange={() => setSearchType("user")}
+            onChange={() => {
+              setSearchType("user");
+              setShowSortMenu(false);
+              setRankingMode("Default");
+            }}
           />
           Usuario
         </RadioLabel>
+
         <FormControl
           variant="standard"
-          sx={{ m: 1, minWidth: 120, marginBottom: "20px" }}
+          sx={{ minWidth: 120, marginBottom: "0px" }}
         >
           <InputLabel>Ordenar</InputLabel>
           <Select
@@ -182,7 +198,7 @@ export const SearchBar: React.FC = () => {
             onChange={(event) => setRankingMode(event.target.value)}
           >
             <MenuItem value={"rankings"}>Ranking</MenuItem>
-            <MenuItem value={""}>Nada</MenuItem>
+            <MenuItem value={"Default"}>Default</MenuItem>
           </Select>
         </FormControl>
       </RadioGroup>
