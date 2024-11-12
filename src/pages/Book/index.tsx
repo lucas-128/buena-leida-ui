@@ -124,18 +124,65 @@ export const Book: React.FC = () => {
   };
 
   const handleDeleteStatus = () => {
-    console.log("Estado de lectura eliminado.");
-    handleClose();
+    axios
+      .delete(`http://localhost:3000/readingstate/remove`, {
+        data: {
+          bookId: bookId,
+          userId: state.id,
+        },
+      })
+      .then((response) => {
+        console.log("Status Code:", response.status);
+        console.log("Response Data:", response.data);
+
+        setReadingStatus("Estado de lectura");
+        enqueueSnackbar("Estado de lectura eliminado.", {
+          variant: "success",
+        });
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log("Error Status Code:", error.response.status);
+          console.log("Error Response Data:", error.response.data);
+        } else {
+          console.error("Error deleting reading status:", error);
+        }
+        enqueueSnackbar("Este libro no tiene estado de lectura.", {
+          variant: "warning",
+        });
+      })
+      .finally(() => {
+        handleClose();
+      });
   };
-  const fetchPreSelectedStatus = (): string => {
-    return "Leyendo";
+
+  const fetchPreSelectedStatus = async (): Promise<string> => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/readingstate/${state.id}/${bookId}`
+      );
+
+      if (response.status === 200) {
+        return response.data.status;
+      } else {
+        return "Estado de lectura";
+      }
+    } catch (error) {
+      console.error("Error fetching reading status:", error);
+      return "Estado de lectura";
+    }
   };
-  const [readingStatus, setReadingStatus] = useState(fetchPreSelectedStatus());
+
+  const [readingStatus, setReadingStatus] = useState("");
 
   useEffect(() => {
-    // Update the reading status when the dialog opens
-    const preSelectedStatus = fetchPreSelectedStatus();
-    setReadingStatus(preSelectedStatus);
+    const updateReadingStatus = async () => {
+      const preSelectedStatus = await fetchPreSelectedStatus();
+      setReadingStatus(preSelectedStatus);
+      console.log("Estado de lectura preseleccionado:", preSelectedStatus);
+    };
+
+    updateReadingStatus();
   }, [openReadingStatusDialog]);
 
   const handleChange = (event: {
@@ -144,12 +191,26 @@ export const Book: React.FC = () => {
     setReadingStatus(event.target.value);
   };
 
-  const handleSubmit = () => {
-    console.log("Estado de lectura actualizado a:", readingStatus);
-    handleClose();
-    enqueueSnackbar("Estado de lectura actualizado correctamente.", {
-      variant: "success",
-    });
+  const handleSubmit = async () => {
+    try {
+      await axios.post("http://localhost:3000/readingstate", {
+        bookId: bookId,
+        userId: state.id,
+        status: readingStatus,
+      });
+
+      console.log("Estado de lectura actualizado a:", readingStatus);
+      enqueueSnackbar("Estado de lectura actualizado correctamente.", {
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Error al actualizar el estado de lectura:", error);
+      enqueueSnackbar("Hubo un error al actualizar el estado de lectura.", {
+        variant: "error",
+      });
+    } finally {
+      handleClose();
+    }
   };
 
   //////// Dialog biblioteca checkbox /////////////////////////////////////////////////////////
@@ -516,16 +577,12 @@ export const Book: React.FC = () => {
     <Container>
       <LeftColumn>
         <BookImage src={book.coverimage} alt={book.title} />
-        {/*Muestra el estado actual de lectura (fetch de api) 
-        Si no hay estado actual --> muestra algo que indica "Estado lectura" y un lapiz
-        On click -> spawn modal donde puede borrar estado o cambiar o elegir*/}
         <ColumnButton onClick={handleUpdateStatusButton}>
-          Estado de Lectura ✏️
+          {readingStatus.replace(/_/g, " ").charAt(0).toUpperCase() +
+            readingStatus.replace(/_/g, " ").slice(1)}{" "}
+          ✏️
         </ColumnButton>
 
-        {/*Muestra "Agregar a bibloteca" y un lapiz
-        Si se cliquea, se abre el modal que muestra la checkbox (las bibliotecas actuales ya marcadas)
-        Si el usuario no tiene bibliotecas, se muestra mensaje "Crea tus bibliotecas aqui" y lleva a pagina*/}
         <ColumnButton onClick={handleAddShelfButton}>
           Agregar a Biblioteca 📚
         </ColumnButton>
@@ -637,17 +694,17 @@ export const Book: React.FC = () => {
             <FormControl component="fieldset">
               <RadioGroup value={readingStatus} onChange={handleChange}>
                 <FormControlLabel
-                  value="Leyendo"
+                  value="leyendo"
                   control={<Radio />}
                   label="Leyendo"
                 />
                 <FormControlLabel
-                  value="Quiero leer"
+                  value="quiero_leer"
                   control={<Radio />}
                   label="Quiero leer"
                 />
                 <FormControlLabel
-                  value="Leido"
+                  value="leido"
                   control={<Radio />}
                   label="Leido"
                 />
@@ -656,7 +713,6 @@ export const Book: React.FC = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleDeleteStatus}>Eliminar</Button>
-
             <Button onClick={handleClose}>Cancelar</Button>
             <Button type="submit" onClick={handleSubmit} color="primary">
               Guardar
