@@ -14,6 +14,7 @@ import SearchBar from "../pages/SearchBar";
 import Book from "../pages/Book";
 import MyReviews from "../pages/MyReviews";
 import Bookshelves from "../pages/Bookshelves";
+import OtherProfile from "../pages/OtherProfile";
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -85,6 +86,10 @@ export default function AppRouter() {
         {
           path: "/bookshelves",
           element: <Bookshelves />,
+        },
+        {
+          path: "/otherprofile",
+          element: <OtherProfile />,
         },
       ],
     },

@@ -23,6 +23,7 @@ import {
   Spinner,
 } from "./styled";
 import axios from "axios";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 interface Book {
   id: number;
@@ -107,6 +108,8 @@ export const SearchBar: React.FC = () => {
     navigate("/book", { state: { query: bookId } });
   };
 
+  const [rankingMode, setRankingMode] = useState("");
+
   const renderStars = (rating: number) => {
     return Array(5)
       .fill(0)
@@ -132,7 +135,7 @@ export const SearchBar: React.FC = () => {
         />
         <SearchButton type="submit">Buscar</SearchButton>
       </SearchForm>
-      <RadioGroup>
+      <RadioGroup style={{ display: "flex" }}>
         <RadioLabel>
           <input
             type="radio"
@@ -160,6 +163,28 @@ export const SearchBar: React.FC = () => {
           />
           Autor
         </RadioLabel>
+        <RadioLabel>
+          <input
+            type="radio"
+            value="user"
+            checked={searchType === "user"}
+            onChange={() => setSearchType("user")}
+          />
+          Usuario
+        </RadioLabel>
+        <FormControl
+          variant="standard"
+          sx={{ m: 1, minWidth: 120, marginBottom: "20px" }}
+        >
+          <InputLabel>Ordenar</InputLabel>
+          <Select
+            value={rankingMode}
+            onChange={(event) => setRankingMode(event.target.value)}
+          >
+            <MenuItem value={"rankings"}>Ranking</MenuItem>
+            <MenuItem value={""}>Nada</MenuItem>
+          </Select>
+        </FormControl>
       </RadioGroup>
       <ResultsContainer>
         {isLoading ? (
