@@ -21,9 +21,10 @@ import {
   GenreList,
   PublicationDate,
   Spinner,
+  UserImage,
 } from "./styled";
 import axios from "axios";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, InputLabel, NativeSelect } from "@mui/material";
 
 interface Book {
   id: number;
@@ -37,6 +38,13 @@ interface Book {
   coverimage: string;
 }
 
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  profilePhoto: string;
+}
+
 const SYNOPSIS_MAX_LENGTH = 80;
 
 const API_URL = "http://localhost:3000";
@@ -45,6 +53,8 @@ export const SearchBar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [data, setData] = useState<Book[]>([]);
+
+  const [usersData, setUsersData] = useState<User[]>([]);
 
   const initialQuery = location.state?.query || "";
   const [query, setQuery] = useState(initialQuery);
@@ -80,26 +90,39 @@ export const SearchBar: React.FC = () => {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Search query:", query);
-    console.log("Search type:", searchType);
 
     setIsLoading(true);
 
-    try {
-      const endpoint =
-        searchType === "todo"
-          ? `${API_URL}/books/${query}/${query}`
-          : searchType === "author"
-          ? `${API_URL}/books/author/${query}`
-          : `${API_URL}/books/title/${query}`;
+    if (searchType === "user") {
+      try {
+        const endpoint = `${API_URL}/users/search-users/${query}`;
+        const response = await axios.get(endpoint);
+        setUsersData(response.data);
+      } catch (error) {
+        //console.error("Error fetching data:", error);
+        setUsersData([]);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      try {
+        // TODO. por genero + Fix el 'todo'
+        // TODO. 'ranking' en el endpoint si corresponde
+        const endpoint =
+          searchType === "todo"
+            ? `${API_URL}/books/${query}/${query}`
+            : searchType === "author"
+            ? `${API_URL}/books/author/${query}`
+            : `${API_URL}/books/title/${query}`;
 
-      const response = await axios.get(endpoint);
-      setData(response.data);
-    } catch (error) {
-      //console.error("Error fetching data:", error);
-      setData([]);
-    } finally {
-      setIsLoading(false);
+        const response = await axios.get(endpoint);
+        setData(response.data);
+      } catch (error) {
+        //console.error("Error fetching data:", error);
+        setData([]);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -108,7 +131,12 @@ export const SearchBar: React.FC = () => {
     navigate("/book", { state: { query: bookId } });
   };
 
-  const [rankingMode, setRankingMode] = useState("");
+  const handleUserClick = (userId: number) => {
+    console.log("User clicked:", userId);
+    navigate("/otherprofile", { state: { query: userId } });
+  };
+
+  const [rankingMode, setRankingMode] = useState("Default");
 
   const renderStars = (rating: number) => {
     return Array(5)
@@ -177,6 +205,18 @@ export const SearchBar: React.FC = () => {
         <RadioLabel>
           <input
             type="radio"
+            value="genre"
+            checked={searchType === "genre"}
+            onChange={() => {
+              setSearchType("genre");
+              setShowSortMenu(true);
+            }}
+          />
+          Género
+        </RadioLabel>
+        <RadioLabel>
+          <input
+            type="radio"
             value="user"
             checked={searchType === "user"}
             onChange={() => {
@@ -187,65 +227,90 @@ export const SearchBar: React.FC = () => {
           />
           Usuario
         </RadioLabel>
-
+      </RadioGroup>
+      {showSortMenu && (
         <FormControl
           variant="standard"
-          sx={{ minWidth: 120, marginBottom: "0px" }}
+          sx={{ minWidth: 120, marginBottom: "5px", marginTop: "5px" }}
         >
-          <InputLabel>Ordenar</InputLabel>
-          <Select
+          <InputLabel variant="standard" htmlFor="uncontrolled-native">
+            Ordenar
+          </InputLabel>
+          <NativeSelect
             value={rankingMode}
             onChange={(event) => setRankingMode(event.target.value)}
           >
-            <MenuItem value={"rankings"}>Ranking</MenuItem>
-            <MenuItem value={"Default"}>Default</MenuItem>
-          </Select>
+            <option value={"rankings"}>Ranking</option>
+            <option value={"Default"}>Default</option>
+          </NativeSelect>
         </FormControl>
-      </RadioGroup>
+      )}
       <ResultsContainer>
         {isLoading ? (
           <Spinner />
-        ) : data.length === 0 ? (
-          <p>No se encontraron libros para los parámetros especificados</p>
+        ) : showSortMenu ? (
+          data.length === 0 ? (
+            <p>No se encontraron libros para los parámetros especificados</p>
+          ) : (
+            data.map((book) => (
+              <ResultCard key={book.id}>
+                <BookImage
+                  src={book.coverimage}
+                  alt={book.title}
+                  onClick={() => handleBookClick(book.id)}
+                />
+                <BookInfo>
+                  <BookTitle onClick={() => handleBookClick(book.id)}>
+                    {book.title}
+                  </BookTitle>
+                  <BookAuthor>{book.author}</BookAuthor>
+                  <RatingContainer>
+                    <StarRating>{renderStars(book.averagerating)}</StarRating>
+                    <span>{book.averagerating.toFixed(1)}</span>
+                    <span>
+                      ({book.numberreviews}{" "}
+                      {book.numberreviews === 1
+                        ? "calificación"
+                        : "calificaciones"}
+                      )
+                    </span>
+                  </RatingContainer>
+                  <Synopsis>
+                    {book.summary.length > SYNOPSIS_MAX_LENGTH
+                      ? `${book.summary.slice(0, SYNOPSIS_MAX_LENGTH - 3)}...`
+                      : book.summary}
+                  </Synopsis>
+                  <GenreList>Genero: {book.genre}</GenreList>
+                  <PublicationDate>
+                    Publicado:{" "}
+                    {new Date(book.publication_date).toLocaleDateString(
+                      "es-ES",
+                      {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      }
+                    )}
+                  </PublicationDate>
+                </BookInfo>
+              </ResultCard>
+            ))
+          )
+        ) : usersData.length === 0 ? (
+          <p>No se encontraron usuarios.</p>
         ) : (
-          data.map((book) => (
-            <ResultCard key={book.id}>
-              <BookImage
-                src={book.coverimage}
-                alt={book.title}
-                onClick={() => handleBookClick(book.id)}
+          usersData.map((user) => (
+            <ResultCard key={user.id}>
+              <UserImage
+                onClick={() => handleUserClick(user.id)}
+                src={user.profilePhoto}
+                alt={user.name}
               />
               <BookInfo>
-                <BookTitle onClick={() => handleBookClick(book.id)}>
-                  {book.title}
+                <BookTitle onClick={() => handleUserClick(user.id)}>
+                  {user.name}
                 </BookTitle>
-                <BookAuthor>{book.author}</BookAuthor>
-
-                <RatingContainer>
-                  <StarRating>{renderStars(book.averagerating)}</StarRating>
-                  <span>{book.averagerating.toFixed(1)}</span>
-                  <span>
-                    ({book.numberreviews}{" "}
-                    {book.numberreviews === 1
-                      ? "calificación"
-                      : "calificaciones"}
-                    )
-                  </span>
-                </RatingContainer>
-                <Synopsis>
-                  {book.summary.length > SYNOPSIS_MAX_LENGTH
-                    ? `${book.summary.slice(0, SYNOPSIS_MAX_LENGTH - 3)}...`
-                    : book.summary}
-                </Synopsis>
-                <GenreList>Genero: {book.genre}</GenreList>
-                <PublicationDate>
-                  Publicado:{" "}
-                  {new Date(book.publication_date).toLocaleDateString("es-ES", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </PublicationDate>
+                <BookAuthor>@{user.username}</BookAuthor>
               </BookInfo>
             </ResultCard>
           ))

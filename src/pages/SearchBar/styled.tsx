@@ -91,6 +91,14 @@ export const BookImage = styled.img`
   border: 1px solid #ccc;
 `;
 
+export const UserImage = styled.img`
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 1px solid #ccc;
+`;
+
 export const BookInfo = styled.div`
   display: flex;
   flex-direction: column;
