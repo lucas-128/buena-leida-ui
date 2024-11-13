@@ -112,7 +112,7 @@ const NavBar: React.FC = () => {
       {/* Search Bar */}
       <SearchWrapper onSubmit={handleSearchSubmit}>
         <StyledSearchInput
-          placeholder="Buscar libros"
+          placeholder="Buscar..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => {

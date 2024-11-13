@@ -43,6 +43,7 @@ interface User {
   name: string;
   username: string;
   profilePhoto: string;
+  bio: string;
 }
 
 const SYNOPSIS_MAX_LENGTH = 80;
@@ -58,20 +59,36 @@ export const SearchBar: React.FC = () => {
 
   const initialQuery = location.state?.query || "";
   const [query, setQuery] = useState(initialQuery);
-  const [searchType, setSearchType] = useState("todo");
+  const [searchType, setSearchType] = useState("title");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       if (initialQuery) {
         setIsLoading(true);
-        setSearchType("todo");
+        setSearchType("title");
         setQuery(initialQuery);
 
+        let endpoint;
+        switch (searchType) {
+          case "todo":
+            endpoint = `${API_URL}/books/${query}/${query}`;
+            break;
+          case "author":
+            endpoint = `${API_URL}/books/author/${query}`;
+            break;
+          case "title":
+            endpoint = `${API_URL}/books/title/${query}`;
+            break;
+          case "genre":
+            endpoint = `http://localhost:3000/books?genre=${query}`;
+            break;
+          default:
+            endpoint = "";
+        }
+
         try {
-          const response = await axios.get(
-            `${API_URL}/books/${initialQuery}/${initialQuery}`
-          );
+          const response = await axios.get(endpoint);
           setData(response.data);
         } catch (err) {
           if ((err as any).response && (err as any).response.status === 404) {
@@ -84,13 +101,11 @@ export const SearchBar: React.FC = () => {
         }
       }
     };
-
     fetchData();
   }, [initialQuery]);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-
     setIsLoading(true);
 
     if (searchType === "user") {
@@ -99,21 +114,31 @@ export const SearchBar: React.FC = () => {
         const response = await axios.get(endpoint);
         setUsersData(response.data);
       } catch (error) {
-        //console.error("Error fetching data:", error);
         setUsersData([]);
       } finally {
         setIsLoading(false);
       }
     } else {
       try {
-        // TODO. por genero + Fix el 'todo'
-        // TODO. 'ranking' en el endpoint si corresponde
-        const endpoint =
-          searchType === "todo"
-            ? `${API_URL}/books/${query}/${query}`
-            : searchType === "author"
-            ? `${API_URL}/books/author/${query}`
-            : `${API_URL}/books/title/${query}`;
+        const sortRankings = rankingMode === "rankings" ? "?sort=rankings" : "";
+
+        let endpoint;
+        switch (searchType) {
+          case "todo":
+            endpoint = `${API_URL}/books/${query}/${query}${sortRankings}`;
+            break;
+          case "author":
+            endpoint = `${API_URL}/books/author/${query}${sortRankings}`;
+            break;
+          case "title":
+            endpoint = `${API_URL}/books/title/${query}${sortRankings}`;
+            break;
+          case "genre":
+            endpoint = `${API_URL}/books/genre/${query}${sortRankings}`;
+            break;
+          default:
+            endpoint = "";
+        }
 
         const response = await axios.get(endpoint);
         setData(response.data);
@@ -166,7 +191,7 @@ export const SearchBar: React.FC = () => {
         <SearchButton type="submit">Buscar</SearchButton>
       </SearchForm>
       <RadioGroup style={{ marginTop: "40px", gap: "30px" }}>
-        <RadioLabel>
+        {/* <RadioLabel>
           <input
             type="radio"
             value="todo"
@@ -177,7 +202,7 @@ export const SearchBar: React.FC = () => {
             }}
           />
           Todo
-        </RadioLabel>
+        </RadioLabel> */}
         <RadioLabel>
           <input
             type="radio"
@@ -311,6 +336,11 @@ export const SearchBar: React.FC = () => {
                   {user.name}
                 </BookTitle>
                 <BookAuthor>@{user.username}</BookAuthor>
+                <p>
+                  {user.bio.length > 50
+                    ? `${user.bio.slice(0, 47)}...`
+                    : user.bio}
+                </p>
               </BookInfo>
             </ResultCard>
           ))
