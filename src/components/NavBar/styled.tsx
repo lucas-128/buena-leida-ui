@@ -10,6 +10,7 @@ export const NavContainer = styled.nav`
   color: var(--im-white);
   height: 65px;
   flex-wrap: wrap;
+  padding-bottom: 4px;
 `;
 
 export const StyledLink = styled(Link)`
@@ -36,11 +37,13 @@ export const NavTab = styled(Link)`
   padding: 0 20px;
   display: flex;
   align-items: center;
+  padding-bottom: 4px;
+
   height: 100%;
   background-color: transparent;
 
   &:hover {
-    background-color: var(--a-color);
+    background-color: rgb(154, 112, 149);
     color: white;
   }
 `;
@@ -76,11 +79,12 @@ export const IconContainer = styled.div`
 
 export const IconBox = styled.div`
   height: 65px;
+  padding-bottom: 4px;
   display: flex;
   align-items: center;
 
   &:hover {
-    background-color: var(--a-color);
+    background-color: rgb(154, 112, 149);
   }
 `;
 

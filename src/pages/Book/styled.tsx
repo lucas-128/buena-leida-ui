@@ -177,7 +177,7 @@ export const RatingBreakdown = styled.div`
 
 export const RatingRow = styled.div`
   display: grid;
-  grid-template-columns: 70px 1fr 70px;
+  grid-template-columns: 80px 1fr 70px;
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;

@@ -8,12 +8,13 @@ const GlobalStyle = createGlobalStyle`
     --d-color: rgb(200,153,51);
     --e-color: rgb(247,247,248)
     --f-color: rgb(239,239,239)
+    --g-color: rgb(154, 112, 149);
     --im-black: black;
     --im-white: white;
   }
 
   body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
     color: var(--im-black);

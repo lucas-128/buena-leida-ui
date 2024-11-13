@@ -91,7 +91,7 @@ export const SearchBar: React.FC = () => {
 
       try {
         const response = await axios.get(endpoint);
-        setData(response.data);
+        setData(response.data || []);
       } catch (err) {
         if ((err as any).response && (err as any).response.status === 404) {
           setData([]);

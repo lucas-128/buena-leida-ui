@@ -54,7 +54,7 @@ const NavBar: React.FC = () => {
     setSearchQuery("");
     event.preventDefault();
     if (searchQuery.trim()) {
-      window.location.reload();
+      //window.location.reload();
       navigate("/search", { state: { query: searchQuery } });
     }
   };
