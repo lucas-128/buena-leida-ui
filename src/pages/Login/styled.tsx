@@ -23,7 +23,7 @@ export const LoginVbox = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 40px;
-  background-color: white;
+  background-color: var(--im-white);
   border-radius: 8px;
   min-height: 30%;
   min-width: 400px;
@@ -37,7 +37,7 @@ export const Header = styled.div`
 `;
 
 export const Title = styled(Typography)`
-  color: black;
+  color: var(--im-black);
   margin-bottom: 10px;
   font-weight: bold;
 `;
@@ -56,7 +56,8 @@ export const NavContainer = styled.nav`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  color: #333;
+  color: var(--f-color);
+  background-color: var(--b-color);
   height: 65px;
   border-bottom: 1px solid lightgrey;
   padding-left: 17.8%;
@@ -66,6 +67,7 @@ export const LogoText = styled.h1`
   font-size: 24px;
   margin-right: 20px;
   display: flex;
+  color: var(--im-white);
 `;
 
 export const LogoPart = styled.span.withConfig({

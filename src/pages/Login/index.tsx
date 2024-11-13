@@ -215,7 +215,7 @@ export const Login = () => {
   const divStyle: React.CSSProperties = {
     width: "100%",
     height: "100vh",
-    backgroundColor: "rgb(244, 241, 234)",
+    backgroundColor: "rgb(239,239,239)",
   };
 
   return (
