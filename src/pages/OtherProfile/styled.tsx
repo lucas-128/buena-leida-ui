@@ -85,6 +85,9 @@ export const CoverImage = styled.img`
   width: 100%;
   height: 200px;
   object-fit: cover;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const ContentContainer = styled.div`
@@ -95,6 +98,9 @@ export const ContentContainer = styled.div`
 `;
 
 export const BookTitle = styled.h2`
+  &:hover {
+    cursor: pointer;
+  }
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
