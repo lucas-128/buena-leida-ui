@@ -84,7 +84,7 @@ export const Separator = styled.hr`
 `;
 
 export const Button = styled.button`
-  background-color: #4a90e2;
+  background-color: rgb(116, 82, 108);
   color: white;
   border: none;
   border-radius: 4px;

@@ -220,9 +220,14 @@ export default function Bookshelves() {
       </LeftColumn>
       <MainContent>
         <MainContentTitle>{title}</MainContentTitle>
-        <BookList>
-          {booksToDisplay.length > 0 ? (
-            booksToDisplay.map((book) => (
+
+        {booksToDisplay.length === 0 && (
+          <p>No se encontraron libros en esta biblioteca.</p>
+        )}
+
+        {booksToDisplay.length > 0 && (
+          <BookList>
+            {booksToDisplay.map((book) => (
               <BookItem key={book.id} onClick={() => handleBookClick(book.id)}>
                 <BookImage
                   src={book.coverImage || DEFAULT_COVER_IMAGE}
@@ -232,11 +237,9 @@ export default function Bookshelves() {
                 />
                 <BookTitle>{book.title}</BookTitle>
               </BookItem>
-            ))
-          ) : (
-            <p>No se encontraron libros en esta biblioteca.</p>
-          )}
-        </BookList>
+            ))}
+          </BookList>
+        )}
       </MainContent>
 
       <Dialog open={openAddShelf} onClose={handleClose}>
