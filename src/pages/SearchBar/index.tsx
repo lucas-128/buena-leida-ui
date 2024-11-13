@@ -25,6 +25,7 @@ import {
 } from "./styled";
 import axios from "axios";
 import { FormControl, InputLabel, NativeSelect } from "@mui/material";
+import { useGlobalState } from "../../context/GlobalStateContext";
 
 interface Book {
   id: number;
@@ -54,6 +55,7 @@ export const SearchBar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [data, setData] = useState<Book[]>([]);
+  const { state } = useGlobalState();
 
   const [usersData, setUsersData] = useState<User[]>([]);
 
@@ -105,7 +107,9 @@ export const SearchBar: React.FC = () => {
       try {
         const endpoint = `${API_URL}/users/search-users/${query}`;
         const response = await axios.get(endpoint);
-        setUsersData(response.data);
+        setUsersData(
+          response.data.filter((user: User) => user.id !== state.id)
+        );
       } catch (error) {
         setUsersData([]);
       } finally {
@@ -123,7 +127,9 @@ export const SearchBar: React.FC = () => {
       try {
         const endpoint = `${API_URL}/users/search-users/${query}`;
         const response = await axios.get(endpoint);
-        setUsersData(response.data);
+        setUsersData(
+          response.data.filter((user: User) => user.id !== state.id)
+        );
       } catch (error) {
         setUsersData([]);
       } finally {
