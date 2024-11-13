@@ -43,6 +43,7 @@ const Card = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  background-color: white;
 `;
 
 const CardContent = styled.div`
