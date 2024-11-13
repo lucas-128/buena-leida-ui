@@ -64,41 +64,52 @@ export const SearchBar: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (initialQuery) {
-        setIsLoading(true);
-        setSearchType("title");
-        setQuery(initialQuery);
+      setData([]);
+      setUsersData([]);
+      setIsLoading(true);
+      setShowSortMenu(true);
+      setSearchType("title");
+      setQuery(initialQuery);
 
-        let endpoint;
-        switch (searchType) {
-          case "todo":
-            endpoint = `${API_URL}/books/${query}/${query}`;
-            break;
-          case "author":
-            endpoint = `${API_URL}/books/author/${query}`;
-            break;
-          case "title":
-            endpoint = `${API_URL}/books/title/${query}`;
-            break;
-          case "genre":
-            endpoint = `http://localhost:3000/books?genre=${query}`;
-            break;
-          default:
-            endpoint = "";
-        }
+      let endpoint;
+      switch (searchType) {
+        case "todo":
+          endpoint = `${API_URL}/books/${query}/${query}`;
+          break;
+        case "author":
+          endpoint = `${API_URL}/books/author/${query}`;
+          break;
+        case "title":
+          endpoint = `${API_URL}/books/title/${query}`;
+          break;
+        case "genre":
+          endpoint = `http://localhost:3000/books?genre=${query}`;
+          break;
+        default:
+          endpoint = "";
+      }
 
-        try {
-          const response = await axios.get(endpoint);
-          setData(response.data);
-        } catch (err) {
-          if ((err as any).response && (err as any).response.status === 404) {
-            setData([]);
-          } else {
-            //console.error(err);
-          }
-        } finally {
-          setIsLoading(false);
+      try {
+        const response = await axios.get(endpoint);
+        setData(response.data);
+      } catch (err) {
+        if ((err as any).response && (err as any).response.status === 404) {
+          setData([]);
+        } else {
+          //console.error(err);
         }
+      } finally {
+        setIsLoading(false);
+      }
+
+      try {
+        const endpoint = `${API_URL}/users/search-users/${query}`;
+        const response = await axios.get(endpoint);
+        setUsersData(response.data);
+      } catch (error) {
+        setUsersData([]);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -279,7 +290,7 @@ export const SearchBar: React.FC = () => {
         {isLoading ? (
           <Spinner />
         ) : showSortMenu ? (
-          data.length === 0 ? (
+          data.length === 0 || data === null ? (
             <p>No se encontraron libros para los parámetros especificados</p>
           ) : (
             data.map((book) => (
