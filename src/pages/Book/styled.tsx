@@ -34,7 +34,7 @@ export const RatingContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f8f8f8;
+  background-color: var(--im-white);
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -52,7 +52,7 @@ export const StarContainer = styled.div`
 export const RatingBar = styled.div<{ percentage: number }>`
   width: 100%;
   height: 8px;
-  background-color: #e0e0e0;
+  background-color: var(--im-white);
   border-radius: 4px;
   overflow: hidden;
 
@@ -61,7 +61,7 @@ export const RatingBar = styled.div<{ percentage: number }>`
     display: block;
     width: ${(props) => props.percentage}%;
     height: 100%;
-    background-color: #ffd700;
+    background-color: var(--c-color);
   }
 `;
 
@@ -73,7 +73,7 @@ export const MainContent = styled.div`
 `;
 
 export const BookCard = styled.div`
-  background-color: #ffffff;
+  background-color: var(--im-white);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 30px;
@@ -110,7 +110,7 @@ export const PublicationDate = styled.p`
 
 export const Section = styled.div`
   margin-bottom: 30px;
-  background-color: #ffffff;
+  background-color: var(--im-white);
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -125,7 +125,7 @@ export const SectionTitle = styled.h3`
 `;
 
 export const Button = styled.button`
-  background-color: #007bff;
+  background-color: var(--d-color);
   color: white;
   border: none;
   padding: 10px 15px;
@@ -135,13 +135,13 @@ export const Button = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: var(--c-color);
   }
 `;
 
 export const ColumnButton = styled.button`
   margin-bottom: 10px;
-  background-color: darkblue;
+  background-color: var(--d-color);
   color: white;
   border: none;
   width: 100%;
@@ -152,7 +152,7 @@ export const ColumnButton = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: var(--c-color);
   }
 `;
 
@@ -169,7 +169,7 @@ export const ReviewInput = styled.textarea`
 
 export const RatingBreakdown = styled.div`
   margin-bottom: 20px;
-  background-color: #f8f8f8;
+  background-color: rgb(247, 247, 248);
   padding: 15px;
   border-radius: 8px;
   padding-right: 25px;
@@ -182,12 +182,12 @@ export const RatingRow = styled.div`
   gap: 10px;
   margin-bottom: 10px;
   font-size: 14px;
-  color: #666;
+  color: var(--im-black);
 `;
 
 export const ReviewCard = styled.div`
   display: flex;
-  background-color: #f8f8f8;
+  background-color: rgb(247, 247, 248);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;

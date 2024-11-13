@@ -63,6 +63,7 @@ export const ResultCard = styled.div`
   border-radius: 4px;
   padding: 20px;
   gap: 20px;
+  background-color: var(--im-white);
 `;
 
 export const Spinner = styled.div`

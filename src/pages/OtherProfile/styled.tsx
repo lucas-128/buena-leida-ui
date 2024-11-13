@@ -95,6 +95,7 @@ export const ContentContainer = styled.div`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  background-color: rgb(239, 239, 239);
 `;
 
 export const BookTitle = styled.h2`

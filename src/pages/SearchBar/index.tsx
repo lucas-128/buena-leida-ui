@@ -256,7 +256,12 @@ export const SearchBar: React.FC = () => {
       {showSortMenu && (
         <FormControl
           variant="standard"
-          sx={{ minWidth: 120, marginBottom: "5px", marginTop: "5px" }}
+          sx={{
+            minWidth: 120,
+            marginBottom: "5px",
+            marginTop: "5px",
+            borderRadius: "5px",
+          }}
         >
           <InputLabel variant="standard" htmlFor="uncontrolled-native">
             Ordenar
