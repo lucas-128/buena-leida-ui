@@ -6,8 +6,8 @@ export const NavContainer = styled.nav`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(244, 241, 234);
-  color: #333;
+  background-color: var(--b-color);
+  color: var(--im-white);
   height: 65px;
   flex-wrap: wrap;
 `;
@@ -31,7 +31,7 @@ export const LogoPart = styled.span.withConfig({
 
 export const NavTab = styled(Link)`
   text-decoration: none;
-  color: #333;
+  color: var(--im-white);
   font-size: 18px;
   padding: 0 20px;
   display: flex;
@@ -40,7 +40,7 @@ export const NavTab = styled(Link)`
   background-color: transparent;
 
   &:hover {
-    background-color: rgb(53, 33, 16);
+    background-color: var(--a-color);
     color: white;
   }
 `;
@@ -57,7 +57,7 @@ export const SearchWrapper = styled.div`
 export const StyledSearchInput = styled.input`
   padding: 10px;
   padding-right: 40px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--f-color);
   border-radius: 5px;
   width: 100%;
 `;
@@ -80,11 +80,13 @@ export const IconBox = styled.div`
   align-items: center;
 
   &:hover {
-    background-color: rgb(53, 33, 16);
+    background-color: var(--a-color);
   }
 `;
 
 export const Icon = styled.div`
+  background-color: var(--a-color);
+
   font-size: 24px;
   cursor: pointer;
   margin: 0 10px;
@@ -94,11 +96,10 @@ export const Icon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(110, 89, 66);
   color: white;
 
   &.profile {
-    background-color: rgb(239, 238, 224);
+    background-color: var(--a-color);
     border: 1px solid lightgray;
   }
 `;
