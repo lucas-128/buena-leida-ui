@@ -149,6 +149,10 @@ export const GroupSearch = () => {
     setshowCreateGroupModal(false);
   };
 
+  const handleGroupClick = (groupId: number) => {
+    navigate("/group", { state: { query: groupId } });
+  };
+
   return (
     <Container>
       <div style={{ minWidth: "600px" }}>
@@ -191,9 +195,14 @@ export const GroupSearch = () => {
           ) : (
             groupData.map((group) => (
               <GroupCard key={group.id}>
-                <GroupImage src={group.photo} alt={group.name} />
+                <GroupImage
+                  src={group.photo}
+                  onClick={() => handleGroupClick(group.id)}
+                />
                 <GroupInfo>
-                  <GroupName>{group.name}</GroupName>
+                  <GroupName onClick={() => handleGroupClick(group.id)}>
+                    {group.name}
+                  </GroupName>
                   <GroupDescription>
                     {group.description.length > 100
                       ? `${group.description.slice(0, 100)}...`

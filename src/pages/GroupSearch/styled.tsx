@@ -74,6 +74,9 @@ export const GroupImage = styled.img`
   width: 100%;
   height: 150px;
   object-fit: cover;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const GroupInfo = styled.div`
@@ -84,6 +87,9 @@ export const GroupName = styled.h3`
   font-size: 18px;
   margin: 0;
   color: #333;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const GroupDescription = styled.p`
