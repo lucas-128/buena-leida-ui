@@ -1,6 +1,6 @@
 import { Feed, Container } from "./styled";
 
-export const GroupSearch = () => {
+export const Group = () => {
   return (
     <Container>
       <Feed>Group Search</Feed>
@@ -8,4 +8,4 @@ export const GroupSearch = () => {
   );
 };
 
-export default GroupSearch;
+export default Group;

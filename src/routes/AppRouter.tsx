@@ -16,7 +16,7 @@ import MyReviews from "../pages/MyReviews";
 import Bookshelves from "../pages/Bookshelves";
 import OtherProfile from "../pages/OtherProfile";
 import Trivia from "../pages/Trivia";
-import GroupSearch from "../pages/Group";
+import GroupSearch from "../pages/GroupSearch";
 import Group from "../pages/Group";
 
 export default function AppRouter() {
