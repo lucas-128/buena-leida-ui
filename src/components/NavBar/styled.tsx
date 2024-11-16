@@ -11,6 +11,7 @@ export const NavContainer = styled.nav`
   height: 65px;
   flex-wrap: wrap;
   padding-bottom: 4px;
+  gap: 3px;
 `;
 
 export const StyledLink = styled(Link)`
@@ -54,7 +55,7 @@ export const SearchWrapper = styled.div`
   align-items: center;
   margin-left: 15px;
   margin-right: 15px;
-  width: 14%;
+  width: 20%;
 `;
 
 export const StyledSearchInput = styled.input`

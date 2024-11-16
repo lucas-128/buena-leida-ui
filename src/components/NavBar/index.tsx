@@ -12,11 +12,11 @@ import {
   StyledSearchInput,
   SearchIcon,
 } from "./styled";
-import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import ForumIcon from "@mui/icons-material/Forum";
-import EmailIcon from "@mui/icons-material/Email";
-import PeopleIcon from "@mui/icons-material/People";
+// import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
+// import NotificationsIcon from "@mui/icons-material/Notifications";
+// import ForumIcon from "@mui/icons-material/Forum";
+// import EmailIcon from "@mui/icons-material/Email";
+// import PeopleIcon from "@mui/icons-material/People";
 import { FcReading } from "react-icons/fc";
 import { Divider, Menu, MenuItem, Typography } from "@mui/material";
 import { To, useNavigate } from "react-router-dom";
@@ -70,10 +70,11 @@ const NavBar: React.FC = () => {
       </StyledLink>
 
       <NavTab to="/">Inicio</NavTab>
-      <NavTab to="/mybooks">Mis Libros</NavTab>
+      <NavTab to="/bookshelves">Bibliotecas</NavTab>
+      <NavTab to="/groupsearch">Grupos</NavTab>
+      <NavTab to="/trivia">Trivia</NavTab>
 
-      {/*Menu Buscar*/}
-      <NavTab
+      {/* <NavTab
         to="#"
         style={{ display: "flex", alignItems: "center" }}
         onClick={(e) => handleClick(e, 0)}
@@ -92,7 +93,6 @@ const NavBar: React.FC = () => {
         <MenuItem onClick={() => handleClose("/lists")}>Listas</MenuItem>
       </Menu>
 
-      {/* Menu Comunidad*/}
       <NavTab
         to="#"
         style={{ display: "flex", alignItems: "center" }}
@@ -108,7 +108,7 @@ const NavBar: React.FC = () => {
       >
         <MenuItem onClick={() => handleClose("/groups")}>Grupos</MenuItem>
         <MenuItem onClick={() => handleClose("/quotes")}>Citas</MenuItem>
-      </Menu>
+      </Menu> */}
 
       {/* Search Bar */}
       <SearchWrapper onSubmit={handleSearchSubmit}>
@@ -123,7 +123,7 @@ const NavBar: React.FC = () => {
         <SearchIcon />
       </SearchWrapper>
       <IconContainer>
-        <IconBox>
+        {/* <IconBox>
           <Icon title="Notificaciones">
             <NotificationsIcon />
           </Icon>
@@ -142,7 +142,7 @@ const NavBar: React.FC = () => {
           <Icon title="Amigos">
             <PeopleIcon />
           </Icon>
-        </IconBox>
+        </IconBox> */}
 
         {/* Profile Menu */}
         <IconBox>
@@ -160,9 +160,9 @@ const NavBar: React.FC = () => {
           </Typography>
           <MenuItem onClick={() => handleClose("/profile")}>Perfil</MenuItem>
           <MenuItem onClick={() => handleClose("/myreviews")}>Reseñas</MenuItem>
-          <MenuItem onClick={() => handleClose("/bookshelves")}>
+          {/* <MenuItem onClick={() => handleClose("/bookshelves")}>
             Bibliotecas
-          </MenuItem>
+          </MenuItem> */}
           <Divider />
           <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
         </Menu>
