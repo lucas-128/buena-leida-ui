@@ -85,7 +85,7 @@ export const SearchBar: React.FC = () => {
           endpoint = `${API_URL}/books/title/${query}`;
           break;
         case "genre":
-          endpoint = `http://localhost:3000/books?genre=${query}`;
+          endpoint = `${API_URL}/books?genre=${query}`;
           break;
         default:
           endpoint = "";

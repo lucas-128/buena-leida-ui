@@ -100,6 +100,8 @@ const LikesContainer = styled.div`
   color: #64748b;
 `;
 
+const API_URL = "http://localhost:3000";
+
 export default function MyReviews() {
   const { state } = useGlobalState();
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -107,9 +109,7 @@ export default function MyReviews() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3000/reviews/user/${state.id}`
-        );
+        const response = await fetch(`${API_URL}/reviews/user/${state.id}`);
         const data: Review[] = await response.json();
         setReviews(data);
       } catch (error) {

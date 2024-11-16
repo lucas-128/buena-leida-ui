@@ -61,7 +61,7 @@ interface Book {
   author: string;
   coverImage: string;
 }
-
+const API_URL = "http://localhost:3000";
 export default function Component() {
   const location = useLocation();
   const userId = location.state?.query || "";
@@ -78,9 +78,7 @@ export default function Component() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3000/reviews/user/${userId}`
-        );
+        const response = await fetch(`${API_URL}/reviews/user/${userId}`);
         const data: Review[] = await response.json();
         setReviews(data);
       } catch (error) {
@@ -94,9 +92,7 @@ export default function Component() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/users/${userId}/profile`
-        );
+        const response = await axios.get(`${API_URL}/users/${userId}/profile`);
         const data = response.data;
         setUserData(data);
       } catch (err) {

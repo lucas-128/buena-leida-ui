@@ -125,7 +125,7 @@ export const Book: React.FC = () => {
 
   const handleDeleteStatus = () => {
     axios
-      .delete(`http://localhost:3000/readingstate/remove`, {
+      .delete(`${API_URL}/readingstate/remove`, {
         data: {
           bookId: bookId,
           userId: state.id,
@@ -159,7 +159,7 @@ export const Book: React.FC = () => {
   const fetchPreSelectedStatus = async (): Promise<string> => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/readingstate/${state.id}/${bookId}`
+        `${API_URL}/readingstate/${state.id}/${bookId}`
       );
 
       if (response.status === 200) {
@@ -193,7 +193,7 @@ export const Book: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      await axios.post("http://localhost:3000/readingstate", {
+      await axios.post(`${API_URL}/readingstate`, {
         bookId: bookId,
         userId: state.id,
         status: readingStatus,
@@ -243,7 +243,7 @@ export const Book: React.FC = () => {
     const fetchBookShelves = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/bookshelf/${state.id}/saw_bookshelves`,
+          `${API_URL}/bookshelf/${state.id}/saw_bookshelves`,
           { params: { bookId } }
         );
 
@@ -264,13 +264,10 @@ export const Book: React.FC = () => {
   const handleSubmitBookshelf = async () => {
     try {
       // Send the PATCH request to update the bookshelves
-      await axios.patch(
-        `http://localhost:3000/bookshelf/update_bookshelf/${bookId}`,
-        {
-          bookshelfIds: selectedShelves,
-          userId: state.id,
-        }
-      );
+      await axios.patch(`${API_URL}/bookshelf/update_bookshelf/${bookId}`, {
+        bookshelfIds: selectedShelves,
+        userId: state.id,
+      });
 
       // Show success message
       enqueueSnackbar("Bibliotecas actualizadas correctamente.", {
@@ -431,9 +428,7 @@ export const Book: React.FC = () => {
   useEffect(() => {
     const fetchBookshelves = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/bookshelf/${state.id}`
-        );
+        const response = await axios.get(`${API_URL}/bookshelf/${state.id}`);
         const bookshelfData = response.data.map(
           (shelf: { id: number; title: string }) => ({
             id: shelf.id,
@@ -455,7 +450,7 @@ export const Book: React.FC = () => {
 
     try {
       const response = await axios.delete(
-        `http://localhost:3000/reviews/${bookId}/${iduser}`
+        `${API_URL}/reviews/${bookId}/${iduser}`
       );
 
       if (response.status === 204) {
