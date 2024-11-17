@@ -9,7 +9,7 @@ import {
   EditButton,
 } from "./styled";
 import { StyledTextField } from "../Login/styled";
-import { Button } from "@mui/material";
+import { Button, snackbarClasses } from "@mui/material";
 import {
   getDownloadURL,
   ref,
@@ -158,22 +158,7 @@ export const Profile = () => {
 
   const handleRealNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.value;
-
-    const regex = /^[a-zA-Z\s]*$/;
-
-    if (inputText.length === 0) {
-      setError("El nombre no puede estar vacío.");
-    } else if (
-      regex.test(inputText) &&
-      inputText.length <= MAX_REALNAME_LENGTH
-    ) {
-      setRealNameText(inputText);
-      setError("");
-    } else if (inputText.length > MAX_REALNAME_LENGTH) {
-      setError(`El nombre no puede exceder ${MAX_REALNAME_LENGTH} caracteres.`);
-    } else {
-      setError("Solo se permiten letras y espacios.");
-    }
+    setRealNameText(inputText);
   };
 
   const saveBioChanges = async () => {
@@ -187,6 +172,9 @@ export const Profile = () => {
       dispatch({ type: "SET_BIO", payload: bioText });
 
       const storedUser = localStorage.getItem("user");
+      enqueueSnackbar("Biografia actualizada.", {
+        variant: "success",
+      });
       if (storedUser) {
         const updatedUser = JSON.parse(storedUser);
         updatedUser.bio = bioText;
@@ -194,7 +182,6 @@ export const Profile = () => {
       }
     } catch (e) {
       console.log("Error updating bio: ", e);
-
       enqueueSnackbar("Error actualizando biografia.", {
         variant: "error",
       });
@@ -204,6 +191,39 @@ export const Profile = () => {
   const saveNameChanges = async () => {
     setIsEditingRealName(false);
     setError("");
+
+    // validar input
+    const inputText = realNameText;
+    const regex = /^[a-zA-Z\s]*$/;
+
+    if (inputText.length === 0) {
+      enqueueSnackbar("El nombre no puede estar vacío.", {
+        variant: "error",
+      });
+      setRealNameText(originalRealNameText);
+      return;
+    } else if (
+      regex.test(inputText) &&
+      inputText.length <= MAX_REALNAME_LENGTH
+    ) {
+      setRealNameText(inputText);
+    } else if (inputText.length > MAX_REALNAME_LENGTH) {
+      enqueueSnackbar(
+        `El nombre no puede exceder ${MAX_REALNAME_LENGTH} caracteres.`,
+        {
+          variant: "error",
+        }
+      );
+      setRealNameText(originalRealNameText);
+      return;
+    } else {
+      enqueueSnackbar("Solo se permiten letras y espacios.", {
+        variant: "error",
+      });
+      setRealNameText(originalRealNameText);
+      return;
+    }
+
     try {
       await axios.patch(`${API_URL}/users/${state.id}/name`, {
         name: realNameText,
@@ -216,6 +236,9 @@ export const Profile = () => {
         updatedUser.name = realNameText;
         localStorage.setItem("user", JSON.stringify(updatedUser));
       }
+      enqueueSnackbar("Nombre actualizado.", {
+        variant: "success",
+      });
     } catch (e) {
       console.log("Error updating real name: ", e);
       enqueueSnackbar("Error actualizando nombre.", {
@@ -288,6 +311,10 @@ export const Profile = () => {
               type="text"
               value={realNameText}
               onChange={handleRealNameChange}
+              helperText={`${realNameText.length}/30 | Solo letras y espacios`}
+              slotProps={{
+                htmlInput: { maxLength: 30 },
+              }}
               style={{ marginRight: "1rem", minWidth: "400px" }}
             />
             <Button
@@ -298,7 +325,12 @@ export const Profile = () => {
             >
               Guardar
             </Button>
-            <Button size="medium" variant="contained" onClick={cancelChanges}>
+            <Button
+              size="medium"
+              variant="contained"
+              onClick={cancelChanges}
+              color="error"
+            >
               Cancelar
             </Button>
           </div>
@@ -330,12 +362,21 @@ export const Profile = () => {
             <StyledTextField
               value={bioText}
               onChange={handleBioChange}
-              style={{ marginRight: "1rem", minWidth: "800px" }}
+              helperText={`${bioText.length}/${MAX_BIO_LENGTH}`}
+              slotProps={{
+                htmlInput: { maxLength: MAX_BIO_LENGTH },
+              }}
+              style={{ marginRight: "1rem", minWidth: "500px" }}
             />
             <Button size="medium" variant="contained" onClick={saveBioChanges}>
               Guardar
             </Button>
-            <Button size="medium" variant="contained" onClick={cancelChanges}>
+            <Button
+              color="error"
+              size="medium"
+              variant="contained"
+              onClick={cancelChanges}
+            >
               Cancelar
             </Button>
           </div>

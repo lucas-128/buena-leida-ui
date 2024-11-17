@@ -208,7 +208,7 @@ export const GroupSearch = () => {
                       ? `${group.description.slice(0, 100)}...`
                       : group.description}
                   </GroupDescription>
-                  <UsersCount>Users: {group.usersCount}</UsersCount>
+                  <UsersCount>Usuarios: {group.usersCount}</UsersCount>
                 </GroupInfo>
               </GroupCard>
             ))
@@ -274,7 +274,6 @@ export const GroupSearch = () => {
           )}
         </DialogActions>
       </Dialog>
-      ;
     </Container>
   );
 };
