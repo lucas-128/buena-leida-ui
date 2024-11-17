@@ -42,7 +42,7 @@ export const SectionTitle = styled.h2`
 `;
 
 export const CreateGroupButton = styled.button`
-  background-color: var(--c-color);
+  background-color: var(--d-color);
   border: none;
   color: white;
   padding: 10px 20px;
@@ -57,7 +57,7 @@ export const CreateGroupButton = styled.button`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: var(--d-color);
+    background-color: var(--c-color);
   }
 `;
 

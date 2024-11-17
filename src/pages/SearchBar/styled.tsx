@@ -28,14 +28,14 @@ export const SearchInput = styled.input`
 export const SearchButton = styled.button`
   padding: 10px 20px;
   font-size: 16px;
-  background-color: var(--c-color);
+  background-color: var(--d-color);
   color: white;
   border: none;
   border-radius: 0 4px 4px 0;
   cursor: pointer;
 
   &:hover {
-    background-color: var(--d-color);
+    background-color: var(--c-color);
   }
 `;
 
