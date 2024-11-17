@@ -18,6 +18,7 @@ import OtherProfile from "../pages/OtherProfile";
 import Trivia from "../pages/Trivia";
 import GroupSearch from "../pages/GroupSearch";
 import Group from "../pages/Group";
+import Discussion from "../pages/Discussion";
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -105,6 +106,10 @@ export default function AppRouter() {
         {
           path: "/group",
           element: <Group />,
+        },
+        {
+          path: "/discussion",
+          element: <Discussion />,
         },
       ],
     },

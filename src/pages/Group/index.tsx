@@ -5,6 +5,21 @@ import { Container, RightSection, SectionTitle } from "./styled";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
+interface GroupDetails {
+  name: string;
+  description: string;
+  photoUrl: string;
+  genres: string[];
+  creatorId: number;
+}
+
+interface UserData {
+  id: number;
+  profilePhotoUrl: string;
+  realName: string;
+  username: string;
+}
+
 export const defaultPhotoUrl =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
 
