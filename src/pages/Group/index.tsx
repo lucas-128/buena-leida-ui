@@ -23,7 +23,7 @@ interface UserData {
 export const defaultPhotoUrl =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
 
-export const GroupSearch = () => {
+export const Group = () => {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -39,8 +39,14 @@ export const GroupSearch = () => {
       <RightSection>
         <SectionTitle>Creador:</SectionTitle>
       </RightSection>
+    </Container>
+  );
+};
 
-      {/* Adapatar a dialogo de crear topico <Dialog open={showCreateGroupModal} onClose={handleClose}>
+export default Group;
+
+{
+  /* Adapatar a dialogo de crear topico <Dialog open={showCreateGroupModal} onClose={handleClose}>
         <DialogTitle>Crear Grupo</DialogTitle>
         <DialogContent>
           <FormControl fullWidth margin="normal">
@@ -78,9 +84,5 @@ export const GroupSearch = () => {
             <Button color="primary">Guardar</Button>
           )}
         </DialogActions>
-      </Dialog> */}
-    </Container>
-  );
-};
-
-export default GroupSearch;
+      </Dialog> */
+}
