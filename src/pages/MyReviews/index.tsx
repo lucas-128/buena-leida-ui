@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Star, StarHalf } from "lucide-react";
 import { useGlobalState } from "../../context/GlobalStateContext";
+import { useNavigate } from "react-router-dom";
 
 interface Book {
   id: number;
@@ -44,6 +45,7 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
+  cursor: pointer;
 `;
 
 const CardContent = styled.div`
@@ -136,12 +138,19 @@ export default function MyReviews() {
     return stars;
   };
 
+  const navigate = useNavigate();
+
   return (
     <Container>
       <Title>Mis Reseñas</Title>
       <Grid>
         {reviews.map((review) => (
-          <Card key={review.reviewId}>
+          <Card
+            key={review.reviewId}
+            onClick={() => {
+              navigate("/book", { state: { query: review.book.id } });
+            }}
+          >
             <CardContent>
               <CoverImage
                 src={review.book.coverImage}
@@ -154,7 +163,11 @@ export default function MyReviews() {
                   {renderStars(review.calification)}
                 </StarsContainer>
                 <ReviewContent>{review.content}</ReviewContent>
-                <LikesContainer>{review.likes} likes</LikesContainer>
+                {review.content ? (
+                  <LikesContainer>{review.likes} likes</LikesContainer>
+                ) : (
+                  <LikesContainer>Calificación sin reseña.</LikesContainer>
+                )}
               </ContentContainer>
             </CardContent>
           </Card>

@@ -260,8 +260,11 @@ export default function Bookshelves() {
             fullWidth
             variant="standard"
             value={shelfName}
-            onChange={(e) => setShelfName(e.target.value)}
-            inputProps={{ maxLength: 15 }}
+            onChange={(e) => setShelfName(e.target.value.slice(0, 15))}
+            helperText={`${shelfName.length}/15`}
+            slotProps={{
+              htmlInput: { maxLength: 15 },
+            }}
           />
         </DialogContent>
         <DialogActions>
