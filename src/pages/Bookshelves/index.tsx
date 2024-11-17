@@ -96,6 +96,12 @@ export default function Bookshelves() {
   const [title, setTitle] = useState("Leídos");
 
   useEffect(() => {
+    if (state.id) {
+      handleStatusClick("Leídos");
+    }
+  }, [state.id]);
+
+  useEffect(() => {
     const fetchBookshelves = async () => {
       try {
         const response = await axios.get(`${API_URL}/bookshelf/${state.id}`);
@@ -107,13 +113,14 @@ export default function Bookshelves() {
     };
 
     fetchBookshelves();
-  }, []);
+  }, [state.id]);
 
   const [shelfName, setShelfName] = useState<string>("");
   const [openAddShelf, setOpenAddShelf] = useState(false);
 
   const handleStatusClick = async (status: string) => {
     console.log(`Clicked on status: ${status}`);
+    console.log("aaa");
     setShowSelectedBooks(false);
     setTitle(status);
     const newStatus = getNewStatus(status);

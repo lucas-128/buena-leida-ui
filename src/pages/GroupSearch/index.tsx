@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ResultsContainer,
   SearchButton,
@@ -50,9 +50,16 @@ const groupData: GroupData[] = [
     id: 1,
     name: "Tech Enthusiasts",
     description:
-      "A group for people passionate about technology and innovation.",
+      "A group for people passionate about technology and innovation. A group for people passionate about technology and innovation",
     photo: defaultPhotoUrl,
     usersCount: 150,
+    genres: [
+      "Male",
+      "Female",
+      "Non-Binary",
+      "Male",
+      "FemaleFemaleFemaleFemaleFemaleFemale",
+    ],
   },
   {
     id: 2,
@@ -60,6 +67,7 @@ const groupData: GroupData[] = [
     description: "A community for sharing and discussing great reads.",
     photo: defaultPhotoUrl,
     usersCount: 75,
+    genres: ["Male", "Female"],
   },
   {
     id: 3,
@@ -68,6 +76,7 @@ const groupData: GroupData[] = [
       "Join us to share tips and motivation for a healthy lifestyle.",
     photo: defaultPhotoUrl,
     usersCount: 200,
+    genres: ["Male", "Female", "Non-Binary"],
   },
   {
     id: 4,
@@ -75,6 +84,7 @@ const groupData: GroupData[] = [
     description: "For those who can't stop exploring the world.",
     photo: defaultPhotoUrl,
     usersCount: 120,
+    genres: ["Male", "Female"],
   },
   {
     id: 5,
@@ -82,6 +92,7 @@ const groupData: GroupData[] = [
     description: "A group for gamers to connect and compete.",
     photo: defaultPhotoUrl,
     usersCount: 300,
+    genres: ["Male", "Female", "Non-Binary", "Other"],
   },
 ];
 
@@ -91,6 +102,7 @@ interface GroupData {
   description: string;
   photo: string;
   usersCount: number;
+  genres: string[];
 }
 
 // TODO fetch de API
@@ -204,11 +216,16 @@ export const GroupSearch = () => {
                     {group.name}
                   </GroupName>
                   <GroupDescription>
-                    {group.description.length > 100
-                      ? `${group.description.slice(0, 100)}...`
+                    {group.description.length > 75
+                      ? `${group.description.slice(0, 72)}...`
                       : group.description}
                   </GroupDescription>
-                  <UsersCount>Usuarios: {group.usersCount}</UsersCount>
+                  <UsersCount>
+                    Usuarios: {group.usersCount} | Generos:{" "}
+                    {group.genres.join(", ").length > 40
+                      ? `${group.genres.join(", ").slice(0, 37)}...`
+                      : group.genres.join(", ")}
+                  </UsersCount>
                 </GroupInfo>
               </GroupCard>
             ))
@@ -235,12 +252,16 @@ export const GroupSearch = () => {
           Crear grupo
         </CreateGroupButton>
       </RightSection>
-      <Dialog open={showCreateGroupModal} onClose={handleClose}>
+      <Dialog
+        open={showCreateGroupModal}
+        onClose={handleClose}
+        disableScrollLock
+      >
         <DialogTitle>Crear Grupo</DialogTitle>
         <DialogContent>
           <FormControl fullWidth margin="normal">
             <TextField
-              label="Group name"
+              label="Nombre del grupo..."
               value={groupName}
               onChange={(e) => setGroupName(e.target.value.slice(0, 20))}
               helperText={`${groupName.length}/20`}
