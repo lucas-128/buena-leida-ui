@@ -1,16 +1,72 @@
 import { useState } from "react";
 import { Title } from "../SearchBar/styled";
-import { Container, RightSection, SectionTitle } from "./styled";
+import {
+  Container,
+  GroupCard,
+  GroupDescription,
+  GroupImage,
+  GroupInfoContainer,
+  GroupProfile,
+  GroupTitle,
+  InteractButton,
+  LeftSection,
+  RightSection,
+  SectionTitle,
+} from "./styled";
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import { FavoriteGenders, GenderTag } from "../OtherProfile/styled";
+import { Divider, Typography } from "@mui/material";
+import { LeftColumn } from "../Book/styled";
 
+export const defaultPhotoUrl =
+  "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
+
+const userData1: UserData = {
+  id: 100,
+  profilePhotoUrl: defaultPhotoUrl,
+  realName: "Creator Name 100",
+  username: "creator100",
+};
+
+const userData2: UserData = {
+  id: 101,
+  profilePhotoUrl: defaultPhotoUrl,
+  realName: "Member Name 101",
+  username: "member101",
+};
+
+const userData3: UserData = {
+  id: 102,
+  profilePhotoUrl: defaultPhotoUrl,
+  realName: "Member Name 102",
+  username: "member102",
+};
+
+const userData4: UserData = {
+  id: 103,
+  profilePhotoUrl: defaultPhotoUrl,
+  realName: "Member Name 103",
+  username: "member103",
+};
+
+const groupDetails: GroupDetails = {
+  name: "La verdad de la milanesa",
+  description:
+    "Este grupo trata sobre la verdad de la milanesa Este grupo trata sobre la verdad de la milanesa Este grupo trata sobre la verdad de la milanesa Este grupo trata sobre la verdad de la milanesa Este grupo trata sobre la verdad de la milanesa.",
+  photoUrl: defaultPhotoUrl,
+  genres: ["Rock", "Pop", "Jazz"],
+  creator: userData1,
+  members: [userData2, userData3, userData4],
+};
 interface GroupDetails {
   name: string;
   description: string;
   photoUrl: string;
   genres: string[];
-  creatorId: number;
+  creator: UserData; // Group creator
+  members: UserData[]; // List of group members
 }
 
 interface UserData {
@@ -19,9 +75,6 @@ interface UserData {
   realName: string;
   username: string;
 }
-
-export const defaultPhotoUrl =
-  "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
 
 export const Group = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -33,11 +86,70 @@ export const Group = () => {
 
   return (
     <Container>
-      <div style={{ minWidth: "600px" }}>
-        <Title>Grupo id: {groupId}</Title>
-      </div>
+      <LeftSection>
+        <GroupProfile>
+          <GroupInfoContainer>
+            <GroupImage src={groupDetails.photoUrl} />
+            {/* Si soy owner, aca se muestra un boton de destuir. Si no, Join/Salir*/}
+            <InteractButton>Join</InteractButton>
+          </GroupInfoContainer>
+          <GroupDescription>
+            <Typography
+              style={{
+                fontWeight: "bold",
+                fontSize: "32px",
+                marginBottom: "10px",
+                marginTop: "10px",
+              }}
+            >
+              {groupDetails.name}
+            </Typography>
+            <Typography
+              style={{
+                fontWeight: "bold",
+                fontSize: "18px",
+                marginBottom: "3px",
+              }}
+            >
+              Descripción:
+            </Typography>
+            <Typography>{groupDetails.description}</Typography>
+            <FavoriteGenders>
+              <Typography
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                  marginBottom: "10px",
+                }}
+              >
+                Géneros:
+              </Typography>
+              {groupDetails.genres.map((genres, index) => (
+                <GenderTag key={index}>{genres}</GenderTag>
+              ))}
+            </FavoriteGenders>
+          </GroupDescription>
+          <Divider />
+        </GroupProfile>
+        <Divider style={{ marginTop: "20px" }}></Divider>
+        <Title>Discusiones</Title>
+      </LeftSection>
       <RightSection>
-        <SectionTitle>Creador:</SectionTitle>
+        <Title>Creador:</Title>
+        <p>Lucas</p>
+        <p>@milanesa123</p>
+        <p>foto perfil</p>
+        <Divider />
+        <Title>Miembros:</Title>
+        <p>Lucas</p>
+        <p>@milanesa123</p>
+        <p>foto perfil</p>
+        <p>Lucas</p>
+        <p>@milanesa123</p>
+        <p>foto perfil</p>
+        <p>Lucas</p>
+        <p>@milanesa123</p>
+        <p>foto perfil</p>
       </RightSection>
     </Container>
   );
