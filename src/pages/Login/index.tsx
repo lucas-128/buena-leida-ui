@@ -307,6 +307,10 @@ export const Login = () => {
                     variant="outlined"
                     value={name}
                     required
+                    helperText={`${name.length}/30 | Solo letras y espacios.`}
+                    slotProps={{
+                      htmlInput: { maxLength: 30 },
+                    }}
                     onChange={(e: {
                       target: { value: SetStateAction<string> };
                     }) => setName(e.target.value)}
@@ -316,6 +320,10 @@ export const Login = () => {
                     variant="outlined"
                     value={username}
                     required
+                    helperText={`${username.length}/30 | Solo letras y numeros.`}
+                    slotProps={{
+                      htmlInput: { maxLength: 30 },
+                    }}
                     onChange={(e: {
                       target: { value: SetStateAction<string> };
                     }) => setUsername(e.target.value)}
