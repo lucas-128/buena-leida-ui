@@ -9,7 +9,7 @@ import {
   EditButton,
 } from "./styled";
 import { StyledTextField } from "../Login/styled";
-import { Button, snackbarClasses } from "@mui/material";
+import { Button } from "@mui/material";
 import {
   getDownloadURL,
   ref,
