@@ -1,24 +1,24 @@
-import { useState } from "react";
+//import { useState } from "react";
 import { Title } from "../SearchBar/styled";
 import {
   Container,
-  GroupCard,
+  //GroupCard,
   GroupDescription,
   GroupImage,
   GroupInfoContainer,
   GroupProfile,
-  GroupTitle,
+  // GroupTitle,
   InteractButton,
   LeftSection,
   RightSection,
-  SectionTitle,
+  //SectionTitle,
 } from "./styled";
 
-import { useLocation, useNavigate } from "react-router-dom";
-import { useSnackbar } from "notistack";
+// import { useLocation, useNavigate } from "react-router-dom";
+// import { useSnackbar } from "notistack";
 import { FavoriteGenders, GenderTag } from "../OtherProfile/styled";
 import { Divider, Typography } from "@mui/material";
-import { LeftColumn } from "../Book/styled";
+//import { LeftColumn } from "../Book/styled";
 
 export const defaultPhotoUrl =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
@@ -77,12 +77,12 @@ interface UserData {
 }
 
 export const Group = () => {
-  const { enqueueSnackbar } = useSnackbar();
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  // const { enqueueSnackbar } = useSnackbar();
+  // const navigate = useNavigate();
+  // const [isLoading, setIsLoading] = useState(false);
 
-  const location = useLocation();
-  const groupId = location.state?.query || "";
+  //const location = useLocation();
+  //const groupId = location.state?.query || "";
 
   return (
     <Container>

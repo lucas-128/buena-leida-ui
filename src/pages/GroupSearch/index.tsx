@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   ResultsContainer,
   SearchButton,
@@ -39,7 +39,7 @@ import {
 } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import { useNavigate } from "react-router-dom";
-import { useSnackbar } from "notistack";
+//import { useSnackbar } from "notistack";
 
 export const defaultPhotoUrl =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
@@ -127,12 +127,12 @@ const availableCategories = [
 ];
 
 export const GroupSearch = () => {
-  const { enqueueSnackbar } = useSnackbar();
+  //const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [rankingMode, setRankingMode] = useState("Default");
   const [showCreateGroupModal, setshowCreateGroupModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, _] = useState(false);
 
   // Create group form state //
   const [groupName, setGroupName] = useState("");
