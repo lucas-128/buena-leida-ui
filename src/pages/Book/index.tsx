@@ -112,11 +112,15 @@ export const Book: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
+  // Dialog borrar resena
+  const [openDeleteReviewDialog, setOpenDeleteReviewDialog] = useState(false);
+
   // Dialog estado lectura
   const [openReadingStatusDialog, setOpenReadingStatusDialog] = useState(false);
   const handleClose = () => {
     setOpenReadingStatusDialog(false);
     setopenAddToShelfDialog(false);
+    setOpenDeleteReviewDialog(false);
   };
 
   const handleUpdateStatusButton = () => {
@@ -445,6 +449,7 @@ export const Book: React.FC = () => {
   }, [state.id]);
 
   const handleDeleteReview = async () => {
+    handleClose();
     const iduser = state.id;
     console.log(`${API_URL}/reviews/${bookId}/${iduser}`);
 
@@ -458,6 +463,9 @@ export const Book: React.FC = () => {
         setUserRating(null);
         console.log("User deleted their review and rating");
         setNewReviewText("");
+        enqueueSnackbar("Reseña eliminada correctamente.", {
+          variant: "success",
+        });
       } else {
         enqueueSnackbar(
           "Error actualizando la reseña. Por favor, intenta de nuevo.",
@@ -617,7 +625,9 @@ export const Book: React.FC = () => {
               <ReviewContent>
                 <StarContainer>{renderStars(userRating || 0)}</StarContainer>
                 <p>{userReview}</p>
-                <Button onClick={handleDeleteReview}>Eliminar reseña</Button>
+                <Button onClick={() => setOpenDeleteReviewDialog(true)}>
+                  Eliminar reseña
+                </Button>
               </ReviewContent>
             </ReviewCard>
           ) : isWritingReview ? (
@@ -626,6 +636,10 @@ export const Book: React.FC = () => {
                 value={newReviewText}
                 onChange={(e) => setNewReviewText(e.target.value)}
                 placeholder="Escribe tu reseña aquí..."
+                //helperText={`${newReviewText.length}/15`}
+                // slotProps={{
+                //   htmlInput: { maxLength: 15 },
+                // }}
               />
               <div style={{ display: "flex", gap: "10px" }}>
                 <Button onClick={handleSubmitReview}>Enviar</Button>
@@ -758,6 +772,20 @@ export const Book: React.FC = () => {
                 Guardar
               </Button>
             )}
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={openDeleteReviewDialog} onClose={handleClose}>
+          <DialogTitle>Eliminar reseña</DialogTitle>
+          <DialogContent>
+            <Typography>
+              ¿Estás seguro de que quieres eliminar tu reseña de este libro?
+            </Typography>
+            <Typography>Esta accion no se puede deshacer.</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteReview}>Eliminar</Button>
+            <Button onClick={handleClose}>Cancelar</Button>
           </DialogActions>
         </Dialog>
       </MainContent>
