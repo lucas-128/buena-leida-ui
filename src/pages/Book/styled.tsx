@@ -156,6 +156,17 @@ export const ColumnButton = styled.button`
   }
 `;
 
+export const TextReview = styled.p`
+  margin-top: 10px;
+  margin-bottom: 20px;
+  color: black;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  white-space: normal;
+`;
+
 export const ReviewInput = styled.textarea`
   width: 100%;
   height: 100px;

@@ -17,7 +17,6 @@ import {
   Section,
   SectionTitle,
   Button,
-  ReviewInput,
   RatingBreakdown,
   RatingRow,
   ReviewCard,
@@ -28,6 +27,7 @@ import {
   RatingBar,
   RatingCount,
   ColumnButton,
+  TextReview,
 } from "./styled";
 import { defaultPhotoUrl } from "../Profile";
 import axios from "axios";
@@ -43,6 +43,7 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  TextField,
   Typography,
 } from "@mui/material";
 
@@ -624,7 +625,7 @@ export const Book: React.FC = () => {
             <ReviewCard>
               <ReviewContent>
                 <StarContainer>{renderStars(userRating || 0)}</StarContainer>
-                <p>{userReview}</p>
+                <TextReview>{userReview}</TextReview>
                 <Button onClick={() => setOpenDeleteReviewDialog(true)}>
                   Eliminar reseña
                 </Button>
@@ -632,14 +633,24 @@ export const Book: React.FC = () => {
             </ReviewCard>
           ) : isWritingReview ? (
             <div>
-              <ReviewInput
+              <TextField
                 value={newReviewText}
                 onChange={(e) => setNewReviewText(e.target.value)}
                 placeholder="Escribe tu reseña aquí..."
-                //helperText={`${newReviewText.length}/15`}
-                // slotProps={{
-                //   htmlInput: { maxLength: 15 },
-                // }}
+                style={{
+                  width: "99%",
+                  height: "100px",
+                  marginBottom: "10px",
+                  padding: "10px",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                  fontSize: "16px",
+                  resize: "vertical",
+                }}
+                helperText={`${newReviewText.length}/400`}
+                slotProps={{
+                  htmlInput: { maxLength: 400 },
+                }}
               />
               <div style={{ display: "flex", gap: "10px" }}>
                 <Button onClick={handleSubmitReview}>Enviar</Button>
