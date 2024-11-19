@@ -1,20 +1,29 @@
 //import { useState } from "react";
 import { Title } from "../SearchBar/styled";
 import {
+  CardContainer,
   Container,
+  CreateButton,
+  DiscussionContainer,
+  DiscussionsContainer,
   //GroupCard,
   GroupDescription,
   GroupImage,
   GroupInfoContainer,
   GroupProfile,
+  InfoContainer,
   // GroupTitle,
   InteractButton,
   LeftSection,
+  Name,
+  ProfilePicture,
   RightSection,
+  Subtitle,
+  Username,
   //SectionTitle,
 } from "./styled";
 
-// import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import { useSnackbar } from "notistack";
 import { FavoriteGenders, GenderTag } from "../OtherProfile/styled";
 import { Divider, Typography } from "@mui/material";
@@ -24,6 +33,13 @@ export const defaultPhotoUrl =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
 
 const userData1: UserData = {
+  id: 100,
+  profilePhotoUrl: defaultPhotoUrl,
+  realName: "Creator Name 100",
+  username: "creator100",
+};
+
+const userData34: UserData = {
   id: 100,
   profilePhotoUrl: defaultPhotoUrl,
   realName: "Creator Name 100",
@@ -58,8 +74,60 @@ const groupDetails: GroupDetails = {
   photoUrl: defaultPhotoUrl,
   genres: ["Rock", "Pop", "Jazz"],
   creator: userData1,
-  members: [userData2, userData3, userData4],
+  members: [
+    userData2,
+    userData3,
+    userData4,
+    userData34,
+    userData34,
+    userData34,
+  ],
 };
+
+interface Discussion {
+  id: number;
+  title: string;
+  authorName: string;
+  content: string;
+}
+
+const discussions: Discussion[] = [
+  {
+    id: 1,
+    title: "The Future of Technology",
+    authorName: "Alice Johnson",
+    content:
+      "Technology is evolving at a rapid pace, but where will it take us in the next decade?",
+  },
+  {
+    id: 2,
+    title: "Climate Change and Its Impact",
+    authorName: "Bob Smith",
+    content:
+      "The effects of climate change are becoming more evident. How can we work together to mitigate its impacts?",
+  },
+  {
+    id: 3,
+    title: "Best Practices in Software Development",
+    authorName: "Carol Lee",
+    content:
+      "What are some modern best practices in software development that every developer should know?",
+  },
+  {
+    id: 4,
+    title: "The Art of Storytelling",
+    authorName: "David Brown",
+    content:
+      "Storytelling has been a fundamental way of sharing knowledge and culture. What makes a story truly captivating?",
+  },
+  {
+    id: 5,
+    title: "Traveling on a Budget",
+    authorName: "Emma Davis",
+    content:
+      "Exploring the world doesn't have to break the bank. What are your tips for budget-friendly travel?",
+  },
+];
 interface GroupDetails {
   name: string;
   description: string;
@@ -78,7 +146,7 @@ interface UserData {
 
 export const Group = () => {
   // const { enqueueSnackbar } = useSnackbar();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   // const [isLoading, setIsLoading] = useState(false);
 
   //const location = useLocation();
@@ -91,7 +159,7 @@ export const Group = () => {
           <GroupInfoContainer>
             <GroupImage src={groupDetails.photoUrl} />
             {/* Si soy owner, aca se muestra un boton de destuir. Si no, Join/Salir*/}
-            <InteractButton>Join</InteractButton>
+            <InteractButton>Unirse</InteractButton>
           </GroupInfoContainer>
           <GroupDescription>
             <Typography
@@ -132,24 +200,65 @@ export const Group = () => {
           <Divider />
         </GroupProfile>
         <Divider style={{ marginTop: "20px" }}></Divider>
-        <Title>Discusiones</Title>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Subtitle>Discusiones</Subtitle>
+          <CreateButton>Crear discusión</CreateButton>
+        </div>
+
+        <DiscussionsContainer>
+          {discussions.map((discussion, index) => (
+            <DiscussionContainer
+              key={index}
+              onClick={() => {
+                navigate("/discussion", { state: { query: discussion.id } });
+              }}
+            >
+              <InfoContainer>
+                <Typography style={{ fontWeight: "bold", fontSize: "16px" }}>
+                  {discussion.title}
+                </Typography>
+                <Typography style={{ fontSize: "14px" }}>
+                  {discussion.content.length > 100
+                    ? discussion.content.substring(0, 97) + "..."
+                    : discussion.content}
+                </Typography>
+                <Typography style={{ fontSize: "14px", color: "gray" }}>
+                  Iniciada por: {discussion.authorName}
+                </Typography>
+              </InfoContainer>
+            </DiscussionContainer>
+          ))}
+        </DiscussionsContainer>
       </LeftSection>
       <RightSection>
         <Title>Creador:</Title>
-        <p>Lucas</p>
-        <p>@milanesa123</p>
-        <p>foto perfil</p>
-        <Divider />
+        <CardContainer>
+          <ProfilePicture src={userData1.profilePhotoUrl} />
+          <InfoContainer>
+            <Name>{userData1.realName}</Name>
+            <Username>@{userData1.username}</Username>
+          </InfoContainer>
+        </CardContainer>
         <Title>Miembros:</Title>
-        <p>Lucas</p>
-        <p>@milanesa123</p>
-        <p>foto perfil</p>
-        <p>Lucas</p>
-        <p>@milanesa123</p>
-        <p>foto perfil</p>
-        <p>Lucas</p>
-        <p>@milanesa123</p>
-        <p>foto perfil</p>
+        {groupDetails.members.length === 0 ? (
+          <p>This group has no members</p>
+        ) : (
+          groupDetails.members.map((member, index) => (
+            <CardContainer key={index}>
+              <ProfilePicture src={member.profilePhotoUrl} />
+              <InfoContainer>
+                <Name>{member.realName}</Name>
+                <Username>@{member.username}</Username>
+              </InfoContainer>
+            </CardContainer>
+          ))
+        )}
       </RightSection>
     </Container>
   );
