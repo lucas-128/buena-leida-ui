@@ -139,6 +139,22 @@ export const GroupSearch = () => {
 
   const { state } = useGlobalState();
   const handleSaveGroup = async () => {
+    if (groupName.length === 0) {
+      enqueueSnackbar("El nombre no puede estar vacio.", {
+        variant: "error",
+      });
+
+      return;
+    }
+
+    if (selectedCategories.length === 0) {
+      enqueueSnackbar("Debes seleccionar al menos 1 genero.", {
+        variant: "error",
+      });
+
+      return;
+    }
+
     try {
       await axios.post(`${API_URL}/groups/create`, {
         name: groupName,
@@ -151,6 +167,7 @@ export const GroupSearch = () => {
 
       enqueueSnackbar("Grupo creado con exito", { variant: "success" });
       setshowCreateGroupModal(false);
+      window.location.reload();
     } catch (error) {
       console.error("Error creating group: ", error);
       enqueueSnackbar("Ya existe un grupo con ese nombre.", {

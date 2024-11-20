@@ -110,6 +110,8 @@ export const Group = () => {
   const [availableCategories, setAvailableCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
+  const [showDeleteGroupModal, setShowDeleteGroupModal] = useState(false);
+
   const handleCategoryChange = (category: string) => {
     setSelectedCategories((prev) =>
       prev.includes(category)
@@ -135,6 +137,21 @@ export const Group = () => {
     useState(false);
 
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
+
+  const handleDeleteGroup = async () => {
+    try {
+      await axios.delete(`${API_URL}/groups/${groupId}/remove-group`, {
+        data: {
+          creatorId: state.id,
+        },
+      });
+      enqueueSnackbar("Grupo eliminado con éxito.", { variant: "success" });
+      navigate("/");
+    } catch (error) {
+      console.log("error deleting group: ", error);
+      enqueueSnackbar("Error al eliminar grupo", { variant: "error" });
+    }
+  };
 
   const handleSaveNewBio = async () => {
     if (newBio.length === 0) {
@@ -268,6 +285,7 @@ export const Group = () => {
     setShowCreateDiscussionModal(false);
     setShowEditBioModal(false);
     setShowGenresBioModal(false);
+    setShowDeleteGroupModal(false);
   };
 
   const handleCreateNewDiscussion = async () => {
@@ -426,16 +444,32 @@ export const Group = () => {
             )}
           </GroupInfoContainer>
           <GroupDescription>
-            <Typography
-              style={{
-                fontWeight: "bold",
-                fontSize: "32px",
-                marginBottom: "10px",
-                marginTop: "10px",
-              }}
-            >
-              {groupDetails.name}
-            </Typography>
+            {imOwner ? (
+              <Typography
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "32px",
+                  marginBottom: "10px",
+                  marginTop: "10px",
+                  cursor: "pointer",
+                }}
+                onClick={() => setShowDeleteGroupModal(true)}
+              >
+                {groupDetails.name} 🗑️
+              </Typography>
+            ) : (
+              <Typography
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "32px",
+                  marginBottom: "10px",
+                  marginTop: "10px",
+                }}
+              >
+                {groupDetails.name}
+              </Typography>
+            )}
+
             {imOwner ? (
               <Typography
                 style={{
@@ -643,6 +677,24 @@ export const Group = () => {
 
           <Button color="primary" onClick={handleUpdateGenres}>
             Guardar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={showDeleteGroupModal}
+        onClose={handleClose}
+        disableScrollLock
+      >
+        <DialogTitle>Eliminar Grupo</DialogTitle>
+        <DialogContent>
+          <Typography>Esta accion es irreversible.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancelar</Button>
+
+          <Button color="primary" onClick={handleDeleteGroup}>
+            Borrar Grupo
           </Button>
         </DialogActions>
       </Dialog>
