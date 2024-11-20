@@ -81,6 +81,7 @@ export const GroupSearch = () => {
       setgroupData(response.data);
     } catch (error) {
       console.error("Error fetching groups by genre: ", error);
+      setgroupData([]);
     }
 
     setIsLoading(false);
@@ -112,9 +113,9 @@ export const GroupSearch = () => {
 
     let q;
     if (rankingMode === "rankings") {
-      q = `${API_URL}/groups/${query}?sort=popularity`;
+      q = `${API_URL}/groups/name/${query}?sort=popularity`;
     } else {
-      q = `${API_URL}/groups/${query}`;
+      q = `${API_URL}/groups/name/${query}`;
     }
 
     try {
@@ -122,6 +123,7 @@ export const GroupSearch = () => {
       setgroupData(response.data);
     } catch (error) {
       console.error("Error fetching groups by name: ", error);
+      setgroupData([]);
     }
 
     setIsLoading(false);
