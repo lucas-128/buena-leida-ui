@@ -66,6 +66,7 @@ export const GroupSearch = () => {
   const handleClickCategory = async (category: string) => {
     setIsLoading(true);
     setSearched(true);
+    setQuery("");
 
     let q;
     if (rankingMode === "rankings") {
