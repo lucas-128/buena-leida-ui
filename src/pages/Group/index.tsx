@@ -25,12 +25,14 @@ import { useSnackbar } from "notistack";
 import { FavoriteGenders, GenderTag } from "../OtherProfile/styled";
 import {
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Divider,
   FormControl,
+  FormControlLabel,
   TextField,
   Typography,
 } from "@mui/material";
@@ -45,6 +47,7 @@ import {
 import { storage } from "../../../firebaseConfig";
 import axios from "axios";
 import { useGlobalState } from "../../context/GlobalStateContext";
+import { StyledDialogContent, StyledFormControl } from "../GroupSearch/styled";
 
 export const defaultPhotoUrl =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
@@ -85,6 +88,8 @@ export const Group = () => {
   const location = useLocation();
   const groupId = location.state?.query || "";
 
+  const [newBio, setNewBio] = useState("");
+
   const emptyGroup: Group = {
     groupId: 0,
     name: "",
@@ -94,15 +99,84 @@ export const Group = () => {
     genre: [],
   };
 
+  const [showEditBioModal, setShowEditBioModal] = useState(false);
+  const [showEditGenresModal, setShowGenresBioModal] = useState(false);
+
   const [imOwner, setImOwner] = useState(false);
   const [groupDetails, setgroupDetails] = useState<Group>(emptyGroup);
   const [members, setMembers] = useState<UserData[]>([]);
   const [creatorData, setCreatorData] = useState<UserData>();
 
+  const [availableCategories, setAvailableCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
+    );
+  };
+
+  useEffect(() => {
+    const fetchAvailableGenres = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/books/genres`);
+        setAvailableCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching genres: ", error);
+      }
+    };
+
+    fetchAvailableGenres();
+  }, []);
+
   const [showCreateDiscussionModal, setShowCreateDiscussionModal] =
     useState(false);
 
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
+
+  const handleSaveNewBio = async () => {
+    if (newBio.length === 0) {
+      enqueueSnackbar("La descripción no puede estar vacía.", {
+        variant: "error",
+      });
+      handleClose();
+      return;
+    }
+
+    try {
+      await axios.patch(`${API_URL}/groups/${groupId}/update-bio`, {
+        bio: newBio,
+        creatorId: state.id,
+      });
+
+      setNewBio("");
+      window.location.reload();
+    } catch (error) {
+      console.log("Error updating group bio: ", error);
+    }
+  };
+
+  const handleUpdateGenres = async () => {
+    if (selectedCategories.length === 0) {
+      enqueueSnackbar("Debes seleccionar al menos un género.", {
+        variant: "error",
+      });
+      return;
+    }
+
+    try {
+      await axios.patch(`${API_URL}/groups/${groupId}/update-genre`, {
+        genre: selectedCategories,
+        creatorId: state.id,
+      });
+
+      window.location.reload();
+    } catch (error) {
+      console.log("Error updating group genres: ", error);
+    }
+  };
 
   const handleDeleteImage = async () => {
     if (!state.username) return;
@@ -120,8 +194,8 @@ export const Group = () => {
 
         window.location.reload();
       } catch (e) {
-        console.log("Error updating profile pic: ", e);
-        enqueueSnackbar("Error actualizando imagen de perfil.", {
+        console.log("Error updating pic: ", e);
+        enqueueSnackbar("Error actualizando imagen.", {
           variant: "error",
         });
       }
@@ -192,6 +266,8 @@ export const Group = () => {
   const [isGroupMember, setIsGroupMember] = useState(false);
   const handleClose = () => {
     setShowCreateDiscussionModal(false);
+    setShowEditBioModal(false);
+    setShowGenresBioModal(false);
   };
 
   const handleCreateNewDiscussion = async () => {
@@ -368,7 +444,7 @@ export const Group = () => {
                   marginBottom: "3px",
                   cursor: "pointer",
                 }}
-                // onClick edit descipcion modal
+                onClick={() => setShowEditBioModal(true)}
               >
                 Descripción ✏️:
               </Typography>
@@ -394,7 +470,7 @@ export const Group = () => {
                     marginBottom: "10px",
                     cursor: "pointer",
                   }}
-                  // onClick edit generos modal
+                  onClick={() => setShowGenresBioModal(true)}
                 >
                   Géneros ✏️:
                 </Typography>
@@ -509,6 +585,63 @@ export const Group = () => {
         <DialogActions>
           <Button onClick={handleClose}>Cancelar</Button>
           <Button onClick={handleCreateNewDiscussion} color="primary">
+            Guardar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={showEditBioModal} onClose={handleClose}>
+        <DialogTitle>Editar descripción:</DialogTitle>
+        <DialogContent sx={{ minWidth: "400px" }}>
+          <FormControl fullWidth margin="normal">
+            <TextField
+              label="Nueva descripción..."
+              value={newBio}
+              onChange={(e) => setNewBio(e.target.value.slice(0, 200))}
+              helperText={`${newBio.length}/200`}
+              slotProps={{
+                htmlInput: { maxLength: 200 },
+              }}
+              variant="outlined"
+            />
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancelar</Button>
+          <Button onClick={handleSaveNewBio} color="primary">
+            Guardar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={showEditGenresModal}
+        onClose={handleClose}
+        disableScrollLock
+      >
+        <DialogTitle>Editar géneros:</DialogTitle>
+        <DialogContent>
+          <StyledDialogContent>
+            {availableCategories.map((category) => (
+              <StyledFormControl key={category}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={selectedCategories.indexOf(category) !== -1}
+                      onChange={() => handleCategoryChange(category)}
+                      color="primary"
+                    />
+                  }
+                  label={category}
+                />
+              </StyledFormControl>
+            ))}
+          </StyledDialogContent>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancelar</Button>
+
+          <Button color="primary" onClick={handleUpdateGenres}>
             Guardar
           </Button>
         </DialogActions>
