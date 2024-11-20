@@ -5,21 +5,20 @@ import {
   CreateButton,
   DiscussionContainer,
   DiscussionsContainer,
-  GroupCard,
   GroupDescription,
   GroupImage,
   GroupInfoContainer,
   GroupProfile,
   InfoContainer,
-  GroupTitle,
   InteractButton,
   LeftSection,
   Name,
+  OwnerButton,
+  OwnerDeleteImageButton,
   ProfilePicture,
   RightSection,
   Subtitle,
   Username,
-  SectionTitle,
 } from "./styled";
 
 import { useLocation, useNavigate } from "react-router-dom";
@@ -37,8 +36,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { LeftColumn } from "../Book/styled";
-import { DEFAULT_COVER_IMAGE } from "../Book";
+
 import axios from "axios";
 import { useGlobalState } from "../../context/GlobalStateContext";
 
@@ -120,12 +118,12 @@ export const Group = () => {
   const { state } = useGlobalState();
 
   const [newDiscussionName, setNewDiscussionName] = useState("");
-
+  const [isGroupMember, setIsGroupMember] = useState(false);
   const handleClose = () => {
     setShowCreateDiscussionModal(false);
   };
 
-  const handleCreateNewDiscussion = () => {
+  const handleCreateNewDiscussion = async () => {
     if (newDiscussionName.length === 0) {
       enqueueSnackbar("El nombre de la discusión no puede estar vacío.", {
         variant: "error",
@@ -135,7 +133,7 @@ export const Group = () => {
     }
 
     try {
-      axios.post(`${API_URL}/discussions/${groupId}/create-discussion/`, {
+      await axios.post(`${API_URL}/discussions/${groupId}/create-discussion/`, {
         name: newDiscussionName,
         creatorId: state.id,
       });
@@ -190,7 +188,39 @@ export const Group = () => {
     if (groupDetails.creatorId == state.id) {
       setImOwner(true);
     }
+
+    if (imOwner || members.find((member) => member.id === state.id)) {
+      setIsGroupMember(true);
+    }
   }, [groupDetails]);
+
+  const handleJoinGroup = async () => {
+    try {
+      await axios.post(`${API_URL}/groups/enterGroup`, {
+        groupId: groupId,
+        userId: state.id,
+      });
+      window.location.reload();
+    } catch (error) {
+      console.log("error joining group: ", error);
+      enqueueSnackbar("Error al unirse al grupo", { variant: "error" });
+    }
+  };
+
+  const handleLeaveGroup = async () => {
+    try {
+      await axios.delete(`${API_URL}/groups/leaveGroup`, {
+        data: {
+          groupId: groupId,
+          userId: state.id,
+        },
+      });
+      window.location.reload();
+    } catch (error) {
+      console.log("error leaving group: ", error);
+      enqueueSnackbar("Error al salir del grupo", { variant: "error" });
+    }
+  };
 
   return (
     <Container>
@@ -200,8 +230,24 @@ export const Group = () => {
             <GroupImage
               src={groupDetails ? groupDetails.photo : defaultPhotoUrl}
             />
-            {/* Si soy owner, aca se muestra un boton de destuir. Si no, Join/Salir*/}
-            <InteractButton>Unirse</InteractButton>
+            {imOwner ? (
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                <OwnerButton>Subir Imagen</OwnerButton>
+                <OwnerDeleteImageButton>Borrar Imagen</OwnerDeleteImageButton>
+              </div>
+            ) : isGroupMember ? (
+              <div>
+                <InteractButton onClick={handleLeaveGroup}>
+                  Salir
+                </InteractButton>
+              </div>
+            ) : (
+              <div>
+                <InteractButton onClick={handleJoinGroup}>
+                  Unirse
+                </InteractButton>
+              </div>
+            )}
           </GroupInfoContainer>
           <GroupDescription>
             <Typography
@@ -214,26 +260,56 @@ export const Group = () => {
             >
               {groupDetails.name}
             </Typography>
-            <Typography
-              style={{
-                fontWeight: "bold",
-                fontSize: "18px",
-                marginBottom: "3px",
-              }}
-            >
-              Descripción:
-            </Typography>
-            <Typography>{groupDetails.bio}</Typography>
-            <FavoriteGenders>
+            {imOwner ? (
               <Typography
                 style={{
                   fontWeight: "bold",
                   fontSize: "18px",
-                  marginBottom: "10px",
+                  marginBottom: "3px",
+                  cursor: "pointer",
+                }}
+                // onClick edit descipcion modal
+              >
+                Descripción ✏️:
+              </Typography>
+            ) : (
+              <Typography
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                  marginBottom: "3px",
                 }}
               >
-                Géneros:
+                Descripción:
               </Typography>
+            )}
+
+            <Typography>{groupDetails.bio}</Typography>
+            <FavoriteGenders>
+              {imOwner ? (
+                <Typography
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    marginBottom: "10px",
+                    cursor: "pointer",
+                  }}
+                  // onClick edit generos modal
+                >
+                  Géneros ✏️:
+                </Typography>
+              ) : (
+                <Typography
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Géneros:
+                </Typography>
+              )}
+
               {groupDetails.genre.map((g, index) => (
                 <GenderTag key={index}>{g}</GenderTag>
               ))}
@@ -250,9 +326,11 @@ export const Group = () => {
           }}
         >
           <Subtitle>Discusiones</Subtitle>
-          <CreateButton onClick={() => setShowCreateDiscussionModal(true)}>
-            Crear discusión
-          </CreateButton>
+          {isGroupMember && (
+            <CreateButton onClick={() => setShowCreateDiscussionModal(true)}>
+              Crear discusión
+            </CreateButton>
+          )}
         </div>
 
         <DiscussionsContainer>

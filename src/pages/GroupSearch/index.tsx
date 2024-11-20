@@ -19,7 +19,6 @@ import {
   GroupDescription,
   GroupCard,
   GroupInfo,
-  UsersCount,
   StyledFormControl,
   StyledDialogContent,
 } from "./styled";
@@ -67,15 +66,22 @@ export const GroupSearch = () => {
     setIsLoading(true);
     setSearched(true);
 
-    // TODO FETCH GROUPS BY CATEGORY
-    // +++ CHECK RANKING MODE PARA VER SI TENGO QUE HACER EL FETCH CON EL ORDENAMIENTO
+    let q;
+    if (rankingMode === "rankings") {
+      q = `${API_URL}/groups/groups-by-genre/${category}?sort=popularity`;
+    } else {
+      q = `${API_URL}/groups/groups-by-genre/${category}`;
+    }
 
     try {
-      const response = await axios.get(`${API_URL}/groups/groups-by-genre`);
+      const response = await axios.get(q, {
+        params: { query },
+      });
       setgroupData(response.data);
-    } catch {
-      enqueueSnackbar("Error al cargar los grupos", { variant: "error" });
+    } catch (error) {
+      console.error("Error fetching groups by genre: ", error);
     }
+
     setIsLoading(false);
   };
 
@@ -103,8 +109,21 @@ export const GroupSearch = () => {
     setSearched(true);
     setIsLoading(true);
 
-    // TODO fetch groups by query in input
-    // +++ CHECK RANKING MODE PARA VER SI TENGO QUE HACER EL FETCH CON EL ORDENAMIENTO
+    let q;
+    if (rankingMode === "rankings") {
+      q = `${API_URL}/groups/${query}?sort=popularity`;
+    } else {
+      q = `${API_URL}/groups/${query}`;
+    }
+
+    try {
+      const response = await axios.get(q, {
+        params: { query },
+      });
+      setgroupData(response.data);
+    } catch (error) {
+      console.error("Error fetching groups by name: ", error);
+    }
 
     setIsLoading(false);
   };

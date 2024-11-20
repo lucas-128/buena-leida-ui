@@ -108,8 +108,50 @@ export const LeftSection = styled.div`
   flex-direction: column;
 `;
 
+export const OwnerButton = styled.button`
+  background-color: var(--d-color);
+  border: none;
+  color: white;
+  text-align: center;
+  padding: 9px;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 122.5px;
+  margin-top: 15px;
+  transition: background-color 0.3s;
+  border: 1px solid #e0e0e0;
+
+  &:hover {
+    background-color: var(--c-color);
+  }
+`;
+
+export const OwnerDeleteImageButton = styled.button`
+  background-color: rgb(211, 47, 47);
+  border: none;
+  color: white;
+  text-align: center;
+  padding: 9px;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 122.5px;
+  margin-top: 15px;
+  transition: background-color 0.3s;
+  border: 1px solid #e0e0e0;
+
+  &:hover {
+    background-color: rgb(198, 20, 20);
+  }
+`;
+
 export const InteractButton = styled.button`
-  background-color: var(--c-color);
+  background-color: var(--d-color);
   border: none;
   color: white;
   padding: 10px 20px;
@@ -125,7 +167,7 @@ export const InteractButton = styled.button`
   border: 1px solid #e0e0e0;
 
   &:hover {
-    background-color: var(--d-color);
+    background-color: var(--c-color);
   }
 `;
 
