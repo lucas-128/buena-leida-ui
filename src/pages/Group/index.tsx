@@ -1,4 +1,3 @@
-//import { useState } from "react";
 import { Title } from "../SearchBar/styled";
 import {
   CardContainer,
@@ -6,13 +5,13 @@ import {
   CreateButton,
   DiscussionContainer,
   DiscussionsContainer,
-  //GroupCard,
+  GroupCard,
   GroupDescription,
   GroupImage,
   GroupInfoContainer,
   GroupProfile,
   InfoContainer,
-  // GroupTitle,
+  GroupTitle,
   InteractButton,
   LeftSection,
   Name,
@@ -20,144 +19,187 @@ import {
   RightSection,
   Subtitle,
   Username,
-  //SectionTitle,
+  SectionTitle,
 } from "./styled";
 
-import { useNavigate } from "react-router-dom";
-// import { useSnackbar } from "notistack";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import { FavoriteGenders, GenderTag } from "../OtherProfile/styled";
-import { Divider, Typography } from "@mui/material";
-//import { LeftColumn } from "../Book/styled";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  FormControl,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { LeftColumn } from "../Book/styled";
+import { DEFAULT_COVER_IMAGE } from "../Book";
+import axios from "axios";
+import { useGlobalState } from "../../context/GlobalStateContext";
 
 export const defaultPhotoUrl =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
 
-const userData1: UserData = {
-  id: 100,
-  profilePhotoUrl: defaultPhotoUrl,
-  realName: "Creator Name 100",
-  username: "creator100",
-};
-
-const userData34: UserData = {
-  id: 100,
-  profilePhotoUrl: defaultPhotoUrl,
-  realName: "Creator Name 100",
-  username: "creator100",
-};
-
-const userData2: UserData = {
-  id: 101,
-  profilePhotoUrl: defaultPhotoUrl,
-  realName: "Member Name 101",
-  username: "member101",
-};
-
-const userData3: UserData = {
-  id: 102,
-  profilePhotoUrl: defaultPhotoUrl,
-  realName: "Member Name 102",
-  username: "member102",
-};
-
-const userData4: UserData = {
-  id: 103,
-  profilePhotoUrl: defaultPhotoUrl,
-  realName: "Member Name 103",
-  username: "member103",
-};
-
-const groupDetails: GroupDetails = {
-  name: "La verdad de la milanesa",
-  description:
-    "Este grupo trata sobre la verdad de la milanesa Este grupo trata sobre la verdad de la milanesa Este grupo trata sobre la verdad de la milanesa Este grupo trata sobre la verdad de la milanesa Este grupo trata sobre la verdad de la milanesa.",
-  photoUrl: defaultPhotoUrl,
-  genres: ["Rock", "Pop", "Jazz"],
-  creator: userData1,
-  members: [
-    userData2,
-    userData3,
-    userData4,
-    userData34,
-    userData34,
-    userData34,
-  ],
-};
-
 interface Discussion {
-  id: number;
-  title: string;
-  authorName: string;
-  content: string;
+  discussionId: number;
+  name: string;
+  creatorUser: {
+    username: string;
+    name: string;
+    profilePhoto: string;
+  };
 }
 
-const discussions: Discussion[] = [
-  {
-    id: 1,
-    title: "The Future of Technology",
-    authorName: "Alice Johnson",
-    content:
-      "Technology is evolving at a rapid pace, but where will it take us in the next decade?",
-  },
-  {
-    id: 2,
-    title: "Climate Change and Its Impact",
-    authorName: "Bob Smith",
-    content:
-      "The effects of climate change are becoming more evident. How can we work together to mitigate its impacts?",
-  },
-  {
-    id: 3,
-    title: "Best Practices in Software Development",
-    authorName: "Carol Lee",
-    content:
-      "What are some modern best practices in software development that every developer should know?",
-  },
-  {
-    id: 4,
-    title: "The Art of Storytelling",
-    authorName: "David Brown",
-    content:
-      "Storytelling has been a fundamental way of sharing knowledge and culture. What makes a story truly captivating?",
-  },
-  {
-    id: 5,
-    title: "Traveling on a Budget",
-    authorName: "Emma Davis",
-    content:
-      "Exploring the world doesn't have to break the bank. What are your tips for budget-friendly travel?",
-  },
-];
-interface GroupDetails {
+interface Group {
+  groupId: number;
   name: string;
-  description: string;
-  photoUrl: string;
-  genres: string[];
-  creator: UserData; // Group creator
-  members: UserData[]; // List of group members
+  photo: string;
+  creatorId: number;
+  bio: string;
+  genre: string[];
 }
 
 interface UserData {
   id: number;
-  profilePhotoUrl: string;
-  realName: string;
+  name: string;
   username: string;
+  bio: string;
+  profilePhoto: string;
+  favouritegenders: string[];
 }
 
-export const Group = () => {
-  // const { enqueueSnackbar } = useSnackbar();
-  const navigate = useNavigate();
-  // const [isLoading, setIsLoading] = useState(false);
+const API_URL = "http://localhost:3000";
 
-  //const location = useLocation();
-  //const groupId = location.state?.query || "";
+export const Group = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const groupId = location.state?.query || "";
+
+  const emptyGroup: Group = {
+    groupId: 0,
+    name: "",
+    photo: defaultPhotoUrl,
+    creatorId: -1,
+    bio: "",
+    genre: [],
+  };
+
+  const [imOwner, setImOwner] = useState(false);
+  const [groupDetails, setgroupDetails] = useState<Group>(emptyGroup);
+  const [members, setMembers] = useState<UserData[]>([]);
+  const [creatorData, setCreatorData] = useState<UserData>();
+
+  const [showCreateDiscussionModal, setShowCreateDiscussionModal] =
+    useState(false);
+
+  const [discussions, setDiscussions] = useState<Discussion[]>([]);
+
+  useEffect(() => {
+    const fetchGroupData = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/groups/${groupId}/info`);
+        setgroupDetails(response.data.group);
+      } catch (error) {
+        console.error("Error fetching group data: ", error);
+      }
+    };
+
+    fetchGroupData();
+  }, []);
+
+  const handleUserClick = (userId: number) => {
+    navigate("/otherprofile", { state: { query: userId } });
+  };
+
+  const { state } = useGlobalState();
+
+  const [newDiscussionName, setNewDiscussionName] = useState("");
+
+  const handleClose = () => {
+    setShowCreateDiscussionModal(false);
+  };
+
+  const handleCreateNewDiscussion = () => {
+    if (newDiscussionName.length === 0) {
+      enqueueSnackbar("El nombre de la discusión no puede estar vacío.", {
+        variant: "error",
+      });
+      handleClose();
+      return;
+    }
+
+    try {
+      axios.post(`${API_URL}/discussions/${groupId}/create-discussion/`, {
+        name: newDiscussionName,
+        creatorId: state.id,
+      });
+      enqueueSnackbar("Discusión creada con éxito.", { variant: "success" });
+    } catch (error) {
+      console.log("Error creando discusión: ", error);
+    }
+
+    handleClose();
+    setNewDiscussionName("");
+  };
+
+  useEffect(() => {
+    const fetchCreatorData = async () => {
+      if (groupDetails.creatorId != -1) {
+        try {
+          const response = await axios.get(
+            `${API_URL}/users/${groupDetails.creatorId}/profile`
+          );
+          const data = response.data;
+          setCreatorData(data);
+        } catch (err) {
+          console.log("error fetching user data");
+        }
+      }
+    };
+
+    const fetchMembers = async () => {
+      try {
+        const response = await axios.get(
+          `${API_URL}/groups/${groupId}/members`
+        );
+        setMembers(response.data);
+      } catch (error) {
+        console.error("Error fetching group members: ", error);
+      }
+    };
+
+    const fetchDiscussions = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/discussions/${groupId}`);
+        setDiscussions(response.data);
+      } catch (error) {
+        console.error("Error fetching Discussions: ", error);
+      }
+    };
+
+    fetchCreatorData();
+    fetchMembers();
+    fetchDiscussions();
+
+    if (groupDetails.creatorId == state.id) {
+      setImOwner(true);
+    }
+  }, [groupDetails]);
 
   return (
     <Container>
       <LeftSection>
         <GroupProfile>
           <GroupInfoContainer>
-            <GroupImage src={groupDetails.photoUrl} />
+            <GroupImage
+              src={groupDetails ? groupDetails.photo : defaultPhotoUrl}
+            />
             {/* Si soy owner, aca se muestra un boton de destuir. Si no, Join/Salir*/}
             <InteractButton>Unirse</InteractButton>
           </GroupInfoContainer>
@@ -181,7 +223,7 @@ export const Group = () => {
             >
               Descripción:
             </Typography>
-            <Typography>{groupDetails.description}</Typography>
+            <Typography>{groupDetails.bio}</Typography>
             <FavoriteGenders>
               <Typography
                 style={{
@@ -192,14 +234,14 @@ export const Group = () => {
               >
                 Géneros:
               </Typography>
-              {groupDetails.genres.map((genres, index) => (
-                <GenderTag key={index}>{genres}</GenderTag>
+              {groupDetails.genre.map((g, index) => (
+                <GenderTag key={index}>{g}</GenderTag>
               ))}
             </FavoriteGenders>
           </GroupDescription>
           <Divider />
         </GroupProfile>
-        <Divider style={{ marginTop: "20px" }}></Divider>
+        <Divider style={{ marginTop: "90px" }}></Divider>
         <div
           style={{
             display: "flex",
@@ -208,7 +250,9 @@ export const Group = () => {
           }}
         >
           <Subtitle>Discusiones</Subtitle>
-          <CreateButton>Crear discusión</CreateButton>
+          <CreateButton onClick={() => setShowCreateDiscussionModal(true)}>
+            Crear discusión
+          </CreateButton>
         </div>
 
         <DiscussionsContainer>
@@ -216,21 +260,23 @@ export const Group = () => {
             <DiscussionContainer
               key={index}
               onClick={() => {
-                navigate("/discussion", { state: { query: discussion.id } });
+                navigate("/discussion", {
+                  state: { query: discussion.discussionId },
+                });
               }}
             >
               <InfoContainer>
                 <Typography style={{ fontWeight: "bold", fontSize: "16px" }}>
-                  {discussion.title}
+                  {discussion.name}
                 </Typography>
-                <Typography style={{ fontSize: "14px" }}>
+                <Typography style={{ fontSize: "14px", color: "gray" }}>
+                  Iniciada por: {discussion.creatorUser.name}
+                </Typography>
+                {/* <Typography style={{ fontSize: "14px" }}>
                   {discussion.content.length > 100
                     ? discussion.content.substring(0, 97) + "..."
                     : discussion.content}
-                </Typography>
-                <Typography style={{ fontSize: "14px", color: "gray" }}>
-                  Iniciada por: {discussion.authorName}
-                </Typography>
+                </Typography> */}
               </InfoContainer>
             </DiscussionContainer>
           ))}
@@ -238,72 +284,59 @@ export const Group = () => {
       </LeftSection>
       <RightSection>
         <Title>Creador:</Title>
-        <CardContainer>
-          <ProfilePicture src={userData1.profilePhotoUrl} />
+        <CardContainer onClick={() => handleUserClick(groupDetails.creatorId)}>
+          <ProfilePicture src={creatorData?.profilePhoto} />
           <InfoContainer>
-            <Name>{userData1.realName}</Name>
-            <Username>@{userData1.username}</Username>
+            <Name>{creatorData?.name}</Name>
+            <Username>@{creatorData?.username}</Username>
           </InfoContainer>
         </CardContainer>
         <Title>Miembros:</Title>
-        {groupDetails.members.length === 0 ? (
-          <p>This group has no members</p>
+        {members.length === 0 ? (
+          <p>Este grupo no tiene miembros</p>
         ) : (
-          groupDetails.members.map((member, index) => (
-            <CardContainer key={index}>
-              <ProfilePicture src={member.profilePhotoUrl} />
+          members.map((member, index) => (
+            <CardContainer
+              onClick={() => handleUserClick(member.id)}
+              key={index}
+            >
+              <ProfilePicture src={member.profilePhoto} />
               <InfoContainer>
-                <Name>{member.realName}</Name>
+                <Name>{member.name}</Name>
                 <Username>@{member.username}</Username>
               </InfoContainer>
             </CardContainer>
           ))
         )}
       </RightSection>
+
+      <Dialog open={showCreateDiscussionModal} onClose={handleClose}>
+        <DialogTitle>Nueva discusión</DialogTitle>
+        <DialogContent sx={{ minWidth: "400px" }}>
+          <FormControl fullWidth margin="normal">
+            <TextField
+              label="Titulo de la discusión..."
+              value={newDiscussionName}
+              onChange={(e) =>
+                setNewDiscussionName(e.target.value.slice(0, 50))
+              }
+              helperText={`${newDiscussionName.length}/50`}
+              slotProps={{
+                htmlInput: { maxLength: 50 },
+              }}
+              variant="outlined"
+            />
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancelar</Button>
+          <Button onClick={handleCreateNewDiscussion} color="primary">
+            Guardar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
 
 export default Group;
-
-{
-  /* Adapatar a dialogo de crear topico <Dialog open={showCreateGroupModal} onClose={handleClose}>
-        <DialogTitle>Crear Grupo</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth margin="normal">
-            <TextField
-              label="Group name"
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value.slice(0, 20))}
-              helperText={`${groupName.length}/20`}
-              slotProps={{
-                htmlInput: { maxLength: 20 },
-              }}
-              variant="outlined"
-            />
-          </FormControl>
-          <StyledDialogContent>
-            {availableCategories.map((category) => (
-              <StyledFormControl key={category}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={selectedCategories.indexOf(category) !== -1}
-                      onChange={() => handleCategoryChange(category)}
-                      color="primary"
-                    />
-                  }
-                  label={category}
-                />
-              </StyledFormControl>
-            ))}
-          </StyledDialogContent>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancelar</Button>
-          {availableCategories.length > 0 && (
-            <Button color="primary">Guardar</Button>
-          )}
-        </DialogActions>
-      </Dialog> */
-}

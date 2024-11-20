@@ -87,6 +87,7 @@ export const GroupInfoContainer = styled.div`
 export const GroupDescription = styled.div`
   border: 1px solid #e0e0e0;
   margin-left: 8px;
+  height: 346.5px;
   flex-direction: column;
   width: 500px;
   padding: 10px;
@@ -177,6 +178,7 @@ export const CardContainer = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   margin-bottom: 5px;
+  cursor: pointer;
 `;
 
 export const ProfilePicture = styled.img`
