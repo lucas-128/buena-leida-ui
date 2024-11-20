@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ResultsContainer,
   SearchButton,
@@ -39,100 +39,51 @@ import {
 } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import { useNavigate } from "react-router-dom";
-//import { useSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
+import axios from "axios";
+import { useGlobalState } from "../../context/GlobalStateContext";
+
+const API_URL = "http://localhost:3000";
 
 export const defaultPhotoUrl =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";
 
-// Dummy data
-const groupData: GroupData[] = [
-  {
-    id: 1,
-    name: "Tech Enthusiasts",
-    description:
-      "A group for people passionate about technology and innovation. A group for people passionate about technology and innovation",
-    photo: defaultPhotoUrl,
-    usersCount: 150,
-    genres: [
-      "Male",
-      "Female",
-      "Non-Binary",
-      "Male",
-      "FemaleFemaleFemaleFemaleFemaleFemale",
-    ],
-  },
-  {
-    id: 2,
-    name: "Book Lovers",
-    description: "A community for sharing and discussing great reads.",
-    photo: defaultPhotoUrl,
-    usersCount: 75,
-    genres: ["Male", "Female"],
-  },
-  {
-    id: 3,
-    name: "Fitness Freaks",
-    description:
-      "Join us to share tips and motivation for a healthy lifestyle.",
-    photo: defaultPhotoUrl,
-    usersCount: 200,
-    genres: ["Male", "Female", "Non-Binary"],
-  },
-  {
-    id: 4,
-    name: "Travel Addicts",
-    description: "For those who can't stop exploring the world.",
-    photo: defaultPhotoUrl,
-    usersCount: 120,
-    genres: ["Male", "Female"],
-  },
-  {
-    id: 5,
-    name: "Gaming Legends",
-    description: "A group for gamers to connect and compete.",
-    photo: defaultPhotoUrl,
-    usersCount: 300,
-    genres: ["Male", "Female", "Non-Binary", "Other"],
-  },
-];
-
 interface GroupData {
-  id: number;
+  groupId: number;
   name: string;
-  description: string;
+  bio: string;
   photo: string;
-  usersCount: number;
-  genres: string[];
 }
 
-// TODO fetch de API
-const existingGroupCategories = [
-  "Deportes",
-  "Música",
-  "Arte",
-  "Tecnología",
-  "Viajes",
-];
-
-// TODO fetch de API
-const availableCategories = [
-  "Deportes",
-  "Música",
-  "Arte",
-  "Tecnología",
-  "Cocina",
-  "Viajes",
-  "Lectura",
-  "Fotografía",
-];
-
 export const GroupSearch = () => {
-  //const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [rankingMode, setRankingMode] = useState("Default");
   const [showCreateGroupModal, setshowCreateGroupModal] = useState(false);
-  const [isLoading, _] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClickCategory = async (category: string) => {
+    setIsLoading(true);
+    setSearched(true);
+
+    // TODO FETCH GROUPS BY CATEGORY
+    // +++ CHECK RANKING MODE PARA VER SI TENGO QUE HACER EL FETCH CON EL ORDENAMIENTO
+
+    try {
+      const response = await axios.get(`${API_URL}/groups/groups-by-genre`);
+      setgroupData(response.data);
+    } catch {
+      enqueueSnackbar("Error al cargar los grupos", { variant: "error" });
+    }
+    setIsLoading(false);
+  };
+
+  // Para modal crear grupo
+  const [availableCategories, setAvailableCategories] = useState([]);
+  const [groupData, setgroupData] = useState<GroupData[]>([]);
+
+  const [existingGroupCategories, setExistingGroupCategories] = useState([]);
 
   // Create group form state //
   const [groupName, setGroupName] = useState("");
@@ -149,11 +100,16 @@ export const GroupSearch = () => {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Search:", query);
+    setSearched(true);
+    setIsLoading(true);
+
+    // TODO fetch groups by query in input
+    // +++ CHECK RANKING MODE PARA VER SI TENGO QUE HACER EL FETCH CON EL ORDENAMIENTO
+
+    setIsLoading(false);
   };
 
   const handleCreateGroup = () => {
-    console.log("Crear grupo clicked");
     setshowCreateGroupModal(true);
   };
 
@@ -161,9 +117,58 @@ export const GroupSearch = () => {
     setshowCreateGroupModal(false);
   };
 
+  const { state } = useGlobalState();
+  const handleSaveGroup = async () => {
+    try {
+      await axios.post(`${API_URL}/groups/create`, {
+        name: groupName,
+        genre: selectedCategories,
+        creatorId: state.id,
+        bio: `Grupo de: ${selectedCategories
+          .map((category) => `[${category}]`)
+          .join(", ")}`,
+      });
+
+      enqueueSnackbar("Grupo creado con exito", { variant: "success" });
+      setshowCreateGroupModal(false);
+    } catch (error) {
+      console.error("Error creating group: ", error);
+      enqueueSnackbar("Ya existe un grupo con ese nombre.", {
+        variant: "error",
+      });
+    }
+
+    handleClose();
+  };
+
   const handleGroupClick = (groupId: number) => {
     navigate("/group", { state: { query: groupId } });
   };
+
+  const [searched, setSearched] = useState(false);
+
+  useEffect(() => {
+    const fetchGroupGenres = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/groups/genres`);
+        setExistingGroupCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching genres: ", error);
+      }
+    };
+
+    const fetchAvailableGenres = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/books/genres`);
+        setAvailableCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching genres: ", error);
+      }
+    };
+
+    fetchAvailableGenres();
+    fetchGroupGenres();
+  }, []);
 
   return (
     <Container>
@@ -203,29 +208,37 @@ export const GroupSearch = () => {
           {isLoading ? (
             <Spinner />
           ) : groupData.length === 0 ? (
-            <p>No groups found for the specified parameters.</p>
+            searched ? (
+              <Typography sx={{ fontSize: "18px" }}>
+                No se encontraron grupos para los parametros de busqueda.
+              </Typography>
+            ) : (
+              <Typography sx={{ fontSize: "18px" }}>
+                Los grupos se van a mostrar aquí.
+              </Typography>
+            )
           ) : (
             groupData.map((group) => (
-              <GroupCard key={group.id}>
+              <GroupCard key={group.groupId}>
                 <GroupImage
                   src={group.photo}
-                  onClick={() => handleGroupClick(group.id)}
+                  onClick={() => handleGroupClick(group.groupId)}
                 />
                 <GroupInfo>
-                  <GroupName onClick={() => handleGroupClick(group.id)}>
+                  <GroupName onClick={() => handleGroupClick(group.groupId)}>
                     {group.name}
                   </GroupName>
                   <GroupDescription>
-                    {group.description.length > 75
-                      ? `${group.description.slice(0, 72)}...`
-                      : group.description}
+                    {group.bio.length > 75
+                      ? `${group.bio.slice(0, 72)}...`
+                      : group.bio}
                   </GroupDescription>
-                  <UsersCount>
+                  {/* <UsersCount>
                     Usuarios: {group.usersCount} | Generos:{" "}
                     {group.genres.join(", ").length > 40
                       ? `${group.genres.join(", ").slice(0, 37)}...`
                       : group.genres.join(", ")}
-                  </UsersCount>
+                  </UsersCount> */}
                 </GroupInfo>
               </GroupCard>
             ))
@@ -236,7 +249,12 @@ export const GroupSearch = () => {
         <SectionTitle>Grupos por categoria</SectionTitle>
         <CategoryGrid>
           {existingGroupCategories.map((category, index) => (
-            <CategoryItem key={index}>{category}</CategoryItem>
+            <CategoryItem
+              onClick={() => handleClickCategory(category)}
+              key={index}
+            >
+              {category}
+            </CategoryItem>
           ))}
         </CategoryGrid>
         <Divider />
@@ -291,7 +309,9 @@ export const GroupSearch = () => {
         <DialogActions>
           <Button onClick={handleClose}>Cancelar</Button>
           {availableCategories.length > 0 && (
-            <Button color="primary">Guardar</Button>
+            <Button color="primary" onClick={handleSaveGroup}>
+              Guardar
+            </Button>
           )}
         </DialogActions>
       </Dialog>
