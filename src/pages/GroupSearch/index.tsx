@@ -22,6 +22,7 @@ import {
   StyledFormControl,
   StyledDialogContent,
 } from "./styled";
+
 import {
   Button,
   Checkbox,
@@ -117,9 +118,7 @@ export const GroupSearch = () => {
     }
 
     try {
-      const response = await axios.get(q, {
-        params: { query },
-      });
+      const response = await axios.get(q);
       setgroupData(response.data);
     } catch (error) {
       console.error("Error fetching groups by name: ", error);

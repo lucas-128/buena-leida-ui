@@ -13,7 +13,6 @@ import {
   InteractButton,
   LeftSection,
   Name,
-  OwnerButton,
   OwnerDeleteImageButton,
   ProfilePicture,
   RightSection,
@@ -35,8 +34,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-
+import { ChangeEvent, useEffect, useState } from "react";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  deleteObject,
+  getMetadata,
+} from "firebase/storage";
+import { storage } from "../../../firebaseConfig";
 import axios from "axios";
 import { useGlobalState } from "../../context/GlobalStateContext";
 
@@ -97,6 +103,71 @@ export const Group = () => {
     useState(false);
 
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
+
+  const handleDeleteImage = async () => {
+    if (!state.username) return;
+    const storageRef = ref(storage, `groups/${groupDetails.name}/photo.jpg`);
+    try {
+      await getMetadata(storageRef);
+      await deleteObject(storageRef);
+
+      // pegada axios para actualizar bdd
+      try {
+        await axios.patch(`${API_URL}/groups/${groupId}/update-photo`, {
+          groupPhoto: defaultPhotoUrl,
+          creatorId: state.id,
+        });
+
+        window.location.reload();
+      } catch (e) {
+        console.log("Error updating profile pic: ", e);
+        enqueueSnackbar("Error actualizando imagen de perfil.", {
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      // La imagen ya esta borrada
+    }
+  };
+
+  const handleImageUpload = async (
+    event: ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      console.log("No file selected");
+      return;
+    }
+
+    try {
+      const image = await readImageFile(file);
+      const croppedImageBlob = await cropImage(image);
+      const storageRef = ref(storage, `groups/${groupDetails.name}/photo.jpg`);
+      await uploadBytes(storageRef, croppedImageBlob);
+      // Subir imagen a firebase
+      const imageUrl = await getDownloadURL(storageRef);
+
+      try {
+        await axios.patch(`${API_URL}/groups/${groupId}/update-photo`, {
+          groupPhoto: imageUrl,
+          creatorId: state.id,
+        });
+
+        window.location.reload();
+      } catch (e) {
+        console.log("Error updating group pic: ", e);
+
+        enqueueSnackbar("Error actualizando imagen.", {
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      console.error("Error actualizando image: ", error);
+      enqueueSnackbar("Error actualizando imagen.", {
+        variant: "error",
+      });
+    }
+  };
 
   useEffect(() => {
     const fetchGroupData = async () => {
@@ -232,8 +303,37 @@ export const Group = () => {
             />
             {imOwner ? (
               <div style={{ display: "flex", flexDirection: "row" }}>
-                <OwnerButton>Subir Imagen</OwnerButton>
-                <OwnerDeleteImageButton>Borrar Imagen</OwnerDeleteImageButton>
+                <Button
+                  size="small"
+                  variant="contained"
+                  component="label"
+                  style={{
+                    backgroundColor: "var(--d-color)",
+                    color: "white",
+                    textAlign: "center",
+                    padding: "9px",
+                    textDecoration: "none",
+                    fontSize: "13px",
+                    margin: "4px 2px",
+                    cursor: "pointer",
+                    borderRadius: "5px",
+                    width: "122.5px",
+                    marginTop: "15px",
+                    height: "35px",
+                    transition: "background-color 0.3s",
+                  }}
+                >
+                  Subir Imagen
+                  <input type="file" hidden onChange={handleImageUpload} />
+                </Button>
+                {/* <OwnerButton onClick={() => handleImageUpload}>
+                  Subir Imagen
+                  <input type="file" hidden onChange={handleImageUpload} />
+                </OwnerButton> */}
+
+                <OwnerDeleteImageButton onClick={handleDeleteImage}>
+                  BORRAR IMAGEN
+                </OwnerDeleteImageButton>
               </div>
             ) : isGroupMember ? (
               <div>
@@ -418,3 +518,52 @@ export const Group = () => {
 };
 
 export default Group;
+// Helper function to crop the image
+const cropImage = (image: HTMLImageElement): Promise<Blob> => {
+  return new Promise((resolve) => {
+    const canvas = document.createElement("canvas");
+    const size = Math.min(image.width, image.height);
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+      throw new Error("Failed to get canvas context");
+    }
+
+    ctx.drawImage(
+      image,
+      (image.width - size) / 2,
+      (image.height - size) / 2,
+      size,
+      size,
+      0,
+      0,
+      size,
+      size
+    );
+
+    canvas.toBlob(
+      (blob: Blob | null) => {
+        if (blob) {
+          resolve(blob);
+        }
+      },
+      "image/jpeg",
+      1
+    );
+  });
+};
+// Helper function to read the image file
+const readImageFile = (file: File): Promise<HTMLImageElement> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const img = new Image();
+      img.src = e.target?.result as string;
+      img.onload = () => resolve(img);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};

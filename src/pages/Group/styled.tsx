@@ -136,17 +136,19 @@ export const OwnerDeleteImageButton = styled.button`
   text-align: center;
   padding: 9px;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 12px;
   margin: 4px 2px;
+  height: 37px;
+  font-family: "Roboto", sans-serif;
   cursor: pointer;
   border-radius: 5px;
   width: 122.5px;
   margin-top: 15px;
   transition: background-color 0.3s;
-  border: 1px solid #e0e0e0;
 
   &:hover {
     background-color: rgb(198, 20, 20);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
 `;
 
