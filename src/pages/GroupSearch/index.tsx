@@ -165,9 +165,7 @@ export const GroupSearch = () => {
           .join(", ")}`,
       });
 
-      enqueueSnackbar("Grupo creado con exito", { variant: "success" });
       setshowCreateGroupModal(false);
-      window.location.reload();
     } catch (error) {
       console.error("Error creating group: ", error);
       enqueueSnackbar("Ya existe un grupo con ese nombre.", {
