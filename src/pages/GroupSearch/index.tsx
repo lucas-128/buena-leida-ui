@@ -166,6 +166,11 @@ export const GroupSearch = () => {
           .join(", ")}`,
       });
 
+      enqueueSnackbar("Grupo creado con exito!", {
+        variant: "success",
+      });
+      setGroupName("");
+      setSelectedCategories([]);
       setshowCreateGroupModal(false);
     } catch (error) {
       console.error("Error creating group: ", error);
