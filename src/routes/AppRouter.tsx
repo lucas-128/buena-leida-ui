@@ -20,6 +20,7 @@ import GroupSearch from "../pages/GroupSearch";
 import Group from "../pages/Group";
 import Discussion from "../pages/Discussion";
 import Notifications from "../pages/Notifications";
+import Friends from "../pages/Friends";
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -115,6 +116,10 @@ export default function AppRouter() {
         {
           path: "/notifications",
           element: <Notifications />,
+        },
+        {
+          path: "/friends",
+          element: <Friends />,
         },
       ],
     },

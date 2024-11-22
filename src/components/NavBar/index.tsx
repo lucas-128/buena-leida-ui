@@ -142,7 +142,7 @@ const NavBar: React.FC = () => {
           </Icon>
         </IconBox> */}
         <IconBox>
-          <Icon onClick={() => navigate("/notifications")} title="Amigos">
+          <Icon onClick={() => navigate("/friends")} title="Amigos">
             <PeopleIcon />
           </Icon>
         </IconBox>
