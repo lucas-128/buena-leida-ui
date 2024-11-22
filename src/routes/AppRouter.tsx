@@ -19,6 +19,7 @@ import Trivia from "../pages/Trivia";
 import GroupSearch from "../pages/GroupSearch";
 import Group from "../pages/Group";
 import Discussion from "../pages/Discussion";
+import Notifications from "../pages/Notifications";
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -110,6 +111,10 @@ export default function AppRouter() {
         {
           path: "/discussion",
           element: <Discussion />,
+        },
+        {
+          path: "/notifications",
+          element: <Notifications />,
         },
       ],
     },

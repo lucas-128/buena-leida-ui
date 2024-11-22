@@ -19,6 +19,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     color: var(--im-black);
     background-color: rgb(239,239,239);
+    overflow-y: scroll;
   }
 `;
 

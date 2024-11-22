@@ -12,11 +12,11 @@ import {
   StyledSearchInput,
   SearchIcon,
 } from "./styled";
-// import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
-// import NotificationsIcon from "@mui/icons-material/Notifications";
+//import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 // import ForumIcon from "@mui/icons-material/Forum";
 // import EmailIcon from "@mui/icons-material/Email";
-// import PeopleIcon from "@mui/icons-material/People";
+//import PeopleIcon from "@mui/icons-material/People";
 import { FcReading } from "react-icons/fc";
 import { Divider, Menu, MenuItem, Typography } from "@mui/material";
 import { To, useNavigate } from "react-router-dom";
@@ -123,12 +123,15 @@ const NavBar: React.FC = () => {
         <SearchIcon />
       </SearchWrapper>
       <IconContainer>
-        {/* <IconBox>
-          <Icon title="Notificaciones">
+        <IconBox>
+          <Icon
+            onClick={() => navigate("/notifications")}
+            title="Notificaciones"
+          >
             <NotificationsIcon />
           </Icon>
         </IconBox>
-        <IconBox>
+        {/* <IconBox>
           <Icon title="Discusiones de grupo">
             <ForumIcon />
           </Icon>
@@ -137,8 +140,8 @@ const NavBar: React.FC = () => {
           <Icon title="Mensajes">
             <EmailIcon />
           </Icon>
-        </IconBox>
-        <IconBox>
+        </IconBox> */}
+        {/* <IconBox>
           <Icon title="Amigos">
             <PeopleIcon />
           </Icon>
@@ -154,6 +157,7 @@ const NavBar: React.FC = () => {
           anchorEl={anchorEl}
           open={menuIndex === 2}
           onClose={() => handleClose()}
+          disableScrollLock
         >
           <Typography sx={{ padding: "8px 16px", fontWeight: "bold" }}>
             {state.username}
