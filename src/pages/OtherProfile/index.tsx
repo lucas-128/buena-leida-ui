@@ -23,7 +23,7 @@ import {
   Username,
 } from "./styled";
 import { Star, StarHalf } from "lucide-react";
-import { Button, Tooltip } from "@mui/material";
+import { Button } from "@mui/material";
 
 const renderStars = (rating: number) => {
   const stars = [];
