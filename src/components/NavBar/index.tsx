@@ -16,7 +16,7 @@ import {
 import NotificationsIcon from "@mui/icons-material/Notifications";
 // import ForumIcon from "@mui/icons-material/Forum";
 // import EmailIcon from "@mui/icons-material/Email";
-//import PeopleIcon from "@mui/icons-material/People";
+import PeopleIcon from "@mui/icons-material/People";
 import { FcReading } from "react-icons/fc";
 import { Divider, Menu, MenuItem, Typography } from "@mui/material";
 import { To, useNavigate } from "react-router-dom";
@@ -141,11 +141,11 @@ const NavBar: React.FC = () => {
             <EmailIcon />
           </Icon>
         </IconBox> */}
-        {/* <IconBox>
-          <Icon title="Amigos">
+        <IconBox>
+          <Icon onClick={() => navigate("/notifications")} title="Amigos">
             <PeopleIcon />
           </Icon>
-        </IconBox> */}
+        </IconBox>
 
         {/* Profile Menu */}
         <IconBox>
