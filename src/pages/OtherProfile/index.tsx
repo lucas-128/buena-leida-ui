@@ -23,6 +23,7 @@ import {
   Username,
 } from "./styled";
 import { Star, StarHalf } from "lucide-react";
+import { Button, Tooltip } from "@mui/material";
 
 const renderStars = (rating: number) => {
   const stars = [];
@@ -107,15 +108,56 @@ export default function Component() {
     return <div>Cargando...</div>;
   }
 
+  // TODO: esto se reemplaza por un useState que se actualiza el valor
+  // segun si el usuario es amigo o no. Esa informacion se fetchea con un useEffect
+  // Tambien peude ser el caso que ya tenga una solicitud pendiente para este usuario.
+  const isFriend = true;
+  const pendingRequest = false;
+
+  // Todo: pegada al back para mandar solicuitud de amistad
+  // refresca la pagina para que se actualice el estado a pending.
+  const handleAddFriend = async () => {
+    console.log("Agregando amigo");
+  };
+
+  // Todo: pegada al back para eliminar amigo
+  // refresca la pagina para que se actualice el estado.
+  const handleRemoveFriend = async () => {
+    console.log("eliminando amigo");
+  };
+
   return (
     <div>
       <ProfileContainer>
         <ProfileHeader>
           <ProfilePhoto src={userData.profilePhoto} alt={`${userData.name}`} />
+
           <ProfileInfo>
             <Name>{userData.name}</Name>
             <Username>@{userData.username}</Username>
           </ProfileInfo>
+          <Button
+            variant="contained"
+            disabled={pendingRequest}
+            color="secondary"
+            style={{
+              backgroundColor: pendingRequest ? "lightgray" : undefined,
+              marginBottom: "160px",
+            }}
+            onClick={
+              pendingRequest
+                ? undefined
+                : isFriend
+                ? handleRemoveFriend
+                : handleAddFriend
+            }
+          >
+            {pendingRequest
+              ? "Solicitud pendiente"
+              : isFriend
+              ? "Eliminar amigo"
+              : "Añadir amigo"}
+          </Button>
         </ProfileHeader>
         <Bio>{userData.bio}</Bio>
         <FavoriteGenders>
