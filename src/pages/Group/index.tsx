@@ -574,7 +574,9 @@ export const Group = () => {
               key={index}
               onClick={() => {
                 navigate("/discussion", {
-                  state: { query: discussion.discussionId },
+                  state: {
+                    discussion: discussion,
+                  },
                 });
               }}
             >
@@ -585,11 +587,6 @@ export const Group = () => {
                 <Typography style={{ fontSize: "14px", color: "gray" }}>
                   Iniciada por: {discussion.creatorUser.name}
                 </Typography>
-                {/* <Typography style={{ fontSize: "14px" }}>
-                  {discussion.content.length > 100
-                    ? discussion.content.substring(0, 97) + "..."
-                    : discussion.content}
-                </Typography> */}
               </InfoContainer>
             </DiscussionContainer>
           ))}
