@@ -22,6 +22,7 @@ import { useGlobalState } from "../../context/GlobalStateContext";
 import "react-image-crop/dist/ReactCrop.css";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import Cookies from "js-cookie";
 
 const API_URL = "http://localhost:3000";
 
@@ -102,11 +103,11 @@ export const Profile = () => {
         });
 
         dispatch({ type: "SET_PROFILE_PHOTO", payload: imageUrl });
-        const storedUser = localStorage.getItem("user");
+        const storedUser = Cookies.get("user");
         if (storedUser) {
           const updatedUser = JSON.parse(storedUser);
           updatedUser.profilePhoto = imageUrl;
-          localStorage.setItem("user", JSON.stringify(updatedUser));
+          Cookies.set("user", JSON.stringify(updatedUser), { expires: 7 });
         }
       } catch (e) {
         console.log("Error updating profile pic: ", e);
@@ -137,11 +138,11 @@ export const Profile = () => {
         });
 
         dispatch({ type: "SET_PROFILE_PHOTO", payload: defaultPhotoUrl });
-        const storedUser = localStorage.getItem("user");
+        const storedUser = Cookies.get("user");
         if (storedUser) {
           const updatedUser = JSON.parse(storedUser);
           updatedUser.profilePhoto = defaultPhotoUrl;
-          localStorage.setItem("user", JSON.stringify(updatedUser));
+          Cookies.set("user", JSON.stringify(updatedUser), { expires: 7 });
         }
       } catch (e) {
         console.log("Error updating profile pic: ", e);
@@ -171,14 +172,14 @@ export const Profile = () => {
 
       dispatch({ type: "SET_BIO", payload: bioText });
 
-      const storedUser = localStorage.getItem("user");
+      const storedUser = Cookies.get("user");
       enqueueSnackbar("Biografia actualizada.", {
         variant: "success",
       });
       if (storedUser) {
         const updatedUser = JSON.parse(storedUser);
         updatedUser.bio = bioText;
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+        Cookies.set("user", JSON.stringify(updatedUser), { expires: 7 });
       }
     } catch (e) {
       console.log("Error updating bio: ", e);
@@ -230,11 +231,11 @@ export const Profile = () => {
       });
 
       dispatch({ type: "SET_NAME", payload: realNameText });
-      const storedUser = localStorage.getItem("user");
+      const storedUser = Cookies.get("user");
       if (storedUser) {
         const updatedUser = JSON.parse(storedUser);
         updatedUser.name = realNameText;
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+        Cookies.set("user", JSON.stringify(updatedUser), { expires: 7 });
       }
       enqueueSnackbar("Nombre actualizado.", {
         variant: "success",
