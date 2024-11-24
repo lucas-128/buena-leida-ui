@@ -405,6 +405,16 @@ export const Group = () => {
     }
   };
 
+  useEffect(() => {
+    if (groupDetails.creatorId == state.id) {
+      setImOwner(true);
+    }
+
+    if (imOwner || members.find((member) => member.id === state.id)) {
+      setIsGroupMember(true);
+    }
+  }, [state.id, groupDetails]);
+
   return (
     <Container>
       <LeftSection>
