@@ -80,7 +80,7 @@ interface UserData {
   favouritegenders: string[];
 }
 
-const API_URL = "http://localhost:3000";
+//const API_URL = "http://localhost:3000";
 
 export const Group = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -123,7 +123,7 @@ export const Group = () => {
   useEffect(() => {
     const fetchAvailableGenres = async () => {
       try {
-        const response = await axios.get(`${API_URL}/books/genres`);
+        const response = await axios.get(`http://localhost:3000/books/genres`);
         setAvailableCategories(response.data);
       } catch (error) {
         console.error("Error fetching genres: ", error);
@@ -163,7 +163,7 @@ export const Group = () => {
     }
 
     try {
-      await axios.patch(`${API_URL}/groups/${groupId}/update-bio`, {
+      await axios.patch(`http://localhost:3000/groups/${groupId}/update-bio`, {
         bio: newBio,
         creatorId: state.id,
       });
@@ -184,10 +184,13 @@ export const Group = () => {
     }
 
     try {
-      await axios.patch(`${API_URL}/groups/${groupId}/update-genre`, {
-        genre: selectedCategories,
-        creatorId: state.id,
-      });
+      await axios.patch(
+        `http://localhost:3000/groups/${groupId}/update-genre`,
+        {
+          genre: selectedCategories,
+          creatorId: state.id,
+        }
+      );
 
       window.location.reload();
     } catch (error) {
@@ -204,10 +207,13 @@ export const Group = () => {
 
       // pegada axios para actualizar bdd
       try {
-        await axios.patch(`${API_URL}/groups/${groupId}/update-photo`, {
-          groupPhoto: defaultPhotoUrl,
-          creatorId: state.id,
-        });
+        await axios.patch(
+          `http://localhost:3000/groups/${groupId}/update-photo`,
+          {
+            groupPhoto: defaultPhotoUrl,
+            creatorId: state.id,
+          }
+        );
 
         window.location.reload();
       } catch (e) {
@@ -239,10 +245,13 @@ export const Group = () => {
       const imageUrl = await getDownloadURL(storageRef);
 
       try {
-        await axios.patch(`${API_URL}/groups/${groupId}/update-photo`, {
-          groupPhoto: imageUrl,
-          creatorId: state.id,
-        });
+        await axios.patch(
+          `http://localhost:3000/groups/${groupId}/update-photo`,
+          {
+            groupPhoto: imageUrl,
+            creatorId: state.id,
+          }
+        );
 
         window.location.reload();
       } catch (e) {
@@ -263,7 +272,9 @@ export const Group = () => {
   useEffect(() => {
     const fetchGroupData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/groups/${groupId}/info`);
+        const response = await axios.get(
+          `http://localhost:3000/groups/${groupId}/info`
+        );
         setgroupDetails(response.data.group);
       } catch (error) {
         console.error("Error fetching group data: ", error);
@@ -298,10 +309,13 @@ export const Group = () => {
     }
 
     try {
-      await axios.post(`${API_URL}/discussions/${groupId}/create-discussion/`, {
-        name: newDiscussionName,
-        creatorId: state.id,
-      });
+      await axios.post(
+        `http://localhost:3000/discussions/${groupId}/create-discussion/`,
+        {
+          name: newDiscussionName,
+          creatorId: state.id,
+        }
+      );
       enqueueSnackbar("Discusión creada con éxito.", { variant: "success" });
     } catch (error) {
       console.log("Error creando discusión: ", error);
@@ -316,7 +330,7 @@ export const Group = () => {
       if (groupDetails.creatorId != -1) {
         try {
           const response = await axios.get(
-            `${API_URL}/users/${groupDetails.creatorId}/profile`
+            `http://localhost:3000/users/${groupDetails.creatorId}/profile`
           );
           const data = response.data;
           setCreatorData(data);
@@ -329,7 +343,7 @@ export const Group = () => {
     const fetchMembers = async () => {
       try {
         const response = await axios.get(
-          `${API_URL}/groups/${groupId}/members`
+          `http://localhost:3000/groups/${groupId}/members`
         );
         setMembers(response.data);
       } catch (error) {
@@ -339,7 +353,9 @@ export const Group = () => {
 
     const fetchDiscussions = async () => {
       try {
-        const response = await axios.get(`${API_URL}/discussions/${groupId}`);
+        const response = await axios.get(
+          `http://localhost:3000/discussions/${groupId}`
+        );
         setDiscussions(response.data);
       } catch (error) {
         console.error("Error fetching Discussions: ", error);
@@ -361,7 +377,7 @@ export const Group = () => {
 
   const handleJoinGroup = async () => {
     try {
-      await axios.post(`${API_URL}/groups/enterGroup`, {
+      await axios.post(`http://localhost:3000/groups/enterGroup`, {
         groupId: groupId,
         userId: state.id,
       });
@@ -374,7 +390,7 @@ export const Group = () => {
 
   const handleLeaveGroup = async () => {
     try {
-      await axios.delete(`${API_URL}/groups/leaveGroup`, {
+      await axios.delete(`http://localhost:3000/groups/leaveGroup`, {
         data: {
           groupId: groupId,
           userId: state.id,
