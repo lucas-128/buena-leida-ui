@@ -133,6 +133,21 @@ export const Group = () => {
     fetchAvailableGenres();
   }, []);
 
+  useEffect(() => {
+    const fetchGroupData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/groups/${groupId}/info`
+        );
+        setgroupDetails(response.data.group);
+      } catch (error) {
+        console.log("Error fetching group data: ", error);
+      }
+    };
+
+    fetchGroupData();
+  }, []);
+
   const [showCreateDiscussionModal, setShowCreateDiscussionModal] =
     useState(false);
 
@@ -271,21 +286,6 @@ export const Group = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchGroupData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/groups/${groupId}/info`
-        );
-        setgroupDetails(response.data.group);
-      } catch (error) {
-        console.log("Error fetching group data: ", error);
-      }
-    };
-
-    fetchGroupData();
-  }, []);
-
   const handleUserClick = (userId: number) => {
     navigate("/otherprofile", { state: { query: userId } });
   };
@@ -329,7 +329,7 @@ export const Group = () => {
 
   useEffect(() => {
     const fetchCreatorData = async () => {
-      if (groupDetails.creatorId != -1) {
+      if (groupDetails.creatorId !== -1) {
         try {
           const response = await axios.get(
             `http://localhost:3000/users/${groupDetails.creatorId}/profile`
@@ -337,7 +337,7 @@ export const Group = () => {
           const data = response.data;
           setCreatorData(data);
         } catch (err) {
-          console.log("error fetching user data");
+          console.log("Error fetching user data");
         }
       }
     };
@@ -367,15 +367,22 @@ export const Group = () => {
     fetchCreatorData();
     fetchMembers();
     fetchDiscussions();
+  }, [groupDetails, groupId]);
 
-    if (groupDetails.creatorId == state.id) {
-      setImOwner(true);
-    }
+  useEffect(() => {
+    const updateOwnershipAndMembership = () => {
+      if (!groupDetails || !members) return;
 
-    if (imOwner || members.find((member) => member.id === state.id)) {
-      setIsGroupMember(true);
-    }
-  }, [groupDetails]);
+      const isOwner = groupDetails.creatorId === state.id;
+      setImOwner(isOwner);
+
+      const isMember =
+        isOwner || members.some((member) => member.id === state.id);
+      setIsGroupMember(isMember);
+    };
+
+    updateOwnershipAndMembership();
+  }, [groupDetails, members, state.id]);
 
   const handleJoinGroup = async () => {
     try {
@@ -404,25 +411,6 @@ export const Group = () => {
       enqueueSnackbar("Error al salir del grupo", { variant: "error" });
     }
   };
-
-  useEffect(() => {
-    const updateOwnershipAndMembership = () => {
-      if (!groupDetails || !members) return;
-
-      const isOwner = groupDetails.creatorId === state.id;
-      setImOwner(isOwner);
-
-      const isMember =
-        isOwner || members.some((member) => member.id === state.id);
-      setIsGroupMember(isMember);
-    };
-
-    updateOwnershipAndMembership();
-  }, [groupDetails, members, state.id]);
-
-  console.log("groupDetails:", groupDetails);
-  console.log("members:", members);
-  console.log("state.id:", state.id);
 
   return (
     <Container>
