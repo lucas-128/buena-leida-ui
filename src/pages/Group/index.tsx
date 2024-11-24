@@ -406,14 +406,23 @@ export const Group = () => {
   };
 
   useEffect(() => {
-    if (groupDetails.creatorId == state.id) {
-      setImOwner(true);
-    }
+    const updateOwnershipAndMembership = () => {
+      if (!groupDetails || !members) return;
 
-    if (imOwner || members.find((member) => member.id === state.id)) {
-      setIsGroupMember(true);
-    }
-  }, [state.id, groupDetails]);
+      const isOwner = groupDetails.creatorId === state.id;
+      setImOwner(isOwner);
+
+      const isMember =
+        isOwner || members.some((member) => member.id === state.id);
+      setIsGroupMember(isMember);
+    };
+
+    updateOwnershipAndMembership();
+  }, [groupDetails, members, state.id]);
+
+  console.log("groupDetails:", groupDetails);
+  console.log("members:", members);
+  console.log("state.id:", state.id);
 
   return (
     <Container>
