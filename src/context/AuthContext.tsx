@@ -8,6 +8,8 @@ import React, {
 import { useGlobalState } from "./GlobalStateContext";
 import axios from "axios";
 
+import Cookies from "js-cookie";
+
 const API_URL = "http://localhost:3000";
 
 interface AuthContextType {
@@ -31,11 +33,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage.getItem("isAuthenticated") === "true"
+    Cookies.get("isAuthenticated") === "true"
   );
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = Cookies.get("user");
+
     if (storedUser) {
       const user = JSON.parse(storedUser);
 
@@ -62,7 +65,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       });
 
       setIsAuthenticated(true);
-      localStorage.setItem("isAuthenticated", "true");
+      Cookies.set("isAuthenticated", "true", { expires: 7 }); // Expires in 7 days
 
       const user = result.data.user;
 
@@ -74,7 +77,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       dispatch({ type: "SET_BIO", payload: user.bio });
       dispatch({ type: "SET_FAVORITE_GENRES", payload: user.favouritegenders });
 
-      localStorage.setItem("user", JSON.stringify(user));
+      Cookies.set("user", JSON.stringify(user), { expires: 7 }); // Same expiration
 
       return result.status;
     } catch (e: unknown) {
@@ -110,8 +113,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     dispatch({ type: "SET_NAME", payload: "" });
     dispatch({ type: "SET_FAVORITE_GENRES", payload: [] });
     setIsAuthenticated(false);
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("user");
+    Cookies.remove("isAuthenticated");
+    Cookies.remove("user");
   };
 
   const register = async (
@@ -143,8 +146,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       dispatch({ type: "SET_FAVORITE_GENRES", payload: user.favouritegenders });
 
       await setIsAuthenticated(true);
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("user", JSON.stringify(user));
+      Cookies.set("isAuthenticated", "true", { expires: 7 });
+      Cookies.set("user", JSON.stringify(user), { expires: 7 });
       return result.status;
     } catch (e: unknown) {
       if (axios.isAxiosError(e) && e.response) {
