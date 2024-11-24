@@ -140,11 +140,14 @@ export const Group = () => {
 
   const handleDeleteGroup = async () => {
     try {
-      await axios.delete(`${API_URL}/groups/${groupId}/remove-group`, {
-        data: {
-          creatorId: state.id,
-        },
-      });
+      await axios.delete(
+        `http://localhost:3000/groups/${groupId}/remove-group`,
+        {
+          data: {
+            creatorId: state.id,
+          },
+        }
+      );
       enqueueSnackbar("Grupo eliminado con éxito.", { variant: "success" });
       navigate("/");
     } catch (error) {
