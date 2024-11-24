@@ -81,7 +81,7 @@ export const GroupSearch = () => {
       });
       setgroupData(response.data);
     } catch (error) {
-      console.error("Error fetching groups by genre: ", error);
+      console.log("Error fetching groups by genre: ", error);
       setgroupData([]);
     }
 
@@ -123,7 +123,7 @@ export const GroupSearch = () => {
       const response = await axios.get(q);
       setgroupData(response.data);
     } catch (error) {
-      console.error("Error fetching groups by name: ", error);
+      console.log("Error fetching groups by name: ", error);
       setgroupData([]);
     }
 
@@ -173,7 +173,7 @@ export const GroupSearch = () => {
       setSelectedCategories([]);
       setshowCreateGroupModal(false);
     } catch (error) {
-      console.error("Error creating group: ", error);
+      console.log("Error creating group: ", error);
       enqueueSnackbar("Ya existe un grupo con ese nombre.", {
         variant: "error",
       });
@@ -194,7 +194,7 @@ export const GroupSearch = () => {
         const response = await axios.get(`${API_URL}/groups/genres`);
         setExistingGroupCategories(response.data);
       } catch (error) {
-        console.error("Error fetching genres: ", error);
+        console.log("Error fetching genres: ", error);
       }
     };
 
@@ -203,7 +203,7 @@ export const GroupSearch = () => {
         const response = await axios.get(`${API_URL}/books/genres`);
         setAvailableCategories(response.data);
       } catch (error) {
-        console.error("Error fetching genres: ", error);
+        console.log("Error fetching genres: ", error);
       }
     };
 

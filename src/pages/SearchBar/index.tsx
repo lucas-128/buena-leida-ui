@@ -98,7 +98,7 @@ export const SearchBar: React.FC = () => {
         if ((err as any).response && (err as any).response.status === 404) {
           setData([]);
         } else {
-          //console.error(err);
+          //console.log(err);
         }
       } finally {
         setIsLoading(false);
@@ -160,7 +160,7 @@ export const SearchBar: React.FC = () => {
         const response = await axios.get(endpoint);
         setData(response.data);
       } catch (error) {
-        //console.error("Error fetching data:", error);
+        //console.log("Error fetching data:", error);
         setData([]);
       } finally {
         setIsLoading(false);

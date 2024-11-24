@@ -116,7 +116,7 @@ export const Profile = () => {
         });
       }
     } catch (error) {
-      console.error("Error uploading image: ", error);
+      console.log("Error uploading image: ", error);
       enqueueSnackbar("Error actualizando imagen de perfil.", {
         variant: "error",
       });

@@ -115,7 +115,7 @@ export default function MyReviews() {
         const data: Review[] = await response.json();
         setReviews(data);
       } catch (error) {
-        console.error("Error fetching reviews:", error);
+        console.log("Error fetching reviews:", error);
       }
     };
 

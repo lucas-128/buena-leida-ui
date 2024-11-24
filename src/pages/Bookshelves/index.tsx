@@ -108,7 +108,7 @@ export default function Bookshelves() {
         const transformedData = transformBookshelfData(response.data);
         setBookshelves(transformedData);
       } catch (error) {
-        console.error("Error fetching bookshelves:", error);
+        console.log("Error fetching bookshelves:", error);
       }
     };
 
@@ -133,7 +133,7 @@ export default function Bookshelves() {
       );
       setSelectedBooksStates(transformBookStateData(response.data));
     } catch (error) {
-      console.error("No books found for reading status");
+      console.log("No books found for reading status");
       setSelectedBooksStates([]);
     }
   };
@@ -188,7 +188,7 @@ export default function Bookshelves() {
           variant: "error",
         });
       } else {
-        console.error("Error adding bookshelf:", error);
+        console.log("Error adding bookshelf:", error);
         enqueueSnackbar("Error al añadir la biblioteca.", { variant: "error" });
       }
     }

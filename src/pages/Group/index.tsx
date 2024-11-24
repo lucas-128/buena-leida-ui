@@ -126,7 +126,7 @@ export const Group = () => {
         const response = await axios.get(`http://localhost:3000/books/genres`);
         setAvailableCategories(response.data);
       } catch (error) {
-        console.error("Error fetching genres: ", error);
+        console.log("Error fetching genres: ", error);
       }
     };
 
@@ -259,13 +259,12 @@ export const Group = () => {
         window.location.reload();
       } catch (e) {
         console.log("Error updating group pic: ", e);
-
         enqueueSnackbar("Error actualizando imagen.", {
           variant: "error",
         });
       }
     } catch (error) {
-      console.error("Error actualizando image: ", error);
+      console.log("Error actualizando image: ", error);
       enqueueSnackbar("Error actualizando imagen.", {
         variant: "error",
       });
@@ -280,7 +279,7 @@ export const Group = () => {
         );
         setgroupDetails(response.data.group);
       } catch (error) {
-        console.error("Error fetching group data: ", error);
+        console.log("Error fetching group data: ", error);
       }
     };
 
@@ -350,7 +349,7 @@ export const Group = () => {
         );
         setMembers(response.data);
       } catch (error) {
-        console.error("Error fetching group members: ", error);
+        console.log("Error fetching group members: ", error);
       }
     };
 
@@ -361,7 +360,7 @@ export const Group = () => {
         );
         setDiscussions(response.data);
       } catch (error) {
-        console.error("Error fetching Discussions: ", error);
+        console.log("Error fetching Discussions: ", error);
       }
     };
 

@@ -150,7 +150,7 @@ export const Book: React.FC = () => {
           console.log("Error Status Code:", error.response.status);
           console.log("Error Response Data:", error.response.data);
         } else {
-          console.error("Error deleting reading status:", error);
+          console.log("Error deleting reading status:", error);
         }
         enqueueSnackbar("Este libro no tiene estado de lectura.", {
           variant: "warning",
@@ -173,7 +173,7 @@ export const Book: React.FC = () => {
         return "Estado de lectura";
       }
     } catch (error) {
-      console.error("Error fetching reading status:", error);
+      console.log("Error fetching reading status:", error);
       return "Estado de lectura";
     }
   };
@@ -209,7 +209,7 @@ export const Book: React.FC = () => {
         variant: "success",
       });
     } catch (error) {
-      console.error("Error al actualizar el estado de lectura:", error);
+      console.log("Error al actualizar el estado de lectura:", error);
       enqueueSnackbar("Hubo un error al actualizar el estado de lectura.", {
         variant: "error",
       });
@@ -259,7 +259,7 @@ export const Book: React.FC = () => {
         setSelectedShelves(currentBookshelves);
         console.log("Current bookshelves:", currentBookshelves);
       } catch (error) {
-        console.error("Error fetching book shelves for the book", error);
+        console.log("Error fetching book shelves for the book", error);
       }
     };
 
@@ -283,7 +283,7 @@ export const Book: React.FC = () => {
       handleClose();
     } catch (error) {
       // Handle error case
-      console.error("Error updating bookshelf", error);
+      console.log("Error updating bookshelf", error);
       enqueueSnackbar("Error al actualizar bibliotecas.", {
         variant: "error",
       });
@@ -426,7 +426,7 @@ export const Book: React.FC = () => {
       setUserReview(newReviewText);
       setIsWritingReview(false);
     } catch (error) {
-      console.error("Error submitting review:", error);
+      console.log("Error submitting review:", error);
     }
   };
 
@@ -442,7 +442,7 @@ export const Book: React.FC = () => {
         );
         setBookshelves(bookshelfData);
       } catch (error) {
-        console.error("Error fetching bookshelves", error);
+        console.log("Error fetching bookshelves", error);
       }
     };
 
@@ -476,7 +476,7 @@ export const Book: React.FC = () => {
         );
       }
     } catch (error) {
-      console.error("Error deleting review:", error);
+      console.log("Error deleting review:", error);
       enqueueSnackbar(
         "Error eliminando la reseña. Por favor, intenta de nuevo.",
         {
@@ -573,7 +573,7 @@ export const Book: React.FC = () => {
         );
       }
     } catch (error) {
-      console.error("Error liking the review:", error);
+      console.log("Error liking the review:", error);
     }
   };
 
