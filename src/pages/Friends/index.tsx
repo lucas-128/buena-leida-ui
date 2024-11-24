@@ -48,7 +48,7 @@ const dummyFriends: FriendData[] = [
 export const Friends: React.FC = () => {
   // Esto inicialmente es un array vacio.
   // usar useEffect para fetchear los amigos del usuario
-  const [friends, setFriends] = React.useState<FriendData[]>(dummyFriends);
+  const [friends, _] = React.useState<FriendData[]>(dummyFriends);
   const navigate = useNavigate();
 
   return (
