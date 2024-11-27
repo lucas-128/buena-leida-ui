@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useGlobalState } from "../../context/GlobalStateContext";
 import {
   Bio,
   DeleteButton,
@@ -16,6 +17,7 @@ import {
   Title,
 } from "../Notifications/styled";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // TODO: Los nombres de los campos tienen que ser los mismos que devuelve el back
 
@@ -27,29 +29,42 @@ interface FriendData {
   bio: string;
 }
 
-// TODO: reemplazar esto por un useState... lo mismo que para las notificaciones.
-const dummyFriends: FriendData[] = [
-  {
-    id: 1,
-    name: "John Doe",
-    username: "@johndoe",
-    profileImage: "https://via.placeholder.com/50",
-    bio: "Lover of technology and coffee.",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    username: "@janesmith",
-    profileImage: "https://via.placeholder.com/50",
-    bio: "Exploring the world one step at a time.",
-  },
-];
-
 export const Friends: React.FC = () => {
+  const { state } = useGlobalState();
   // Esto inicialmente es un array vacio.
   // usar useEffect para fetchear los amigos del usuario
-  const [friends, _] = React.useState<FriendData[]>(dummyFriends);
+  const [friends, setFriends] = React.useState<FriendData[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const response = await axios.get(`https://buena-leida-back-kamk.onrender.com/friends/${state.id}`); // Example API call, use actual user ID
+        const friendsData = response.data.map((friend: any) => ({
+          id: friend.friendId, // Assuming `friendId` in the response
+          name: friend.name,
+          username: friend.username,
+          profileImage: friend.profileImage,
+          bio: friend.bio,
+        }));
+        setFriends(friendsData);
+      } catch (error) {
+        console.error("Error fetching friends:", error);
+      }
+    };
+
+    fetchFriends();
+  }, [state.id]);
+
+  // Delete friend functionality
+  const handleDeleteFriend = async (friendId: number) => {
+    try {
+      await axios.delete(`https://buena-leida-back-kamk.onrender.com/delete/${friendId}`);
+      setFriends((prevFriends) => prevFriends.filter((friend) => friend.id !== friendId));
+    } catch (error) {
+      console.error("Error deleting friend:", error);
+    }
+  };
 
   return (
     <Container>
@@ -77,8 +92,10 @@ export const Friends: React.FC = () => {
                       : friend.bio}
                   </Bio>
                 </FriendInfo>
-                <DeleteButton>
-                  {/* Popup confirmar eliminar amigo. Dialog */}
+                <DeleteButton onClick={(e) => {
+                  e.stopPropagation(); // Prevent navigating to the friend's profile
+                  handleDeleteFriend(friend.id); // Delete the friend
+                }}>
                   <DeleteIcon />
                 </DeleteButton>
               </FriendCard>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useGlobalState } from "../../context/GlobalStateContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Card,
@@ -75,6 +76,8 @@ export default function Component() {
 
   const [userData, setUserData] = useState<UserProfileData | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [isFriend, setIsFriend] = useState<boolean>(false);
+  const [pendingRequest, setPendingRequest] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -111,14 +114,18 @@ export default function Component() {
   // TODO: esto se reemplaza por un useState que se actualiza el valor
   // segun si el usuario es amigo o no. Esa informacion se fetchea con un useEffect
   // Tambien peude ser el caso que ya tenga una solicitud pendiente para este usuario.
-  const isFriend = true;
-  const pendingRequest = false;
 
   // Todo: pegada al back para mandar solicuitud de amistad
   // refresca la pagina para que se actualice el estado a pending.
   const handleAddFriend = async () => {
-    console.log("Agregando amigo");
+    try {
+      await axios.post(`${API_URL}/friendships/request`, { friendId: userId });
+      setPendingRequest(true);
+    } catch (error) {
+      console.error("Error adding friend:", error);
+    }
   };
+
 
   // Todo: pegada al back para eliminar amigo
   // refresca la pagina para que se actualice el estado.
