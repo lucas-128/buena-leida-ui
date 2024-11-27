@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Typography } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+
+//import DeleteIcon from '@mui/icons-material/Delete';
 import { useGlobalState } from "../../context/GlobalStateContext";
 import {
   Bio,
@@ -96,7 +97,6 @@ export const Friends: React.FC = () => {
                   e.stopPropagation(); // Prevent navigating to the friend's profile
                   handleDeleteFriend(friend.id); // Delete the friend
                 }}>
-                  <DeleteIcon />
                 </DeleteButton>
               </FriendCard>
             ))}

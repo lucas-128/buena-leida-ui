@@ -119,7 +119,7 @@ export default function Component() {
   // refresca la pagina para que se actualice el estado a pending.
   const handleAddFriend = async () => {
     try {
-      await axios.post(`${API_URL}/friendships/request`, { friendId: userId });
+      await axios.post(`${API_URL}/friend-requests`);
       setPendingRequest(true);
     } catch (error) {
       console.error("Error adding friend:", error);
@@ -130,8 +130,16 @@ export default function Component() {
   // Todo: pegada al back para eliminar amigo
   // refresca la pagina para que se actualice el estado.
   const handleRemoveFriend = async () => {
-    console.log("eliminando amigo");
+    console.log("Eliminando amigo...");
+    try {
+      // Aquí `userId` es el ID del amigo que se eliminará
+      await axios.delete(`${API_URL}/friends/${userId}`);
+      setIsFriend(false); // Actualiza el estado para reflejar que ya no son amigos
+    } catch (error) {
+      console.error("Error eliminando amigo:", error);
+    }
   };
+  
 
   return (
     <div>
