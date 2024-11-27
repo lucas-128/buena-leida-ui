@@ -49,7 +49,7 @@ interface User {
 
 const SYNOPSIS_MAX_LENGTH = 80;
 
-const API_URL = "http://localhost:3000";
+const API_URL = "https://buena-leida-back-kamk.onrender.com";
 
 export const SearchBar: React.FC = () => {
   const navigate = useNavigate();

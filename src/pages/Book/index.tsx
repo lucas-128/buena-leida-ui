@@ -67,7 +67,7 @@ const initialBook: BookDetails = {
   fiveStarCount: 0,
 };
 
-const API_URL = "http://localhost:3000";
+const API_URL = "https://buena-leida-back-kamk.onrender.com";
 
 interface UserData {
   username: string;

@@ -102,7 +102,7 @@ const LikesContainer = styled.div`
   color: #64748b;
 `;
 
-const API_URL = "http://localhost:3000";
+const API_URL = "https://buena-leida-back-kamk.onrender.com";
 
 export default function MyReviews() {
   const { state } = useGlobalState();

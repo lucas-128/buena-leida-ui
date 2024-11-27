@@ -80,7 +80,7 @@ interface UserData {
   favouritegenders: string[];
 }
 
-//const API_URL = "http://localhost:3000";
+//const API_URL = "https://buena-leida-back-kamk.onrender.com";
 
 export const Group = () => {
   const { enqueueSnackbar } = useSnackbar();

@@ -43,7 +43,7 @@ import { useSnackbar } from "notistack";
 import axios from "axios";
 import { useGlobalState } from "../../context/GlobalStateContext";
 
-const API_URL = "http://localhost:3000";
+const API_URL = "https://buena-leida-back-kamk.onrender.com";
 
 export const defaultPhotoUrl =
   "https://firebasestorage.googleapis.com/v0/b/buena-leida.appspot.com/o/profiles%2Fdefault.jpg?alt=media&token=100a1fe2-fd46-4fc5-9d11-e7b78ed946f5";

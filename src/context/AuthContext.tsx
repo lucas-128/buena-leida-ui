@@ -10,7 +10,8 @@ import axios from "axios";
 
 import Cookies from "js-cookie";
 
-const API_URL = "http://localhost:3000";
+
+const API_URL = "https://buena-leida-back-kamk.onrender.com";
 
 interface AuthContextType {
   isAuthenticated: boolean;

@@ -41,7 +41,7 @@ interface Bookshelf {
 type NewStatus = "leido" | "leyendo" | "quiero_leer";
 
 const DEFAULT_COVER_IMAGE = "https://picsum.photos/seed/book/200/300";
-const API_URL = "http://localhost:3000";
+const API_URL = "https://buena-leida-back-kamk.onrender.com";
 
 export default function Bookshelves() {
   const { enqueueSnackbar } = useSnackbar();
