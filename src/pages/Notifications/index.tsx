@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Title,
@@ -7,6 +7,8 @@ import {
 } from "./styled";
 import { NotificationCard } from "./NotificationsCard";
 import { Typography } from "@mui/material";
+import { useGlobalState } from "../../context/GlobalStateContext";
+import axios from "axios";
 
 // TODO: Los nombres de los campos tienen que ser los mismos que devuelve el back
 interface Notification {
@@ -16,48 +18,50 @@ interface Notification {
   profileImage: string;
 }
 
-// TODO: reemplazar esto por un useState que almacena las notificaciones
-// y usar UseEffect para fetchear las notificaciones.
-const dummyNotifications: Notification[] = [
-  {
-    id: 1,
-    name: "John Doe",
-    username: "johndoe",
-    profileImage: "https://randomuser.me/api/portraits/men/1.jpg",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    username: "janesmith",
-    profileImage: "https://randomuser.me/api/portraits/women/2.jpg",
-  },
-  {
-    id: 3,
-    name: "Bob Johnson",
-    username: "bobjohnson",
-    profileImage: "https://randomuser.me/api/portraits/men/3.jpg",
-  },
-];
+const API_URL = "https://buena-leida-back-kamk.onrender.com";
 
 export const Notifications: React.FC = () => {
-  const [notifications, setNotifications] =
-    React.useState<Notification[]>(dummyNotifications);
+  const { state } = useGlobalState();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  // TODO: Funciones para aceptar y rechazar notificaciones
-  // Seguro hay que hacer un post al back y borrar la notificacion de la lista.
-  const handleAccept = (id: number) => {
-    setNotifications(
-      notifications.filter((notification) => notification.id !== id)
-    );
-  };
-
-  // TODO: Funciones para aceptar y rechazar notificaciones
-  // Seguro hay que hacer un post al back y borrar la notificacion de la lista.
-  const handleReject = (id: number) => {
-    setNotifications(
-      notifications.filter((notification) => notification.id !== id)
-    );
-  };
+    useEffect(() => {
+      const fetchNotifications = async () => {
+          try {
+            const response = await axios.get(`${API_URL}/friend-requests/${state.id}`); // Reemplaza con tu endpoint real
+            setNotifications(response.data); // Asume que el backend devuelve una lista de notificaciones
+          } catch (error) {
+            console.error("Error fetching notifications:", error);
+          }
+      };
+  
+      fetchNotifications();
+    }, [state.id]);
+  
+    // Función para aceptar la notificación
+    const handleAccept = async (id: number) => {
+      try {
+        // Realizamos un POST para aceptar la notificación
+        await axios.post(`${API_URL}/friend-requests/${id}}/accept`);
+        setNotifications((prevNotifications) =>
+          prevNotifications.filter((notification) => notification.id !== id)
+        );
+      } catch (error) {
+        console.error("Error accepting notification:", error);
+      }
+    };
+  
+    // Función para rechazar la notificación
+    const handleReject = async (id: number) => {
+      try {
+        // Realizamos un POST para rechazar la notificación
+        await axios.post(`${API_URL}/friend-requests/${id}}`);
+        setNotifications((prevNotifications) =>
+          prevNotifications.filter((notification) => notification.id !== id)
+        );
+      } catch (error) {
+        console.error("Error rejecting notification:", error);
+      }
+    };
 
   return (
     <Container>
