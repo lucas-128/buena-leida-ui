@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useGlobalState } from "../../context/GlobalStateContext";
+//import { useGlobalState } from "../../context/GlobalStateContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Card,
