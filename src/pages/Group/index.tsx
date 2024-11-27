@@ -123,7 +123,7 @@ export const Group = () => {
   useEffect(() => {
     const fetchAvailableGenres = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/books/genres`);
+        const response = await axios.get(`https://buena-leida-back-kamk.onrender.com/books/genres`);
         setAvailableCategories(response.data);
       } catch (error) {
         console.log("Error fetching genres: ", error);
@@ -137,7 +137,7 @@ export const Group = () => {
     const fetchGroupData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/groups/${groupId}/info`
+          `https://buena-leida-back-kamk.onrender.com/groups/${groupId}/info`
         );
         setgroupDetails(response.data.group);
       } catch (error) {
@@ -156,7 +156,7 @@ export const Group = () => {
   const handleDeleteGroup = async () => {
     try {
       await axios.delete(
-        `http://localhost:3000/groups/${groupId}/remove-group`,
+        `https://buena-leida-back-kamk.onrender.com/${groupId}/remove-group`,
         {
           data: {
             creatorId: state.id,
@@ -181,7 +181,7 @@ export const Group = () => {
     }
 
     try {
-      await axios.patch(`http://localhost:3000/groups/${groupId}/update-bio`, {
+      await axios.patch(`https://buena-leida-back-kamk.onrender.com/groups/${groupId}/update-bio`, {
         bio: newBio,
         creatorId: state.id,
       });
@@ -203,7 +203,7 @@ export const Group = () => {
 
     try {
       await axios.patch(
-        `http://localhost:3000/groups/${groupId}/update-genre`,
+        `https://buena-leida-back-kamk.onrender.com/groups/${groupId}/update-genre`,
         {
           genre: selectedCategories,
           creatorId: state.id,
@@ -226,7 +226,7 @@ export const Group = () => {
       // pegada axios para actualizar bdd
       try {
         await axios.patch(
-          `http://localhost:3000/groups/${groupId}/update-photo`,
+          `https://buena-leida-back-kamk.onrender.com/groups/${groupId}/update-photo`,
           {
             groupPhoto: defaultPhotoUrl,
             creatorId: state.id,
@@ -264,7 +264,7 @@ export const Group = () => {
 
       try {
         await axios.patch(
-          `http://localhost:3000/groups/${groupId}/update-photo`,
+          `https://buena-leida-back-kamk.onrender.com/groups/${groupId}/update-photo`,
           {
             groupPhoto: imageUrl,
             creatorId: state.id,
@@ -312,7 +312,7 @@ export const Group = () => {
 
     try {
       await axios.post(
-        `http://localhost:3000/discussions/${groupId}/create-discussion/`,
+        `https://buena-leida-back-kamk.onrender.com/discussions/${groupId}/create-discussion/`,
         {
           name: newDiscussionName,
           creatorId: state.id,
@@ -332,7 +332,7 @@ export const Group = () => {
       if (groupDetails.creatorId !== -1) {
         try {
           const response = await axios.get(
-            `http://localhost:3000/users/${groupDetails.creatorId}/profile`
+            `https://buena-leida-back-kamk.onrender.com/users/${groupDetails.creatorId}/profile`
           );
           const data = response.data;
           setCreatorData(data);
@@ -345,7 +345,7 @@ export const Group = () => {
     const fetchMembers = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/groups/${groupId}/members`
+          `https://buena-leida-back-kamk.onrender.com/groups/${groupId}/members`
         );
         setMembers(response.data);
       } catch (error) {
@@ -356,7 +356,7 @@ export const Group = () => {
     const fetchDiscussions = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/discussions/${groupId}`
+          `https://buena-leida-back-kamk.onrender.com/discussions/${groupId}`
         );
         setDiscussions(response.data);
       } catch (error) {
@@ -386,7 +386,7 @@ export const Group = () => {
 
   const handleJoinGroup = async () => {
     try {
-      await axios.post(`http://localhost:3000/groups/enterGroup`, {
+      await axios.post(`https://buena-leida-back-kamk.onrender.com/groups/enterGroup`, {
         groupId: groupId,
         userId: state.id,
       });
@@ -399,7 +399,7 @@ export const Group = () => {
 
   const handleLeaveGroup = async () => {
     try {
-      await axios.delete(`http://localhost:3000/groups/leaveGroup`, {
+      await axios.delete(`https://buena-leida-back-kamk.onrender.com/groups/leaveGroup`, {
         data: {
           groupId: groupId,
           userId: state.id,
