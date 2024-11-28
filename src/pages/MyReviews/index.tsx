@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Star, StarHalf } from "lucide-react";
 import { useGlobalState } from "../../context/GlobalStateContext";
 import { useNavigate } from "react-router-dom";
+import { Typography } from "@mui/material";
 
 interface Book {
   id: number;
@@ -113,7 +114,12 @@ export default function MyReviews() {
       try {
         const response = await fetch(`${API_URL}/reviews/user/${state.id}`);
         const data: Review[] = await response.json();
-        setReviews(data);
+        if (Array.isArray(data)) {
+          setReviews(data); // Valid array
+        } else {
+          console.error("Unexpected response format:", data);
+          setReviews([]); // Fallback to an empty array
+        }
       } catch (error) {
         console.log("Error fetching reviews:", error);
       }
@@ -143,36 +149,40 @@ export default function MyReviews() {
   return (
     <Container>
       <Title>Mis Reseñas</Title>
-      <Grid>
-        {reviews.map((review) => (
-          <Card
-            key={review.reviewId}
-            onClick={() => {
-              navigate("/book", { state: { query: review.book.id } });
-            }}
-          >
-            <CardContent>
-              <CoverImage
-                src={review.book.coverImage}
-                alt={`Cover of ${review.book.title}`}
-              />
-              <ContentContainer>
-                <BookTitle>{review.book.title}</BookTitle>
-                <Author>{review.book.author}</Author>
-                <StarsContainer>
-                  {renderStars(review.calification)}
-                </StarsContainer>
-                <ReviewContent>{review.content}</ReviewContent>
-                {review.content ? (
-                  <LikesContainer>{review.likes} likes</LikesContainer>
-                ) : (
-                  <LikesContainer>Calificación sin reseña.</LikesContainer>
-                )}
-              </ContentContainer>
-            </CardContent>
-          </Card>
-        ))}
-      </Grid>
+      {reviews.length === 0 ? (
+        <Typography>El usuario no ha hecho reseñas</Typography>
+      ) : (
+        <Grid>
+          {reviews.map((review) => (
+            <Card
+              key={review.reviewId}
+              onClick={() => {
+                navigate("/book", { state: { query: review.book.id } });
+              }}
+            >
+              <CardContent>
+                <CoverImage
+                  src={review.book.coverImage}
+                  alt={`Cover of ${review.book.title}`}
+                />
+                <ContentContainer>
+                  <BookTitle>{review.book.title}</BookTitle>
+                  <Author>{review.book.author}</Author>
+                  <StarsContainer>
+                    {renderStars(review.calification)}
+                  </StarsContainer>
+                  <ReviewContent>{review.content}</ReviewContent>
+                  {review.content ? (
+                    <LikesContainer>{review.likes} likes</LikesContainer>
+                  ) : (
+                    <LikesContainer>Calificación sin reseña.</LikesContainer>
+                  )}
+                </ContentContainer>
+              </CardContent>
+            </Card>
+          ))}
+        </Grid>
+      )}
     </Container>
   );
 }
