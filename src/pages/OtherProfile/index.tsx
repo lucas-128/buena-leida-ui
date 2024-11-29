@@ -117,6 +117,7 @@ export default function Component() {
           `${API_URL}/friendships/friends/${state.id}/${userId}`
         );
         console.log(response);
+        setIsFriend(true);
       } catch (err) {
         setPendingRequest(false);
         setIsFriend(false);
@@ -143,11 +144,18 @@ export default function Component() {
       console.error("Error adding friend:", error);
     }
   };
+  console.log(state.id);
+  console.log(userId);
 
   const handleRemoveFriend = async () => {
     console.log("Eliminando amigo...");
     try {
-      await axios.delete(`${API_URL}/friends/${userId}`);
+      await axios.delete(`${API_URL}/friendships/friends`, {
+        data: {
+          userid: state.id,
+          friendid: userId,
+        },
+      });
       setIsFriend(false);
     } catch (error) {
       console.error("Error eliminando amigo:", error);
