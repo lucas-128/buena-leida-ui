@@ -25,6 +25,8 @@ import {
 } from "./styled";
 import { Star, StarHalf } from "lucide-react";
 import { Button } from "@mui/material";
+import { useGlobalState } from "../../context/GlobalStateContext";
+import { enqueueSnackbar } from "notistack";
 
 const renderStars = (rating: number) => {
   const stars = [];
@@ -63,10 +65,11 @@ interface Book {
   author: string;
   coverImage: string;
 }
-const API_URL = "https://buena-leida-back-kamk.onrender.com";
+const API_URL = "http://localhost:3000";
 export default function Component() {
   const location = useLocation();
   const userId = location.state?.query || "";
+  const { state } = useGlobalState();
 
   const navigate = useNavigate();
 
@@ -107,39 +110,49 @@ export default function Component() {
     fetchData();
   }, [userId]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${API_URL}/friendships/friends/${state.id}/${userId}`
+        );
+        console.log(response);
+      } catch (err) {
+        setPendingRequest(false);
+        setIsFriend(false);
+        console.log(err);
+      }
+    };
+
+    fetchData();
+  }, [userId]);
+
   if (!userData) {
     return <div>Cargando...</div>;
   }
 
-  // TODO: esto se reemplaza por un useState que se actualiza el valor
-  // segun si el usuario es amigo o no. Esa informacion se fetchea con un useEffect
-  // Tambien peude ser el caso que ya tenga una solicitud pendiente para este usuario.
-
-  // Todo: pegada al back para mandar solicuitud de amistad
-  // refresca la pagina para que se actualice el estado a pending.
   const handleAddFriend = async () => {
     try {
-      await axios.post(`${API_URL}/friend-requests`);
+      await axios.post(`${API_URL}/friend-requests/request`, {
+        senderid: state.id,
+        receiverid: userId,
+      });
       setPendingRequest(true);
+      enqueueSnackbar("Solicitud de amistad enviada", { variant: "success" });
     } catch (error) {
       console.error("Error adding friend:", error);
     }
   };
 
-
-  // Todo: pegada al back para eliminar amigo
-  // refresca la pagina para que se actualice el estado.
   const handleRemoveFriend = async () => {
     console.log("Eliminando amigo...");
     try {
-      // Aquí `userId` es el ID del amigo que se eliminará
       await axios.delete(`${API_URL}/friends/${userId}`);
-      setIsFriend(false); // Actualiza el estado para reflejar que ya no son amigos
+      setIsFriend(false);
     } catch (error) {
       console.error("Error eliminando amigo:", error);
     }
   };
-  
 
   return (
     <div>
