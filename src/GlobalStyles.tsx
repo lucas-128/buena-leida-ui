@@ -18,9 +18,12 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     color: var(--im-black);
-    background-color: rgb(239,239,239);
     overflow-y: scroll;
+    background: rgb(239, 239, 239) url('/an.png') repeat;
+    background-blend-mode: overlay;
+    background-size: auto;
   }
+
 `;
 
 export default GlobalStyle;

@@ -10,7 +10,7 @@ export const FriendCard = styled.div`
   border-radius: 8px;
   background-color: #f9f9f9;
   cursor: pointer;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   margin-bottom: 15px;
 `;
 

@@ -147,7 +147,7 @@ export const Home: React.FC = () => {
           backgroundColor: "#f5f5f5",
           padding: "20px",
           borderRadius: "8px",
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+          boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
           fontSize: "18px",
         }}
       >

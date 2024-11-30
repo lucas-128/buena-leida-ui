@@ -67,7 +67,7 @@ export const GroupCard = styled.div`
   background: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   width: 100%;
 `;
@@ -77,6 +77,7 @@ export const GroupImage = styled.img`
   margin-top: 20px;
   border-radius: 10px;
   border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 `;
 
 export const GroupInfoContainer = styled.div`
@@ -96,6 +97,7 @@ export const GroupDescription = styled.div`
   margin-top: 20px;
   background-color: white;
   border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 `;
 
 export const GroupProfile = styled.div`
@@ -219,7 +221,7 @@ export const CardContainer = styled.div`
   border: 1px solid #ccc;
   border-radius: 8px;
   width: 290px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   background-color: #fff;
   margin-bottom: 5px;
   cursor: pointer;

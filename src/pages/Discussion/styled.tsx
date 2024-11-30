@@ -16,6 +16,7 @@ export const DiscussionHeader = styled.div`
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 `;
 
 export const DiscussionTitle = styled.h1`
@@ -45,7 +46,7 @@ export const CommentItem = styled.div`
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 15px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 `;
 
 export const CommentHeader = styled.div`
@@ -62,7 +63,7 @@ export const CommentForm = styled.form`
   background-color: #f5f5f5;
   padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 `;
 
 export const CommentInput = styled.textarea`

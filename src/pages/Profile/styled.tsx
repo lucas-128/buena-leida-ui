@@ -17,7 +17,7 @@ export const ProfileBox = styled.div`
   min-width: 50%;
   border: 1px solid #ddd;
   padding: 3rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
   border-radius: 10px;
   width: 300px;
   background-color: white;

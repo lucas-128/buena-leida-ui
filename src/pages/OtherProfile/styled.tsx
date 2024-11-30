@@ -8,7 +8,8 @@ export const ProfileContainer = styled.div`
   padding: 2rem;
   background-color: #f8f9fa;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  margin-bottom: 2rem;
 `;
 
 export const ProfileHeader = styled.div`

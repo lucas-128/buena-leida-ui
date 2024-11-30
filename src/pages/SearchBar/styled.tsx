@@ -65,6 +65,7 @@ export const ResultCard = styled.div`
   padding: 20px;
   gap: 20px;
   background-color: var(--im-white);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 `;
 
 export const Spinner = styled.div`

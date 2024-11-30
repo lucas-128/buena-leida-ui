@@ -63,9 +63,8 @@ export const CreateGroupButton = styled.button`
 
 export const GroupCard = styled.div`
   background: #fff;
-  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   width: 100%;
 `;

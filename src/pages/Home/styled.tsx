@@ -20,7 +20,7 @@ export const Carousel = styled.div`
   background-color: #f5f5f5;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 `;
 
 export const BookCard = styled.div`
@@ -52,7 +52,7 @@ export const LibraryList = styled.ul`
   padding: 20px;
   background-color: #f5f5f5;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   margin-bottom: 40px;
 `;
 
@@ -65,6 +65,7 @@ export const UserCard = styled.div`
   width: 150px;
   flex-shrink: 0;
   text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 `;
 
 export const UserAvatar = styled.img`
@@ -93,7 +94,7 @@ export const GroupCard = styled.div`
   transition: transform 0.2s ease-in-out;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 
   &:hover {
     transform: translateY(-5px);

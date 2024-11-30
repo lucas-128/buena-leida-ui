@@ -22,7 +22,7 @@ const QuestionContainer = styled.div`
   min-width: 900px;
   background-color: #f5f5f5;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 `;
 
 const QuestionText = styled(Typography)`
@@ -62,7 +62,7 @@ const OptionButton = styled(Button)<{
         : "var(--c-color)"};
 
     color: black;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
     &:hover {
       background-color: ${(props) =>
