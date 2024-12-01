@@ -56,7 +56,7 @@ export const Friends: React.FC = () => {
   const handleDeleteFriend = async (friendId: number) => {
     try {
       await axios.delete(
-        `https://buena-leida-back-kamk.onrender.com/delete/${friendId}`
+        `https://buena-leida-back-kamk.onrender.com/friendships/${state.id}/${friendId}/delete`, 
       );
       setFriends((prevFriends) =>
         prevFriends.filter((friend) => friend.friend.id !== friendId)
