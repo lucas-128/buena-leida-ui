@@ -65,7 +65,7 @@ interface Book {
   author: string;
   coverImage: string;
 }
-const API_URL = "http://localhost:3000";
+const API_URL = "https://buena-leida-back-kamk.onrender.com";
 export default function Component() {
   const location = useLocation();
   const userId = location.state?.query || "";

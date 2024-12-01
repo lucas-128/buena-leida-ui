@@ -22,7 +22,7 @@ interface Notification {
   };
 }
 
-const API_URL = "http://localhost:3000";
+const API_URL = "https://buena-leida-back-kamk.onrender.com";
 
 export const Notifications: React.FC = () => {
   const { state } = useGlobalState();

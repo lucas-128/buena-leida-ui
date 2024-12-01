@@ -29,7 +29,7 @@ interface FriendData {
   };
 }
 
-const API_URL = "http://localhost:3000";
+const API_URL = "https://buena-leida-back-kamk.onrender.com";
 
 export const Friends: React.FC = () => {
   const { state } = useGlobalState();
