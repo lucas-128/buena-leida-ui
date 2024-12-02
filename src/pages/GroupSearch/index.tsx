@@ -314,7 +314,7 @@ export const GroupSearch = () => {
                   {group.bio?.length > 75
                     ? `${group.bio.slice(0, 72)}...`
                     : group.bio || "Sin descripción disponible"}
-                  }
+                  
                   </GroupDescription>
                   {/* <UsersCount>
                     Usuarios: {group.usersCount} | Generos:{" "}
