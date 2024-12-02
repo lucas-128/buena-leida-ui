@@ -129,19 +129,13 @@ export default function Component() {
           setIsFriend(true);
         } else {
           
-          const requested = await axios.post(`${API_URL}/friend-requests/request`, {
-            senderid: state.id,
-            receiverid: userId,
-          });
+          const requested = await axios.get(`${API_URL}/friend-requests/${state.id}/${userId}`,);
 
           if(requested) {
             setPendingRequest(true);
           }
 
-          const received = await axios.post(`${API_URL}/friend-requests/request`, {
-            receiverid: state.id,
-            senderid: userId,
-          });
+          const received = await axios.get(`${API_URL}/friend-requests/${state.id}/${userId}`,);
 
           if(received) {
             setReceivedRequest(true);
@@ -218,7 +212,7 @@ export default function Component() {
             disabled={pendingRequest}
             color="secondary"
             style={{
-              backgroundColor: pendingRequest && !pendingReceivedRequest ? "lightgray" : undefined,
+              backgroundColor: pendingRequest ? "lightgray" : undefined,
               marginBottom: "160px",
             }}
             onClick={
