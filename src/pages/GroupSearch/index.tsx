@@ -318,7 +318,7 @@ export const GroupSearch = () => {
             </div>
       </div>
       </ResultsContainer>
-       </div>
+       
       <RightSection>
         <SectionTitle>Grupos por categoria</SectionTitle>
         <CategoryGrid>
@@ -389,6 +389,7 @@ export const GroupSearch = () => {
           )}
         </DialogActions>
       </Dialog>
+      </div>
     </Container>
   );
 };

@@ -62,7 +62,7 @@ export const Discussion: React.FC = () => {
     if (discussion) {
       try {
         const response = await axios.get(
-          `${API_URL}/api/discussions/${discussion.discussionId}/comments`
+          `${API_URL}/discussions/${discussion.discussionId}/comments`
         );
         const fetchedComments = response.data.map((comment: any) => ({
           content: comment.texto,
@@ -104,7 +104,7 @@ export const Discussion: React.FC = () => {
 
     try {
       await axios.post(
-        `${API_URL}/api/discussions/${discussion.discussionId}/comments`,
+        `${API_URL}/discussions/${discussion.discussionId}/comments`,
         {
           iduser: newCommentObj.user.id,
           texto: newCommentObj.content,
