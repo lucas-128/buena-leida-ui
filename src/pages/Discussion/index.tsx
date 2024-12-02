@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import {
@@ -14,6 +14,7 @@ import {
 } from "./styled";
 import { StyledTextField } from "../Login/styled";
 import { useGlobalState } from "../../context/GlobalStateContext";
+import axios from "axios";
 
 interface User {
   username: string;
@@ -27,6 +28,7 @@ interface Comment {
 }
 
 interface Discussion {
+  groupId: number;
   discussionId: number;
   name: string;
   creatorUser: User;
@@ -54,11 +56,38 @@ export const Discussion: React.FC = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const { state } = useGlobalState();
 
+  const fetchComments = async () => {
+    if (discussion) {
+      try {
+        const response = await axios.get(
+          `/api/groups/${discussion.groupId}/discussions/${discussion.discussionId}/comments`
+        );
+        const fetchedComments = response.data.map((comment: any) => ({
+          content: comment.texto,
+          user: {
+            username: comment.user.username,
+            name: comment.user.name,
+            profilePhoto: comment.user.profilePhoto,
+          },
+        }));
+        setComments(fetchedComments);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (discussion) {
+      fetchComments();
+    }
+  }, [discussion]);
+
   const handleGoBack = () => {
     navigate(-1);
   };
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
+  const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newComment.trim() && discussion) {
       const newCommentObj: Comment = {
@@ -69,11 +98,24 @@ export const Discussion: React.FC = () => {
           profilePhoto: state.profilePhoto,
         },
       };
+
+    try {
+      await axios.post(
+        `/api/groups/${discussion.groupId}/discussions/${discussion.discussionId}/comments`,
+        {
+          iduser: state.id,
+          texto: newComment.trim(),
+        }
+      )
+
       comments.push(newCommentObj);
       setNewComment("");
       setComments([...comments]);
+    } catch (error) {
+      console.error("Error posting comment:", error);
     }
-  };
+  }
+};
 
   if (!discussion) {
     return <div>Esta discusion ha sido eliminada.</div>;
