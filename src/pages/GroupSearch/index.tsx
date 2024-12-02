@@ -292,7 +292,7 @@ export const GroupSearch = () => {
             <Typography sx={{ fontSize: "18px" }}>
               Explora los grupos más populares:
             </Typography>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "15px" }}>
+            <div>
               {topGroups.map((group) => (
                 <GroupCard
                   key={group.groupId}
