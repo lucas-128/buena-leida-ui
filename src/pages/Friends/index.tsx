@@ -20,8 +20,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 interface FriendData {
-  friendship: number;
-  status: "pending" | "not-friend" | "friend"; 
+  friendship: number; 
   friend: {
     id: number;
     username: string;
@@ -42,24 +41,10 @@ export const Friends: React.FC = () => {
     const fetchFriends = async () => {
       try {
         const response = await axios.get(
-          `${API_URL}/friendships/friends/${state.id}`
+          `${API_URL}/friendships/all/${state.id}`
         );
 
-        const friendsList = response.data;
-
-        const updatedFriends = await Promise.all(
-          friendsList.map(async (friend: FriendData) => {
-            const friendshipStateResponse = await axios.get(
-              `${API_URL}/friendships/${state.id}/${friend.friend.id}`
-            );
-            return {
-              ...friend,
-              status: friendshipStateResponse.data.status, // Estado de la relación
-            };
-          })
-        );
-
-        setFriends(updatedFriends);
+        setFriends(response.data);
       } catch (error) {
         console.error("Error fetching friends:", error);
       }
@@ -105,27 +90,13 @@ export const Friends: React.FC = () => {
                   <Name>{friend.friend.name}</Name>
                   <Username>{friend.friend.username}</Username>
                 </FriendInfo>
-                {/* Renderizar botón según el estado */}
-                {friend.status === "friend" && (
-                  <DeleteButton
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent navigating to the friend's profile
-                      handleDeleteFriend(friend.friend.id); // Delete the friend
-                    }}
-                  >
-                    Eliminar Amigo
-                  </DeleteButton>
-                )}
-                {friend.status === "pending" && (
-                  <Typography sx={{ fontSize: "14px" }}>
-                    Solicitud pendiente
-                  </Typography>
-                )}
-                {friend.status === "not-friend" && (
-                  <Typography sx={{ fontSize: "14px" }}>
-                    Añadir Amigo
-                  </Typography>
-                )}
+                <DeleteButton
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent navigating to the friend's profile
+                    handleDeleteFriend(friend.friend.id); // Delete the friend
+                  }}
+                ></DeleteButton>
+
               </FriendCard>
             ))}
           </div>
