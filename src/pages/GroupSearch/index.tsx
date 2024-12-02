@@ -275,7 +275,7 @@ export const GroupSearch = () => {
                   {topGroups.map((group) => (
                     <GroupCard key={group.groupId}>
                     <GroupImage
-                      src={group.photo}
+                      src={group.photo || defaultPhotoUrl}
                       onClick={() => handleGroupClick(group.groupId)}
                     />
                     <GroupInfo>
@@ -303,7 +303,7 @@ export const GroupSearch = () => {
             groupData.map((group) => (
               <GroupCard key={group.groupId}>
                 <GroupImage
-                  src={group.photo}
+                  src={group.photo || defaultPhotoUrl}
                   onClick={() => handleGroupClick(group.groupId)}
                 />
                 <GroupInfo>
@@ -311,9 +311,10 @@ export const GroupSearch = () => {
                     {group.name}
                   </GroupName>
                   <GroupDescription>
-                    {group.bio.length > 75
-                      ? `${group.bio.slice(0, 72)}...`
-                      : group.bio}
+                  {group.bio?.length > 75
+                    ? `${group.bio.slice(0, 72)}...`
+                    : group.bio || "Sin descripción disponible"}
+                  }
                   </GroupDescription>
                   {/* <UsersCount>
                     Usuarios: {group.usersCount} | Generos:{" "}
