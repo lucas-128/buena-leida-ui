@@ -318,7 +318,7 @@ export const GroupSearch = () => {
             </div>
       </div>
       </ResultsContainer>
-       
+       </div>
       <RightSection>
         <SectionTitle>Grupos por categoria</SectionTitle>
         <CategoryGrid>
