@@ -62,6 +62,21 @@ export const GroupSearch = () => {
   const [rankingMode, setRankingMode] = useState("Default");
   const [showCreateGroupModal, setshowCreateGroupModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [topGroups, setTopGroups] = useState<GroupData[]>([]);
+
+  useEffect(() => {
+    // Fetch top groups on component load
+    const fetchTopGroups = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/groups/topgroups`);
+        setTopGroups(response.data()); 
+      } catch (error) {
+        console.error("Error fetching top groups: ", error);
+      }
+    };
+
+    fetchTopGroups();
+  }, []);
 
   const handleClickCategory = async (category: string) => {
     setIsLoading(true);
