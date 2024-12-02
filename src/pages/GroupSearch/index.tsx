@@ -288,12 +288,8 @@ export const GroupSearch = () => {
             No se encontraron grupos para los parámetros de búsqueda.
           </Typography>
         ) : (
-          <>
-            <Typography sx={{ fontSize: "18px" }}>
-              Explora los grupos más populares:
-            </Typography>
-            <div>
-              {topGroups.map((group) => (
+
+              topGroups.map((group) => (
                 <GroupCard
                   key={group.groupId}
                   onClick={() => handleGroupClick(group.groupId)}
@@ -311,12 +307,11 @@ export const GroupSearch = () => {
                     </GroupDescription>
                   </GroupInfo>
                 </GroupCard>
-              ))}
-            </div>
-          </>
+              )
+        )
         )}
       </ResultsContainer>
-
+      </div>
       
       <RightSection>
         <SectionTitle>Grupos por categoria</SectionTitle>
@@ -344,7 +339,7 @@ export const GroupSearch = () => {
         </CreateGroupButton>
        
       </RightSection>
-      </div>
+      
       <Dialog
         open={showCreateGroupModal}
         onClose={handleClose}
