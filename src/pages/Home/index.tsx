@@ -23,12 +23,13 @@ interface UserData {
   name: string;
   username: string;
   avatar: string;
+  profilePhoto: string;
 }
 
 interface GroupData {
   id: number;
   name: string;
-  coverImage: string;
+  photo: string;
 }
 
 interface BookData {
@@ -36,7 +37,7 @@ interface BookData {
   name: string;
   title: string;
   author: string
-  cover: string;
+  coverimage: string;
 }
 
 const API_URL = "https://buena-leida-back-kamk.onrender.com";
@@ -131,7 +132,7 @@ export const Home: React.FC = () => {
       <Carousel>
         {popularBooks.map((book) => (
           <BookCard key={book.id}>
-            <BookCover src={book.cover} alt={book.title} />
+            <BookCover src={book.coverimage} alt={book.title} />
             <BookTitle>{book.title}</BookTitle>
             <BookAuthor>{book.author}</BookAuthor>
           </BookCard>
@@ -151,7 +152,7 @@ export const Home: React.FC = () => {
       <Carousel>
         {users.map((user) => (
           <UserCard key={user.id}>
-            <UserAvatar src={user.avatar} alt={user.name} />
+            <UserAvatar src={user.profilePhoto} alt={user.name} />
             <UserName>{user.name}</UserName>
             <UserUsername>{user.username}</UserUsername>
           </UserCard>
@@ -171,7 +172,7 @@ export const Home: React.FC = () => {
       <Carousel>
         {groups.map((group) => (
           <GroupCard key={group.id} onClick={() => handleClick()}>
-            <GroupCover src={group.coverImage} alt={group.name} />
+            <GroupCover src={group.photo} alt={group.name} />
             <GroupName>{group.name}</GroupName>
           </GroupCard>
         ))}
