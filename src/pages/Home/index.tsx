@@ -1,4 +1,6 @@
 import React from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import {
   HomeContainer,
   Carousel,
@@ -16,116 +18,75 @@ import {
 } from "./styled";
 import { Typography } from "@mui/material";
 
-const popularBooks = [
-  {
-    id: 1,
-    cover: "https://picsum.photos/200/300?random=1",
-    title: "The Great Gatsby",
-    author: "F. Scott Fitzgerald",
-  },
-  {
-    id: 2,
-    cover: "https://picsum.photos/200/300?random=2",
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-  },
-  {
-    id: 3,
-    cover: "https://picsum.photos/200/300?random=3",
-    title: "1984",
-    author: "George Orwell",
-  },
-  {
-    id: 4,
-    cover: "https://picsum.photos/200/300?random=4",
-    title: "Pride and Prejudice",
-    author: "Jane Austen",
-  },
-  {
-    id: 5,
-    cover: "https://picsum.photos/200/300?random=5",
-    title: "The Catcher in the Rye",
-    author: "J.D. Salinger",
-  },
-];
+interface UserData {
+  id: number;
+  name: string;
+  username: string;
+  avatar: string;
+}
 
-const users = [
-  {
-    id: 1,
-    avatar: "https://picsum.photos/100/100?random=1",
-    name: "John Doe",
-    username: "@johndoe",
-  },
-  {
-    id: 2,
-    avatar: "https://picsum.photos/100/100?random=2",
-    name: "Jane Smith",
-    username: "@janesmith",
-  },
-  {
-    id: 3,
-    avatar: "https://picsum.photos/100/100?random=3",
-    name: "Alice Johnson",
-    username: "@alicej",
-  },
-  {
-    id: 4,
-    avatar: "https://picsum.photos/100/100?random=4",
-    name: "Bob Williams",
-    username: "@bobw",
-  },
-  {
-    id: 5,
-    avatar: "https://picsum.photos/100/100?random=5",
-    name: "Emma Brown",
-    username: "@emmab",
-  },
-];
+interface GroupData {
+  id: number;
+  name: string;
+  coverImage: string;
+}
 
-const groups = [
-  {
-    id: "1",
-    name: "Science Fiction Enthusiasts",
-    coverImage: "https://via.placeholder.com/150?text=Sci-Fi",
-  },
-  {
-    id: "2",
-    name: "History Buffs",
-    coverImage: "https://via.placeholder.com/150?text=History",
-  },
-  {
-    id: "3",
-    name: "Fantasy Fanatics",
-    coverImage: "https://via.placeholder.com/150?text=Fantasy",
-  },
-  {
-    id: "4",
-    name: "Classic Literature Lovers",
-    coverImage: "https://via.placeholder.com/150?text=Classics",
-  },
-  {
-    id: "5",
-    name: "Mystery & Thriller",
-    coverImage: "https://via.placeholder.com/150?text=Mystery",
-  },
-  {
-    id: "6",
-    name: "Romance Reads",
-    coverImage: "https://via.placeholder.com/150?text=Romance",
-  },
-  {
-    id: "7",
-    name: "Non-Fiction Nerds",
-    coverImage: "https://via.placeholder.com/150?text=Non-Fiction",
-  },
-  {
-    id: "8",
-    name: "Young Adult Adventures",
-    coverImage: "https://via.placeholder.com/150?text=YA",
-  },
-];
+interface BookData {
+  id: number;
+  name: string;
+  title: string;
+  author: string
+  cover: string;
+}
+
+const API_URL = "https://buena-leida-back-kamk.onrender.com";
 
 export const Home: React.FC = () => {
+
+  const [users, setTopUsers] = useState<UserData[]>([]);
+  const [popularBooks, setTopBooks] = useState<BookData[]>([]);
+  const [groups, setTopGroups] = useState<GroupData[]>([]);
+
+  useEffect(() => {
+    const fetchTopGroups = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/home/topgroups`);
+        setTopGroups(response.data); 
+      } catch (error) {
+        console.error("Error fetching top groups: ", error);
+      }
+    };
+
+    fetchTopGroups();
+  }, []);
+
+  useEffect(() => {
+    const fetchTopBooks = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/home/topbooks`);
+        setTopBooks(response.data); 
+      } catch (error) {
+        console.error("Error fetching top Books: ", error);
+      }
+    };
+
+    fetchTopBooks();
+  }, []);
+
+  useEffect(() => {
+    const fetchTopUsers = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/home/topusers`);
+        setTopUsers(response.data); 
+      } catch (error) {
+        console.error("Error fetching top users: ", error);
+      }
+    };
+
+    fetchTopUsers();
+  }, []);
+
+
   const handleClick = () => {
     console.log("Clicked");
   };
