@@ -317,7 +317,7 @@ export const GroupSearch = () => {
         )}
       </ResultsContainer>
 
-      </div>
+      
       <RightSection>
         <SectionTitle>Grupos por categoria</SectionTitle>
         <CategoryGrid>
@@ -344,6 +344,7 @@ export const GroupSearch = () => {
         </CreateGroupButton>
        
       </RightSection>
+      </div>
       <Dialog
         open={showCreateGroupModal}
         onClose={handleClose}
