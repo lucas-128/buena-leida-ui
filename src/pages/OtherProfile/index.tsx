@@ -195,7 +195,7 @@ export default function Component() {
   const handleRemoveFriend = async () => {
     console.log("Eliminando amigo...");
     try {
-      await axios.delete(`${API_URL}/friendships/friends`, {
+      await axios.delete(`${API_URL}/friendships/${state.id}/${friendid}/delete`, {
         data: {
           userid: state.id,
           friendid: userId,
