@@ -16,6 +16,8 @@ import { StyledTextField } from "../Login/styled";
 import { useGlobalState } from "../../context/GlobalStateContext";
 import axios from "axios";
 
+const API_URL = "https://buena-leida-back-kamk.onrender.com";
+
 interface User {
   id: number;
   username: string;
@@ -60,7 +62,7 @@ export const Discussion: React.FC = () => {
     if (discussion) {
       try {
         const response = await axios.get(
-          `/api/discussions/${discussion.discussionId}/comments`
+          `${API_URL}/api/discussions/${discussion.discussionId}/comments`
         );
         const fetchedComments = response.data.map((comment: any) => ({
           content: comment.texto,
@@ -102,7 +104,7 @@ export const Discussion: React.FC = () => {
 
     try {
       await axios.post(
-        `/api/discussions/${discussion.discussionId}/comments`,
+        `${API_URL}/api/discussions/${discussion.discussionId}/comments`,
         {
           iduser: newCommentObj.user.id,
           texto: newCommentObj.content,
