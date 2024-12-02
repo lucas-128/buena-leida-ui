@@ -69,7 +69,7 @@ export const GroupSearch = () => {
     const fetchTopGroups = async () => {
       try {
         const response = await axios.get(`${API_URL}/home/topgroups`);
-        setTopGroups(response.data()); 
+        setTopGroups(response.data); 
       } catch (error) {
         console.error("Error fetching top groups: ", error);
       }
@@ -273,15 +273,28 @@ export const GroupSearch = () => {
                 <Typography>Explora los grupos más populares:</Typography>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "15px" }}>
                   {topGroups.map((group) => (
-                    <GroupCard key={group.groupId} onClick={() => handleGroupClick(group.groupId)}>
-                      <GroupImage src={group.photo || defaultPhotoUrl} alt={group.name} />
-                      <GroupInfo>
-                        <GroupName>{group.name}</GroupName>
-                        <GroupDescription>
-                          {group.bio.length > 75 ? `${group.bio.slice(0, 72)}...` : group.bio}
-                        </GroupDescription>
-                      </GroupInfo>
-                    </GroupCard>
+                    <GroupCard key={group.groupId}>
+                    <GroupImage
+                      src={group.photo}
+                      onClick={() => handleGroupClick(group.groupId)}
+                    />
+                    <GroupInfo>
+                      <GroupName onClick={() => handleGroupClick(group.groupId)}>
+                        {group.name}
+                      </GroupName>
+                      <GroupDescription>
+                        {group.bio.length > 75
+                          ? `${group.bio.slice(0, 72)}...`
+                          : group.bio}
+                      </GroupDescription>
+                      {/* <UsersCount>
+                        Usuarios: {group.usersCount} | Generos:{" "}
+                        {group.genres.join(", ").length > 40
+                          ? `${group.genres.join(", ").slice(0, 37)}...`
+                          : group.genres.join(", ")}
+                      </UsersCount> */}
+                    </GroupInfo>
+                  </GroupCard>
                   ))}
                 </div>
               </div>
