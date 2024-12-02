@@ -68,7 +68,7 @@ export const GroupSearch = () => {
     // Fetch top groups on component load
     const fetchTopGroups = async () => {
       try {
-        const response = await axios.get(`${API_URL}/groups/topgroups`);
+        const response = await axios.get(`${API_URL}/home/groups/topgroups`);
         setTopGroups(response.data()); 
       } catch (error) {
         console.error("Error fetching top groups: ", error);
