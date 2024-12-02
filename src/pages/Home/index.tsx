@@ -17,6 +17,7 @@ import {
   GroupName,
 } from "./styled";
 import { Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 interface UserData {
   id: number;
@@ -27,7 +28,7 @@ interface UserData {
 }
 
 interface GroupData {
-  id: number;
+  groupId: number;
   name: string;
   photo: string;
 }
@@ -47,6 +48,7 @@ export const Home: React.FC = () => {
   const [users, setTopUsers] = useState<UserData[]>([]);
   const [popularBooks, setTopBooks] = useState<BookData[]>([]);
   const [groups, setTopGroups] = useState<GroupData[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTopGroups = async () => {
@@ -87,9 +89,17 @@ export const Home: React.FC = () => {
     fetchTopUsers();
   }, []);
 
+  const handleGroupClick = (groupId: number) => {
+    navigate("/group", { state: { query: groupId } });
+  };
 
-  const handleClick = () => {
-    console.log("Clicked");
+  const handleUserClick = (userId: number) => {
+    navigate("/otherprofile", { state: { query: userId } });
+  };
+
+  const handleBookClick = (bookId: number) => {
+    console.log("Book clicked:", bookId);
+    navigate("/book", { state: { query: bookId } });
   };
 
   return (
@@ -131,7 +141,7 @@ export const Home: React.FC = () => {
       </Typography>
       <Carousel>
         {popularBooks.map((book) => (
-          <BookCard key={book.id}>
+          <BookCard key={book.id} onClick={() => handleBookClick(book.id)}>
             <BookCover src={book.coverimage} alt={book.title} />
             <BookTitle>{book.title}</BookTitle>
             <BookAuthor>{book.author}</BookAuthor>
@@ -151,7 +161,7 @@ export const Home: React.FC = () => {
       </Typography>
       <Carousel>
         {users.map((user) => (
-          <UserCard key={user.id}>
+          <UserCard key={user.id} onClick={() => handleUserClick(user.id)}>
             <UserAvatar src={user.profilePhoto} alt={user.name} />
             <UserName>{user.name}</UserName>
             <UserUsername>{user.username}</UserUsername>
@@ -171,7 +181,10 @@ export const Home: React.FC = () => {
       </Typography>
       <Carousel>
         {groups.map((group) => (
-          <GroupCard key={group.id} onClick={() => handleClick()}>
+          <GroupCard
+          key={group.groupId}
+          onClick={() => handleGroupClick(group.groupId)} 
+        >
             <GroupCover src={group.photo} alt={group.name} />
             <GroupName>{group.name}</GroupName>
           </GroupCard>
