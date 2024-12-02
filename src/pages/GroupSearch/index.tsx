@@ -261,63 +261,62 @@ export const GroupSearch = () => {
           </NativeSelect>
         </FormControl>
         <ResultsContainer>
-          {isLoading ? (
-            <Spinner />
-          ) : groupData.length === 0 ? (
-            searched ? (
-              <Typography sx={{ fontSize: "18px" }}>
-                No se encontraron grupos para los parametros de busqueda.
-              </Typography>
-            ) : (
-              <Typography sx={{ fontSize: "18px" }}>
-              Realiza una búsqueda para ver resultados.
+        {isLoading ? (
+          <Spinner />
+        ) : groupData.length > 0 ? (
+          groupData.map((group) => (
+            <GroupCard key={group.groupId}>
+              <GroupImage
+                src={group.photo || defaultPhotoUrl}
+                alt={group.name}
+                onClick={() => handleGroupClick(group.groupId)}
+              />
+              <GroupInfo>
+                <GroupName onClick={() => handleGroupClick(group.groupId)}>
+                  {group.name}
+                </GroupName>
+                <GroupDescription>
+                  {group.bio?.length > 75
+                    ? `${group.bio.slice(0, 72)}...`
+                    : group.bio || "Sin descripción disponible"}
+                </GroupDescription>
+              </GroupInfo>
+            </GroupCard>
+          ))
+        ) : searched ? (
+          <Typography sx={{ fontSize: "18px" }}>
+            No se encontraron grupos para los parámetros de búsqueda.
+          </Typography>
+        ) : (
+          <>
+            <Typography sx={{ fontSize: "18px" }}>
+              Explora los grupos más populares:
             </Typography>
-            )
-          ) 
-         : (
-        groupData.map((group) => (
-          <GroupCard key={group.groupId}>
-            <GroupImage
-              src={group.photo}
-              onClick={() => handleGroupClick(group.groupId)}
-            />
-            <GroupInfo>
-              <GroupName onClick={() => handleGroupClick(group.groupId)}>
-                {group.name}
-              </GroupName>
-              <GroupDescription>
-                {group.bio.length > 75
-                  ? `${group.bio.slice(0, 72)}...`
-                  : group.bio}
-              </GroupDescription>
-              {/* <UsersCount>
-                Usuarios: {group.usersCount} | Generos:{" "}
-                {group.genres.join(", ").length > 40
-                  ? `${group.genres.join(", ").slice(0, 37)}...`
-                  : group.genres.join(", ")}
-              </UsersCount> */}
-            </GroupInfo>
-          </GroupCard>
-        ))
-      )
-      }
-      <div>
-          <Typography>Explora los grupos más populares:</Typography>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "15px" }}>
-            {topGroups.map((group) => (
-              <GroupCard key={group.groupId} onClick={() => handleGroupClick(group.groupId)}>
-                <GroupImage src={group.photo || defaultPhotoUrl} alt={group.name} />
-                <GroupInfo>
-                  <GroupName>{group.name}</GroupName>
-                  <GroupDescription>
-                    {group.bio.length > 75 ? `${group.bio.slice(0, 72)}...` : group.bio}
-                  </GroupDescription>
-                </GroupInfo>
-              </GroupCard>
-            ))}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "15px" }}>
+              {topGroups.map((group) => (
+                <GroupCard
+                  key={group.groupId}
+                  onClick={() => handleGroupClick(group.groupId)}
+                >
+                  <GroupImage
+                    src={group.photo || defaultPhotoUrl}
+                    alt={group.name}
+                  />
+                  <GroupInfo>
+                    <GroupName>{group.name}</GroupName>
+                    <GroupDescription>
+                      {group.bio?.length > 75
+                        ? `${group.bio.slice(0, 72)}...`
+                        : group.bio || "Sin descripción disponible"}
+                    </GroupDescription>
+                  </GroupInfo>
+                </GroupCard>
+              ))}
             </div>
-      </div>
+          </>
+        )}
       </ResultsContainer>
+
       </div>
       <RightSection>
         <SectionTitle>Grupos por categoria</SectionTitle>
