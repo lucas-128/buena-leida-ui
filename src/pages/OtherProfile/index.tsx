@@ -86,7 +86,7 @@ export default function Component() {
 
   const [userData, setUserData] = useState<UserProfileData | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [isFriend, setIsFriend] = useState<boolean>(false);
+  const [isFriend, setIsFriend] = useState<boolean>(true);
   const [pendingRequest, setPendingRequest] = useState<boolean>(false);
   const [pendingReceivedRequest, setReceivedRequest] = useState<boolean>(false);
 
@@ -118,43 +118,54 @@ export default function Component() {
     fetchData();
   }, [userId]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const isFriend = await axios.get(
-          `${API_URL}/friendships/friends/${state.id}/${userId}`
-        );
-
-        if(isFriend){
-          setIsFriend(true);
-        } else {
-          
-          const requested = await axios.get(`${API_URL}/friend-requests/${state.id}/${userId}`,);
-
-          if(requested) {
-            setPendingRequest(true);
-          }
-
-          const received = await axios.get(`${API_URL}/friend-requests/${state.id}/${userId}`,);
-
-          if(received) {
-            setReceivedRequest(true);
-          }
-        }
-        
-      } catch (err) {
-        setIsFriend(false);
-        console.log(err);
-      }
-    };
-
-    fetchData();
-  }, [userId]);
-
   if (!userData) {
     return <div>Cargando...</div>;
   };
 
+  useEffect(() => {
+    const fetchFriendshipStatus = async () => {
+      try {
+
+        try {
+          await axios.get(
+            `${API_URL}/friendships/friends/${state.id}/${userId}`
+          );
+          setIsFriend(true);
+          return; 
+        } catch (err) {
+          setIsFriend(false);
+         
+        }
+
+        try {
+          await axios.get(`${API_URL}/friend-requests/${state.id}/${userId}`,);
+          setPendingRequest(true);
+          return; 
+        } catch (err) {
+          setPendingRequest(false);
+         
+        }
+
+        try {
+          await axios.get(`${API_URL}/friend-requests/${state.id}/${userId}`,);
+          setReceivedRequest(true);
+          return; 
+        } catch (err) {
+          setReceivedRequest(false);
+         
+        }
+
+      } catch (err) {
+        console.error("Error fetching friendship status:", err);
+      }
+    };
+  
+    fetchFriendshipStatus();
+  }, [state.id, userId]);
+  
+
+  
+        
   const handleAcceptRequest = async () => {
     try {
       const response = await axios.get<FriendRequest[]>(`${API_URL}/friend-requests/${state.id}`);
