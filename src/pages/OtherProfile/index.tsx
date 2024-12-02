@@ -65,6 +65,13 @@ interface Book {
   author: string;
   coverImage: string;
 }
+
+interface FriendRequest {
+  id: string;
+  senderId: string;
+  senderName: string;
+}
+
 const API_URL = "https://buena-leida-back-kamk.onrender.com";
 export default function Component() {
   const location = useLocation();
@@ -152,7 +159,25 @@ export default function Component() {
 
   if (!userData) {
     return <div>Cargando...</div>;
-  }
+  };
+
+  const handleAcceptRequest = async () => {
+    try {
+      const response = await axios.get<FriendRequest[]>(`${API_URL}/friend-requests/${state.id}`);
+      const request = response.data.find((req) => req.senderId === userId);
+  
+      if (!request) {
+        console.error("No se encontró una solicitud de amistad de este usuario.");
+        return;
+      }
+  
+      await axios.post(`${API_URL}/friend-requests/${request.id}/accept`);
+      console.log("Solicitud aceptada con éxito");
+    } catch (error) {
+      console.error("Error al aceptar la solicitud de amistad:", error);
+    }
+  };
+  
 
   const handleAddFriend = async () => {
     try {
@@ -166,8 +191,6 @@ export default function Component() {
       console.error("Error adding friend:", error);
     }
   };
-  console.log(state.id);
-  console.log(userId);
 
   const handleRemoveFriend = async () => {
     console.log("Eliminando amigo...");
@@ -199,23 +222,28 @@ export default function Component() {
             disabled={pendingRequest}
             color="secondary"
             style={{
-              backgroundColor: pendingRequest ? "lightgray" : undefined,
+              backgroundColor: pendingRequest && !pendingReceivedRequest ? "lightgray" : undefined,
               marginBottom: "160px",
             }}
             onClick={
               pendingRequest
                 ? undefined
+                : pendingReceivedRequest
+                ? handleAcceptRequest
                 : isFriend
                 ? handleRemoveFriend
                 : handleAddFriend
             }
           >
-            {pendingRequest
+            {pendingRequest && !pendingReceivedRequest
               ? "Solicitud pendiente"
+              : pendingReceivedRequest
+              ? "Aceptar solicitud"
               : isFriend
               ? "Eliminar amigo"
               : "Añadir amigo"}
           </Button>
+
         </ProfileHeader>
         <Bio>{userData.bio}</Bio>
         <FavoriteGenders>
