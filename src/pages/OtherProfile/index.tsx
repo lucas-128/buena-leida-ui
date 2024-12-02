@@ -225,7 +225,7 @@ export default function Component() {
                 : handleAddFriend
             }
           >
-            {pendingRequest && !pendingReceivedRequest
+            {pendingRequest
               ? "Solicitud pendiente"
               : pendingReceivedRequest
               ? "Aceptar solicitud"
