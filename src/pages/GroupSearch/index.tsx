@@ -269,9 +269,22 @@ export const GroupSearch = () => {
                 No se encontraron grupos para los parametros de busqueda.
               </Typography>
             ) : (
-              <Typography sx={{ fontSize: "18px" }}>
-                Los grupos se van a mostrar aquí.
-              </Typography>
+              <div>
+                <Typography>Explora los grupos más populares:</Typography>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "15px" }}>
+                  {topGroups.map((group) => (
+                    <GroupCard key={group.groupId} onClick={() => handleGroupClick(group.groupId)}>
+                      <GroupImage src={group.photo || defaultPhotoUrl} alt={group.name} />
+                      <GroupInfo>
+                        <GroupName>{group.name}</GroupName>
+                        <GroupDescription>
+                          {group.bio.length > 75 ? `${group.bio.slice(0, 72)}...` : group.bio}
+                        </GroupDescription>
+                      </GroupInfo>
+                    </GroupCard>
+                  ))}
+                </div>
+              </div>
             )
           ) : (
             groupData.map((group) => (
