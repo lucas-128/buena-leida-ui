@@ -17,6 +17,7 @@ import { useGlobalState } from "../../context/GlobalStateContext";
 import axios from "axios";
 
 interface User {
+  id: number;
   username: string;
   name: string;
   profilePhoto: string;
@@ -28,7 +29,6 @@ interface Comment {
 }
 
 interface Discussion {
-  groupId: number;
   discussionId: number;
   name: string;
   creatorUser: User;
@@ -60,7 +60,7 @@ export const Discussion: React.FC = () => {
     if (discussion) {
       try {
         const response = await axios.get(
-          `/api/groups/${discussion.groupId}/discussions/${discussion.discussionId}/comments`
+          `/api/discussions/${discussion.discussionId}/comments`
         );
         const fetchedComments = response.data.map((comment: any) => ({
           content: comment.texto,
@@ -93,6 +93,7 @@ export const Discussion: React.FC = () => {
       const newCommentObj: Comment = {
         content: newComment.trim(),
         user: {
+          id: state.id,
           username: state.username,
           name: state.name,
           profilePhoto: state.profilePhoto,
@@ -101,10 +102,10 @@ export const Discussion: React.FC = () => {
 
     try {
       await axios.post(
-        `/api/groups/${discussion.groupId}/discussions/${discussion.discussionId}/comments`,
+        `/api/discussions/${discussion.discussionId}/comments`,
         {
-          iduser: state.id,
-          texto: newComment.trim(),
+          iduser: newCommentObj.user.id,
+          texto: newCommentObj.content,
         }
       )
 
