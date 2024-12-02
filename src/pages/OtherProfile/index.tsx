@@ -81,6 +81,7 @@ export default function Component() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [pendingRequest, setPendingRequest] = useState<boolean>(false);
+  const [pendingReceivedRequest, setReceivedRequest] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -113,13 +114,34 @@ export default function Component() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
+        const isFriend = await axios.get(
           `${API_URL}/friendships/friends/${state.id}/${userId}`
         );
-        console.log(response);
-        setIsFriend(true);
+
+        if(isFriend){
+          setIsFriend(true);
+        } else {
+          
+          const requested = await axios.post(`${API_URL}/friend-requests/request`, {
+            senderid: state.id,
+            receiverid: userId,
+          });
+
+          if(requested) {
+            setPendingRequest(true);
+          }
+
+          const received = await axios.post(`${API_URL}/friend-requests/request`, {
+            receiverid: state.id,
+            senderid: userId,
+          });
+
+          if(received) {
+            setReceivedRequest(true);
+          }
+        }
+        
       } catch (err) {
-        setPendingRequest(false);
         setIsFriend(false);
         console.log(err);
       }
