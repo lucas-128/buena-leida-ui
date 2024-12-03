@@ -156,7 +156,7 @@ export const Group = () => {
   const handleDeleteGroup = async () => {
     try {
       await axios.delete(
-        `https://buena-leida-back-kamk.onrender.com/${groupId}/remove-group`,
+        `https://buena-leida-back-kamk.onrender.com/groups/${groupId}/remove-group`,
         {
           data: {
             creatorId: state.id,
