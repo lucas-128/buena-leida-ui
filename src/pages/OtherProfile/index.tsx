@@ -66,12 +66,6 @@ interface Book {
   coverImage: string;
 }
 
-interface FriendRequest {
-  id: string;
-  senderId: string;
-  senderName: string;
-}
-
 const API_URL = "https://buena-leida-back-kamk.onrender.com";
 export default function Component() {
   const location = useLocation();
@@ -86,23 +80,9 @@ export default function Component() {
 
   const [userData, setUserData] = useState<UserProfileData | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [isFriend, setIsFriend] = useState<boolean>(true);
+  const [isFriend, setIsFriend] = useState<boolean>(false);
   const [pendingRequest, setPendingRequest] = useState<boolean>(false);
   const [pendingReceivedRequest, setReceivedRequest] = useState<boolean>(false);
-
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await fetch(`${API_URL}/reviews/user/${userId}`);
-        const data: Review[] = await response.json();
-        setReviews(data);
-      } catch (error) {
-        console.log("Error fetching reviews:", error);
-      }
-    };
-
-    fetchReviews();
-  }, [userId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -118,66 +98,80 @@ export default function Component() {
     fetchData();
   }, [userId]);
 
-  if (!userData) {
-    return <div>Cargando...</div>;
-  };
-
   useEffect(() => {
-    const fetchFriendshipStatus = async () => {
+    const fetchReviews = async () => {
       try {
-
-        try {
-          await axios.get(
-            `${API_URL}/friendships/friends/${state.id}/${userId}`
-          );
-          setIsFriend(true);
-          return; 
-        } catch (err) {
-          setIsFriend(false);
-         
-        }
-
-        try {
-          await axios.get(`${API_URL}/friend-requests/${state.id}/${userId}`,);
-          setPendingRequest(true);
-          return; 
-        } catch (err) {
-          setPendingRequest(false);
-         
-        }
-
-        try {
-          await axios.get(`${API_URL}/friend-requests/${state.id}/${userId}`,);
-          setReceivedRequest(true);
-          return; 
-        } catch (err) {
-          setReceivedRequest(false);
-         
-        }
-
-      } catch (err) {
-        console.error("Error fetching friendship status:", err);
+        const response = await fetch(`${API_URL}/reviews/user/${userId}`);
+        const data: Review[] = await response.json();
+        setReviews(data);
+      } catch (error) {
+        console.log("Error fetching reviews:", error);
       }
     };
-  
-    fetchFriendshipStatus();
-  }, [state.id, userId]);
-  
 
+    fetchReviews();
+  }, [userId]);
+
+  
+  useEffect(() => {
+
+    const fetchPendingRequest = async () => {
+      try {
+        const pending = await axios.get(`${API_URL}/friend-requests/${state.id}/${userId}`,);
+        setPendingRequest(pending.status === 200);
+        
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchPendingRequest();
+  }, [state.id, userId]);
+
+  useEffect(() => {
+
+    const fetchReceivedRequest = async () => {
+      try {
+        const requested= await axios.get(`${API_URL}/friend-requests/${userId}/${state.id}`,);
+        setReceivedRequest(requested.status === 200);
+
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchReceivedRequest();
+  }, [state.id, userId]);
+
+  useEffect(() => {
+
+    const fetchIsFriend = async () => {
+      try {
+        const isFriend = await axios.get(
+            `${API_URL}/friendships/friends/${state.id}/${userId}`);
+        setIsFriend(isFriend.status === 200);
+        
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchIsFriend();
+  }, [state.id, userId]);
   
         
   const handleAcceptRequest = async () => {
     try {
-      const response = await axios.get<FriendRequest[]>(`${API_URL}/friend-requests/${state.id}`);
-      const request = response.data.find((req) => req.senderId === userId);
+     const request = await axios.get(`${API_URL}/friend-requests/${userId}/${state.id}`,);
   
       if (!request) {
         console.error("No se encontró una solicitud de amistad de este usuario.");
         return;
       }
-  
-      await axios.post(`${API_URL}/friend-requests/${request.id}/accept`);
-      console.log("Solicitud aceptada con éxito");
+      
+      await axios.post(`${API_URL}/friend-requests/${request.data.id}/accept`);
+      setIsFriend(true);
+      enqueueSnackbar("Solicitud aceptada con éxito", { variant: "success" });
     } catch (error) {
       console.error("Error al aceptar la solicitud de amistad:", error);
     }
@@ -195,6 +189,8 @@ export default function Component() {
     } catch (error) {
       console.error("Error adding friend:", error);
     }
+
+   
   };
 
   const handleRemoveFriend = async () => {
@@ -202,11 +198,18 @@ export default function Component() {
     try {
       await axios.delete(`${API_URL}/friendships/${state.id}/${userId}/delete`, 
        );
-      setIsFriend(false);
+    setIsFriend(false);
+    enqueueSnackbar("Amigo eliminado con éxito", { variant: "success" });
     } catch (error) {
       console.error("Error eliminando amigo:", error);
     }
+
+   
   };
+
+  if (!userData) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <div>
@@ -220,26 +223,26 @@ export default function Component() {
           </ProfileInfo>
           <Button
             variant="contained"
-            disabled={pendingRequest}
+            disabled={pendingRequest && !pendingReceivedRequest}
             color="secondary"
             style={{
-              backgroundColor: pendingRequest ? "lightgray" : undefined,
+              backgroundColor: (pendingRequest && !pendingReceivedRequest) ? "lightgray" : undefined,
               marginBottom: "160px",
             }}
             onClick={
-              pendingRequest
-                ? undefined
-                : pendingReceivedRequest
+              pendingReceivedRequest
                 ? handleAcceptRequest
+                : pendingRequest
+                ? undefined
                 : isFriend
                 ? handleRemoveFriend
                 : handleAddFriend
             }
           >
-            {pendingRequest
-              ? "Solicitud pendiente"
-              : pendingReceivedRequest
+            {pendingReceivedRequest
               ? "Aceptar solicitud"
+              : pendingRequest
+              ? "Solicitud pendiente"
               : isFriend
               ? "Eliminar amigo"
               : "Añadir amigo"}
